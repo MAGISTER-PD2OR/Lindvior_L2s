@@ -1,0 +1,11 @@
+package l2s.gameserver.network.l2.s2c;
+
+public class ExResponseFreeServer extends L2GameServerPacket
+{
+	@Override
+	protected void writeImpl()
+	{
+		writeEx(0x78);
+		// just trigger
+	}
+}

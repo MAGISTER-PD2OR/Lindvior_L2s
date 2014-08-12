@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<!-- CORRECT PATH -->
+	<classpathentry kind="lib" path="/kain_l2s/lib/commons-dbcp-1.4.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/commons-math3-3.0.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/commons-pool-1.6.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/dom4j-2.0.0-alpha-2.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/ecj-4.2.2.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/ehcache-core-2.6.2.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/jacksum-1.7.0.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/java-gearman-service-0.7.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/javolution.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/mesp-1.02.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/mysql-connector-java-5.1.25-bin.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/netty-3.5.10.Final.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/org.napile.primitive.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/slf4j-api-1.7.2.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/slf4j-log4j12-1.7.2.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/trove-3.0.3.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/lib/worldwind.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/build/authserver.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/build/commons.jar"/>
+	<classpathentry kind="lib" path="/kain_l2s/build/gameserver.jar"/>
+	<!-- END CORRECT PATH -->
+	<classpathentry kind="output" path="bin"/>
+</classpath>
