@@ -27,6 +27,7 @@ import l2s.gameserver.utils.PositionUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import blood.FPCInfo;
 import blood.model.FPReward;
 
 public class EventFPC extends FPCDefaultAI
@@ -188,6 +189,7 @@ public class EventFPC extends FPCDefaultAI
 			_aggroList.addDamageHate(attacker.getPlayer(), damage, damage);
 		}
 		
+		// if not attack, set attacker to target
 		if (getIntention() != CtrlIntention.AI_INTENTION_ATTACK)
 		{
 			if (!actor.isRunning())
@@ -518,6 +520,13 @@ public class EventFPC extends FPCDefaultAI
 		if (actor.isActionsDisabled())
 		{
 //			debug("action disabled");
+			return;
+		}
+		
+		if(actor.isInPeaceZone())
+		{
+			_log.info("tele to next farm zone");
+			FPCInfo.getInstance(actor).teleToNextFarmZone();
 			return;
 		}
 		

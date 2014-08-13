@@ -46,9 +46,12 @@ public class FPCFeoh extends MysticPC
 	public final int SKILL_WATER_STANCE	= 11008;
 	public final int SKILL_WIND_STANCE 	= 11009;
 	public final int SKILL_EARTH_STANCE	= 11010;
+	public final int SKILL_ARCANE_POWER = 337;
 	
 	protected long _darkcureTS = 0;
 	protected int _darkcureReuse = 30000;
+	
+	// should add auto learn skill
 	
 	public FPCFeoh(Player actor)
 	{
@@ -90,10 +93,11 @@ public class FPCFeoh extends MysticPC
 	@Override
 	protected boolean thinkBuff()
 	{
-//		if(thinkBuff(new int[] {
-//			10757
-//		}))
-//			return true;
+		if(thinkBuff(new int[] {
+			SKILL_ARCANE_POWER,
+			SKILL_EARTH_STANCE
+		}))
+			return true;
 		// ultimate body to mind
 		Player actor = getActor();
 		Skill skill = getActor().getKnownSkill(SKILL_ULTIMATE_BTM);
@@ -112,7 +116,7 @@ public class FPCFeoh extends MysticPC
 		
 		double distance = actor.getDistance(attacker);
 		debug("get acttacked by: "+attacker+" in range:" + distance);
-		if(distance < 100)
+		if(distance < 200)
 		{
 			Skill skillMagicEvasion = actor.getKnownSkill(SKILL_MAGIC_EVASION);
 			Skill skillMagicCharge = actor.getKnownSkill(SKILL_MAGIC_CHARGE);
@@ -172,7 +176,6 @@ public class FPCFeoh extends MysticPC
 			return chooseTaskAndTargets(skillDarkCurse, target, distance);
 		}
 			
-		
 		// 1st use death curse
 		if(canUseSkill(skillDeathCurse, target, distance) && target.getEffectList().getEffectsCount(skillDeathCurse) == 0)
 			return chooseTaskAndTargets(skillDeathCurse, target, distance);
@@ -205,10 +208,6 @@ public class FPCFeoh extends MysticPC
 			return chooseTaskAndTargets(skillElementDestruction, target, distance);
 			
 		return false;
-	}
-	
-	
-	
-	
+	}	
 }
 

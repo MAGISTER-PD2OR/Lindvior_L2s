@@ -1317,7 +1317,7 @@ public class FPCDefaultAI extends PlayerAI
 		if(actor.isDead()) /* FIXME */
 		{
 			//return to village
-//			actor.teleToClosestTown();
+			actor.teleToClosestTown();
 			actor.doRevive(100);
 			actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
 			if(actor.isPlayer())
