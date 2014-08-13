@@ -83,6 +83,17 @@ public class FPCInfo
 		
 	}
 	
+	public FPCInfo(Player player)
+	{
+		int obj_id = player.getObjectId();
+		_log.info("create new FPCInfo: "+obj_id);
+		//_owner = owner;
+		_obj_id = obj_id;
+		setStatus(FPCSpawnStatus.OFFLINE);
+		_instances.addInfo(this);
+		_actor = player;
+	}
+	
 	public static FPCInfo getInstance(int obj_id)
 	{
 		//_log.info("obj_id " + obj_id);
@@ -91,7 +102,8 @@ public class FPCInfo
 	
 	public static FPCInfo getInstance(Player player)
 	{
-		return getInstance(player.getObjectId());
+		int obj_id = player.getObjectId();
+		return _instances.getPlayer(obj_id) != null ? _instances.getPlayer(obj_id) : new FPCInfo(player);
 	}
 	
 	public Player getActor()
