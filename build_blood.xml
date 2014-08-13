@@ -78,6 +78,10 @@
 	</target>
 
 	<target name="dist" depends="blood-jar">
+<<<<<<< HEAD
 		<copy file="${build}/blood.jar" todir="${dist}/gameserver" />
+=======
+		<copy file="${build}/blood.jar" todir="dist/gameserver/blood_lib" />
+>>>>>>> master
 	</target>
 </project>

@@ -275,7 +275,7 @@ public final class DocumentSkill extends DocumentBase
 								int msgId = parseNumber(msgAttribute.getNodeValue()).intValue();
 								condition.setSystemMsg(msgId);
 							}
-							current.attach(condition);NA
+							current.attach(condition);
 						}
 					}
 					else if("for".equalsIgnoreCase(n.getNodeName()))
