@@ -5,6 +5,7 @@ import java.util.List;
 
 import l2s.commons.data.xml.AbstractHolder;
 import l2s.commons.util.Rnd;
+import l2s.gameserver.model.Player;
 import blood.model.FarmZone;
 
 public final class FarmZoneHolder  extends AbstractHolder{
@@ -32,10 +33,10 @@ public final class FarmZoneHolder  extends AbstractHolder{
 		_lists.add(zone);
 	}
 	
-	public FarmZone getZones(int level){
+	public FarmZone getZones(Player player){
 		List<FarmZone> tmp = new ArrayList<FarmZone>();
 		for (FarmZone zone: _lists){
-			if (zone.isValid(level))
+			if (zone.isValid(player))
 			{
 				tmp.add(zone);
 			}

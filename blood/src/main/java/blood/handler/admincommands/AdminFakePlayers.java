@@ -223,9 +223,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				FPReward.getInstance().giveReward(activeChar);
 			break;
 			case admin_fp_loc:
-				FarmZone zone = FarmZoneHolder.getInstance().getZones(activeChar.getLevel());
-				if(zone != null)
-					activeChar.teleToLocation(zone.getRndLocation());
+				FPCInfo.getInstance(activeChar).teleToNextFarmZone();
 			break;
 		default:
 			break;

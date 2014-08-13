@@ -318,12 +318,11 @@ public enum FPCRole {
 	public static FPCDefaultAI getAggresiveAI(Player player, String className)
 	{
 		player.sendMessage("Set character to AI: " + className);
-		FPCInfo.autoshot(player);
+//		FPCInfo.autoshot(player);
 		switch(className.toLowerCase())
     	{
 			// 4th
 			case "iss":
-				System.out.println("set iss ai");
 				return new FPCIss(player);
 			case "yul":
 				return new FPCYul(player);

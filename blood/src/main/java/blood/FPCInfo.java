@@ -34,7 +34,9 @@ import blood.base.FPCBase;
 import blood.base.FPCItem;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
+import blood.data.holder.FarmZoneHolder;
 import blood.model.FPReward;
+import blood.model.FarmZone;
 import blood.table.MerchantItem;
 
 
@@ -67,30 +69,13 @@ public class FPCInfo
 		//{"82698","148638","-3473","Giran Town Center"},
 		//{"18748","145437","-3132","Dion Town Center"},
 		//{"147450","27064","-2208","Aden Town Center"}
-	};	
-	
-	private static final int[] fpcClanList = {	268439913, 268440345, 268440398, 268446284, 268446827, 
-												268446894, 268446993, 268447084, 268447157, 268447205, 
-												268447222, 268447223, 268447290, 268447339, 268447404, 
-												268447602, 268447722, 268447753, 268447762, 268447810, 
-												268447827, 268447828, 268451094, 268451114, 268451115, 
-												268451117, 268451158, 268451162, 268451163, 268451232, 
-												268451233, 268451234, 268451254, 268451258, 268451409, 
-												268448944, 268448961, 268449008, 268449026, 268449027, 
-												268449098, 268448417, 268448910, 268448911, 268448959, 
-												268449009, 268449028, 268449029, 268449030, 268449320, 
-												268454832, 268466180, 268466406, 268466700, 268466837, 
-												268467067, 268467220, 268467418, 268468534, 268468537, 
-												268468538, 268468539, 268468540, 268468557, 268468558, 
-												268468559, 268469537, 268469865, 268470060, 268470386, 
-												268470694, 268471152, 268471409, 268489316
-											};
+	};
 
 	private static FPCBase _instances = new FPCBase();
 	
-	
 	public FPCInfo(int obj_id)
 	{
+		_log.info("create new FPCInfo: "+obj_id);
 		//_owner = owner;
 		_obj_id = obj_id;
 		setStatus(FPCSpawnStatus.OFFLINE);
@@ -235,6 +220,15 @@ public class FPCInfo
 		player.addAutoSoulShot(1466);
 		player.addAutoSoulShot(1467);
 		player.addAutoSoulShot(6645);
+	}
+	
+	public void teleToNextFarmZone()
+	{
+		Player player = getActor();
+		FarmZone validFarmZone = FarmZoneHolder.getInstance().getZones(player);
+		if(validFarmZone != null)
+			player.teleToLocation(validFarmZone.getRndLocation());
+		
 	}
 	
 //	private void registerWithNexus(Player player)
@@ -553,9 +547,9 @@ public class FPCInfo
 		else 
 			shopName = "";
 	
-		String itemName = shortenItemName(name);
+		String itemName = FPCItem.shortenItemName(name);
 		
-		String itemPrice = (Rnd.chance(50))?shortenItemPrice(price):"";
+		String itemPrice = (Rnd.chance(50))? FPCItem.shortenItemPrice(price):"";
 		
 		shopName = shopName.concat(itemName);
 		shopName = shopName.concat(" ");
@@ -564,88 +558,6 @@ public class FPCInfo
 			shopName = shopName.concat(itemPrice);
 		
 		return shopName;
-	}
-	
-	private String shortenItemName(String itemName)
-	{
-		String[][] itemNameList = {
-									{"Destroyer Hammer", "Des Hammer"},
-									{"Dasparion's Staff", "Daspa Staff"},
-									{"Infernal Master", "Infe Master"},
-									{"Meteor Shower", "Meteor"},
-									{"Spiritual Eye", "SpirEye"},
-									{"White Lightning", "A rapier"},
-									{"Elemental Sword", "A Msword"},
-									{"Keshanberk*Keshanberk", "kes*kes"},
-									{"Carnage Bow", "carnage"},
-									{"Branch of the Mother Tree", "BoMT"},
-									{"Dragon Slayer", "DraSlayer"},
-									{"Flaming Dragon Skull", "FlameDraSkull"},
-									{"Dragon Grinder", "DraGrinder"},
-									{"Soul Separator", "SoulSep"},
-									{"Dark Legion's Edge", "DLE"},
-									{"Sword of Miracles", "SoM"},
-									{"Keshanberk*Damascus", "Kes*Dam"},
-									{"Behemoth's Tuning Fork", "BTFork"},
-									{"Sword of Ipos", "Ipos"},
-									{"Barakiel's Axe", "Bara Axe"},
-									{"Cabrio's Hand", "Cabri Hand"},
-									{"Screaming Vengeance", "Best A xbow"},
-									{"Sobekk's Hurricane", "Sobekk Fist"},
-									{"Damascus*Damascus", "Dam*Dam"},
-									{"Damascus * Tallum Blade", "Dam*Tal"},
-									{"Dragon Hunter Axe", "Dra Axe"},
-									{"Heaven's Divider", "Heaven Div"},
-									{"Arcana Mace", "AM"},
-									{"Basalt Battlehammer", "Basalt"},
-									{"Draconic Bow", "Drac Bow"},
-									{"Forgotten Blade", "FB"},
-									{"Tallum Blade*Dark Legion's Edge", "Tal*DLE"},
-									{"Majestic Necklace", "MJT Neck"},
-									{"Majestic Earring", "MJT Earring"},
-									{"Majestic Ring", "MJT Ring"},
-									{"Tateossian Necklace", "Tat Neck"},
-									{"Tateossian Earring", "Tat Earring"},
-									{"Tateossian Ring", "Tat Ring"},
-									{"Material Chest Lv.1", "Chest lv1"},
-									{"Material Chest Lv.2", "Chest lv2"},
-									{"Material Chest Lv.3", "Chest lv3"},
-									{"Material Chest Lv.4", "Chest lv4"},
-									{"Material Chest Lv.5", "Chest lv5"},
-									{"Material Chest Lv.6", "Chest lv6"},
-									{"Material Chest Lv.7", "Chest lv7"}
-									};
-		
-		for(int i=0;i<itemNameList.length;i++)
-			if(itemName.indexOf(itemNameList[i][0]) > -1)
-				return itemNameList[i][1];
-		
-		
-		return itemName;		
-	}
-	
-	private String shortenItemPrice(long price)
-	{
-		String itemPrice;
-		
-		try
-		{
-			if(price > 1000)
-			{
-				if(price%1000 == 0)
-					itemPrice = price/1000 + "k";
-				else
-					itemPrice = String.format("%.1f",price/1000) + "k";
-			}
-			else
-				itemPrice = price + "a";
-		
-			return itemPrice;
-		}
-		catch(Exception e)
-		{
-			return "";
-		}
 	}
 
 	private ItemInstance checkInventory(int item_id)
@@ -724,91 +636,6 @@ public class FPCInfo
 		this._shop_status = shop_status;
 	}
 	
-	public void addClan(Player player)
-	{
-		Clan currentClan = player.getClan();
-		
-		if(currentClan == null)
-		{
-			Clan newClan = getRandomClan();
-			
-			if(newClan != null)
-				setClan(player, newClan);
-		}
-		
-	}
-	
-	public void setClanTitle(Player player, String title)
-	{
-		Clan currentClan = player.getClan();
-		
-		if(title.length() > 16) 
-			title = title.substring(0, 15);
-		
-		if(currentClan != null && currentClan.getLevel() >= 3)
-		{
-			player.setTitle(title);
-		}
-	}
-	
-	public Clan getRandomClan()
-	{
-		int clanId 		= fpcClanList[Rnd.get(fpcClanList.length)];
-		Clan newClan 	= ClanTable.getInstance().getClan(clanId);
-		
-		if(newClan != null && newClan.getAllSize() > 50)
-			return getRandomClan();
-		else
-		return newClan;
-	}
-	
-	public void setClan(Player player, Clan clan)
-	{
-//		int pledgeType = Clan.SUBUNIT_MAIN_CLAN;
-//		player.sendPacket(new JoinPledge(clan.getClanId()));
-//
-//		SubUnit subUnit = clan.getSubUnit(pledgeType);
-//		if(subUnit == null)
-//			return;
-//
-//		UnitMember member = new UnitMember(clan, player.getName(), player.getTitle(), player.getLevel(), player.getClassId().getId(), player.getObjectId(), Clan.SUBUNIT_MAIN_CLAN, player.getPowerGrade(), player.getApprentice(), player.getSex(), Clan.SUBUNIT_NONE);
-//		subUnit.addUnitMember(member);
-//
-//		player.setPledgeType(pledgeType);
-//		player.setClan(clan);
-//
-//		member.setPlayerInstance(player, false);
-//
-//		member.setPowerGrade(clan.getAffiliationRank(player.getPledgeType()));
-//
-//		clan.broadcastToOtherOnlineMembers(new PledgeShowMemberListAdd(member), player);
-//		clan.broadcastToOnlineMembers(new SystemMessage2(SystemMsg.S1_HAS_JOINED_THE_CLAN).addString(player.getName()), new PledgeShowInfoUpdate(clan));
-//
-//		// this activates the clan tab on the new member
-//		player.sendPacket(SystemMsg.ENTERED_THE_CLAN);
-//		player.sendPacket(player.getClan().listAll());
-//		player.setLeaveClanTime(0);
-//		player.updatePledgeClass();
-//
-//		// add skills to the player
-//		clan.addSkillsQuietly(player);
-//		// Display
-//		player.sendPacket(new PledgeSkillList(clan));
-//		player.sendPacket(new SkillList(player));
-//
-//		EventHolder.getInstance().findEvent(player);
-//		if(clan.getWarDominion() > 0) // bug offs after joined the clan quests need to relog
-//		{
-//			DominionSiegeEvent siegeEvent = player.getEvent(DominionSiegeEvent.class);
-//
-//			siegeEvent.updatePlayer(player, true);
-//		}
-//		else
-//			player.broadcastCharInfo();
-//
-//		player.store(false);
-	}
-
 	public int getAILoopCount()
 	{
 		return AILoopCount;
