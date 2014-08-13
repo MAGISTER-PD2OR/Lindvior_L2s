@@ -9,7 +9,7 @@
 	<property name="src.blood" location="src" />
 
 	<property name="dist" location="dist" />
-	<property name="lib" location="../lib" /> <!-- FIX HERE -->
+	<property name="lib" location="../kain_l2s/lib" /> <!-- FIX HERE -->
 
 	<property name="build" location="build" />
 	<property name="build.classes" location="${build}/classes" />
@@ -60,7 +60,7 @@
 				<arg line="-n ${src.authserver}" />
 			</exec>
 			-->
-		<exec executable="svn" output="build/svn.properties">
+		<exec executable="/usr/local/bin/svn" output="build/svn.properties">
 			<arg value="info" />
 		</exec>
 
