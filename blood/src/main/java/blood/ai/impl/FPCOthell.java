@@ -114,18 +114,22 @@ public class FPCOthell extends WarriorPC
 		
 		// disable
 		if(target.getEffectList().getEffectsCount(shadowChaseSkill) > 0){
+			debug("get shadowChaseSkill");
 			alreadyDisable = true;
 		}
 		
 		if(target.getEffectList().getEffectsCount(powerBluffSkill) > 0){
+			debug("get powerBluffSkill");
 			alreadyDisable = true;
 		}
 		
 		if(target.getEffectList().getEffectsCount(kickSkill) > 0){
+			debug("get kickSkill");
 			alreadyDisable = true;
 		}
 		
 		if(target.getEffectList().getEffectsCount(darkParalysisSkill) > 0){
+			debug("get darkParalysisSkill");
 			alreadyDisable = true;
 		}
 		
@@ -154,8 +158,8 @@ public class FPCOthell extends WarriorPC
 		if(canUseSkill(reverseSkill, target, distance))
 			return chooseTaskAndTargets(reverseSkill, target, distance);
 		
-		if(target.isMonster())
-			return false;
+//		if(target.isMonster())
+//			return false;
 		
 		// TODO make treatment and buff friendly targets
 		
