@@ -78,8 +78,6 @@
 	</target>
 
 	<target name="dist" depends="blood-jar">
-		<!--
-		<zip destfile="${build}/l2scriptsGODLindvior-dist.zip" basedir="${build.dist}" />
-		-->
+		<copy file="${build}/blood.jar" todir="dist/gameserver/blood_lib" />
 	</target>
 </project>
