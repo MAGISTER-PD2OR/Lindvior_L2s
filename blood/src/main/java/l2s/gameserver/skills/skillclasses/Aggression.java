@@ -53,17 +53,7 @@ public class Aggression extends Skill
 				else if(target.isPlayable() && !target.isDebuffImmune())
                 {
                     target.setTarget(activeChar);
-                    // Force attack
-                    int atkRange = target.getActiveWeaponTemplate().getAttackRange();
-                    double distance = target.getRealDistance(activeChar);
-                    if(distance <= atkRange)
-                    {
-                        target.doAttack(activeChar);
-                    }
-                    else
-                    {
-                        target.moveToLocation(activeChar.getLoc(),atkRange,true);
-                    }
+                    target.getAI().Attack(activeChar,true,false);
                 }
 				getEffects(activeChar, target, false);
 			}
