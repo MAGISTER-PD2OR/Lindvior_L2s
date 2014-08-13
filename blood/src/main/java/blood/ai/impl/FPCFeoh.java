@@ -206,6 +206,9 @@ public class FPCFeoh extends MysticPC
 		// use destruction
 		if(canUseSkill(skillElementDestruction, target, distance))
 			return chooseTaskAndTargets(skillElementDestruction, target, distance);
+		
+		debug("try move to target");
+		tryMoveToTarget(target);
 			
 		return false;
 	}	

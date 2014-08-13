@@ -1439,10 +1439,10 @@ public class FPCDefaultAI extends PlayerAI
 		
 		Player actor = getActor();
 		
-		if (actor.isConfused())
-		{
-			return getAttackTarget();
-		}
+//		if (actor.isConfused())
+//		{
+//			return getAttackTarget();
+//		}
 		
 		Creature target = getAttackTarget();
 		
