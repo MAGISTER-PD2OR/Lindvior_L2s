@@ -132,6 +132,9 @@ public class FPCFeoh extends MysticPC
 		super.onEvtAttacked(attacker, damage);
 	}
 	
+	protected int _last_target_id = 0;
+	protected boolean _last_target_dark_curse = false;
+	
 	protected boolean defaultFightTask()
 	{
 		clearTasks();
@@ -170,9 +173,14 @@ public class FPCFeoh extends MysticPC
 		if(distance < 400 && canUseSkill(skillDeathFear, target))
 			chooseTaskAndTargets(skillDeathFear, target, distance);
 		
+		if(_last_target_id != target.getObjectId())
+		{
+			_last_target_dark_curse = false;
+		}
+		
 		// if we are feoh soul taker we should debuf darkcurse first
-		if((now - _darkcureTS) > _darkcureReuse && canUseSkill(skillDarkCurse, target, distance) && target.getEffectList().getEffectsCount(skillDarkCurse) == 0){
-			_darkcureTS = now;
+		if(!_last_target_dark_curse && canUseSkill(skillDarkCurse, target, distance) && target.getEffectList().getEffectsCount(skillDarkCurse) == 0){
+			_last_target_dark_curse = true;
 			return chooseTaskAndTargets(skillDarkCurse, target, distance);
 		}
 			
