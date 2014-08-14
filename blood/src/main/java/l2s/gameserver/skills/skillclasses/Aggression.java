@@ -40,7 +40,7 @@ public class Aggression extends Skill
 				{
 					if(_unaggring)
 					{
-						if(target.isNpc() && activeChar.isPlayable())
+						if(activeChar.isPlayable())
 							((NpcInstance) target).getAggroList().addDamageHate(activeChar, 0, -effect);
 					}
 					else
@@ -54,7 +54,6 @@ public class Aggression extends Skill
                 {
                     target.setTarget(activeChar);
                     // Force attack
-                    int atkRange = target.getActiveWeaponTemplate().getAttackRange();
                     target.getAI().Attack(activeChar,true,false);
                 }
 				getEffects(activeChar, target, false);
