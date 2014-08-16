@@ -25,15 +25,14 @@ public class RequestMentorCancel extends L2GameClientPacket
 	{
 		Player activeChar = getClient().getActiveChar();
 		Player menteeChar = World.getPlayer(_charName);
-
-		activeChar.getMenteeList().remove(_charName, _mtype == 1, true);
-		activeChar.sendPacket(new ExMentorList(activeChar));
-		if(menteeChar != null && menteeChar.isOnline())
-		{
-			menteeChar.getMenteeList().remove(activeChar.getName(), _mtype != 1, false);
-			menteeChar.sendPacket(new ExMentorList(menteeChar));
-		}
-		Mentoring.applyMentoringCond(activeChar, false);
+        if(_mtype == 0)
+        {
+            Mentoring.removeMentoring(menteeChar,activeChar,true);
+        }
+        else if(_mtype == 1)
+        {
+            Mentoring.removeMentoring(activeChar,menteeChar,true);
+        }
 		Mentoring.setTimePenalty(_mtype == 1 ? activeChar.getObjectId() : activeChar.getMenteeList().getMentor(), System.currentTimeMillis() + 2 * 24 * 3600 * 1000L, -1);
 	}
 }
