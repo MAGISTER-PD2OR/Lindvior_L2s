@@ -63,13 +63,9 @@ public class FPCCreator
 		//String _account = wordList.length == 3 ? wordList[2] : "_mylove1412";
 		
 		Player newChar = Player.create(_classId, _sex, _account, _name, _hairStyle, _hairColor, _face);
-		if(newChar.getRace() == Race.KAMAEL && newChar.getHairStyle() > 3)
-		{
-			newChar.setHairStyle(Rnd.get(2)+1);
-		}
+		
 		if(newChar == null)
 			return;
-		
 		
 		try
 		{
