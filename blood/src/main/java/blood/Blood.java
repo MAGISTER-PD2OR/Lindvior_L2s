@@ -3,12 +3,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+
 //import l2s.gameserver.network.loginservercon.LoginServerCommunication;
 import l2mq.L2MQ;
 import l2s.commons.configuration.ExProperties;
 import l2s.commons.dbutils.DbUtils;
 import l2s.gameserver.Config;
 import l2s.gameserver.GameServer;
+import l2s.gameserver.ThreadPoolManager;
 import l2s.gameserver.database.DatabaseFactory;
 import l2s.gameserver.handler.admincommands.AdminCommandHandler;
 import l2s.gameserver.network.authcomm.AuthServerCommunication;
@@ -52,22 +54,21 @@ class Blood {
     private Blood() {
     	_log.info("Initiate BloodFakePlayers.");
 //    	SpawnParser.getInstance().load();
-//    	loadConfig();
+    	loadConfig();
     	//buildContent();
 //    	FPCItem.getInstance();
-//    	FPCNameTable.getInstance();
+    	FPCNameTable.getInstance();
 //    	FPCMerchantTable.getInstance();
-//    	storeFakePlayers();
+    	storeFakePlayers();
     	FPItemParser.getInstance().load();
     	FarmZoneParser.getInstance().load();
     	if(MQ_ENABLE)
     		L2MQ.getInstance();
     	
     	// add new comment
-    	// hien add comment
     	
         AdminCommandHandler.getInstance().registerAdminCommandHandler(new AdminFakePlayers());
-//		ThreadPoolManager.getInstance().scheduleAtFixedRate(new ManagerTask(), 30000L, 30000L); //every 30 seconds
+		ThreadPoolManager.getInstance().scheduleAtFixedRate(new ManagerTask(), 30000L, 30000L); //every 30 seconds
 //		ThreadPoolManager.getInstance().scheduleAtFixedRate(new DisconnectTask(), _disconnect_timeout, _disconnect_timeout);
     }
     

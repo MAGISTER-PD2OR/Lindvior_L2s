@@ -111,6 +111,9 @@ public class FPCParty {
 		if(_dds.size() >= 4 && isDamageDealer(player))
 			return false;
 		
+		if(player.getLevel() > (_leader.getLevel() +5) || player.getLevel() < (_leader.getLevel() - 5))
+			return false;
+		
 		Party party = _leader.getParty();
 		
 		if(party == null)

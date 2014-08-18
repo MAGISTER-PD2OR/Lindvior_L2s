@@ -15,6 +15,7 @@ import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.World;
 import l2s.gameserver.model.base.ClassId;
 import l2s.gameserver.model.base.ClassLevel;
+import l2s.gameserver.model.base.Experience;
 import l2s.gameserver.model.base.InvisibleType;
 //import l2s.gameserver.model.entity.events.impl.DominionSiegeEvent;
 import l2s.gameserver.model.items.ItemInstance;
@@ -512,7 +513,12 @@ public class FPCInfo
             _isMage = player.isMageClass();
             _classId = player.getClassId();
             
-//            FPCItem.gearUp(player);
+            if(player.getLevel() < 85)
+            {
+            	Long exp_add = Experience.LEVEL[85] - player.getExp();
+    			player.addExpAndSp(exp_add, 0, true);
+            }
+            
             FPReward.getInstance().giveReward(player);
             
             player.broadcastCharInfo();

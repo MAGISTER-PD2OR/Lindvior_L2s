@@ -33,15 +33,10 @@ public class FPCCreator
 	// TODO - move code here
 	
 	private static final Logger 		_log = LoggerFactory.getLogger(FPCCreator.class);
-	
-   	@SuppressWarnings("unused")
-	private static int[] _black_ore 	= {926, 864, 864, 895, 895};
-   	private static int[] _majestic_ring = {924, 862, 862, 893, 893};
-   	
    	
    	public static void createNewChar()
 	{
-		int[] _class_list = {2,3,5,6,8,9,12,13,14,20,21,23,24,27,33,34,36,40,41,46,48,51,52,55,57,127,130,129,128}; // no ES id 28, prophet id 17, no healer id 16, 30, 43
+		int[] _class_list = {0,10,18,25,31,38,44,49,53,123,124};
 		createNewChar(_class_list[Rnd.get(_class_list.length)], FPCNameTable.getRandomName(), "_fake_account");
 	}
     
@@ -57,11 +52,11 @@ public class FPCCreator
 		int _hairColor = Rnd.get(0,2);
 		int _face = Rnd.get(0,2);
 		
-		if(_classId == 128 || _classId == 127){
+		if(_classId == 123){
 			_sex = 0;
 		}
 		
-		if(_classId == 129 || _classId == 130){
+		if(_classId == 124){
 			_sex = 1;
 		}
 		
@@ -108,102 +103,17 @@ public class FPCCreator
 
 		newChar.getSubClassList().restore();
 
-//		if(Config.STARTING_ADENA > 0)
-//			newChar.addAdena(Config.STARTING_ADENA);
-//		
-//		if(Config.STARTING_LEVEL != 0)
-//			newChar.addExpAndSp(Experience.LEVEL[Config.STARTING_LEVEL] - newChar.getExp(), 0, 0, 0, false, false);
-
-//        if (Config.SPAWN_CHAR)
-//            newChar.teleToLocation(Config.SPAWN_X + Rnd.get(-750, 750), Config.SPAWN_Y + Rnd.get(-750, 750), Config.SPAWN_Z);
-//           else
-           	newChar.setLoc(template.getStartLocation());
+       	newChar.setLoc(template.getStartLocation());
 
 		if(Config.CHAR_TITLE)
 			newChar.setTitle(Config.ADD_CHAR_TITLE);
 		else
 			newChar.setTitle("");
 
-//		if(Config.SERVICES_RATE_TYPE != Bonus.NO_BONUS && Config.SERVICES_RATE_CREATE_PA != 0 && newChar.getBonus() == null)
-//		{
-//			newChar.getBonus().setBonusExpire((int)(System.currentTimeMillis() / 1000L * (60 * 60 * 24 *  Config.SERVICES_RATE_CREATE_PA)));
-//			newChar.stopBonusTask();
-//			newChar.startBonusTask();
-//		}
-		
 		newChar.setHeading(Rnd.get(0, 90000));
 		
-		/*
-		for(CreateItem i : template.getItems())
-		{
-			ItemInstance item = ItemFunctions.createItem(i.getItemId());
-			newChar.getInventory().addItem(item);
-
-			if(i.getShortcut() - 1 > -1) // tutorial book
-				newChar.registerShortCut(new ShortCut(Math.min(i.getShortcut() - 1, 11), 0, ShortCut.TYPE_ITEM, item.getObjectId(), -1, 1));
-
-			if(i.isEquipable() && item.isEquipable() && (newChar.getActiveWeaponItem() == null || item.getTemplate().getType2() != ItemTemplate.TYPE2_WEAPON))
-				newChar.getInventory().equipItem(item);
-		}
-		*/
-		
-		
-
-		ClassId nclassId = newChar.getClassId();
-		
-		// black ore
-		for(int i: _majestic_ring){
-			ItemInstance item = ItemFunctions.createItem(i);
-			newChar.getInventory().addItem(item);
-			if(item.isEquipable() && (newChar.getActiveWeaponInstance() == null || item.getTemplate().getType2() != ItemTemplate.TYPE2_WEAPON))
-				newChar.getInventory().equipItem(item);
-		}
-		
-		// armor and weapon
-		List<Integer> doll_set = FPCItem.getWeaponAndArmorAndRing(nclassId, ItemGrade.B, ItemGrade.B, ItemGrade.A);
-		
-		for(int i: doll_set)
-		{
-			ItemInstance item = ItemFunctions.createItem(i);
-			newChar.getInventory().addItem(item);
-			if(item.isEquipable() && (newChar.getActiveWeaponInstance() == null || item.getTemplate().getType2() != ItemTemplate.TYPE2_WEAPON))
-				newChar.getInventory().equipItem(item);
-		}
-		
-		// bonus item
-		ItemInstance item ;
-		
-		// Adventurer's Scroll of Escape
-		item = ItemFunctions.createItem(10650);
-		item.setCount(5);
-		newChar.getInventory().addItem(item);
-
-		// Scroll of Escape: Kamael Village
-		item = ItemFunctions.createItem(9716);
-		item.setCount(10);
-		newChar.getInventory().addItem(item);
-
 		for(SkillLearn skill : SkillAcquireHolder.getInstance().getAvailableSkills(newChar, AcquireType.NORMAL))
 			newChar.addSkill(SkillTable.getInstance().getInfo(skill.getId(), skill.getLevel()), true);
-
-		if(newChar.getSkillLevel(1001) > 0) // Soul Cry
-			newChar.registerShortCut(new ShortCut(1, 0, ShortCut.TYPE_SKILL, 1001, 1, 1));
-		if(newChar.getSkillLevel(1177) > 0) // Wind Strike
-			newChar.registerShortCut(new ShortCut(1, 0, ShortCut.TYPE_SKILL, 1177, 1, 1));
-		if(newChar.getSkillLevel(1216) > 0) // Self Heal
-			newChar.registerShortCut(new ShortCut(2, 0, ShortCut.TYPE_SKILL, 1216, 1, 1));
-
-		// add attack, take, sit shortcut
-		newChar.registerShortCut(new ShortCut(0, 0, ShortCut.TYPE_ACTION, 2, -1, 1));
-		newChar.registerShortCut(new ShortCut(3, 0, ShortCut.TYPE_ACTION, 5, -1, 1));
-		newChar.registerShortCut(new ShortCut(10, 0, ShortCut.TYPE_ACTION, 0, -1, 1));
-		// понял как на панельке отобразить. нц софт 10-11 панели сделали(by VISTALL)
-		// fly transform
-		newChar.registerShortCut(new ShortCut(0, ShortCut.PAGE_FLY_TRANSFORM, ShortCut.TYPE_SKILL, 911, 1, 1));
-		newChar.registerShortCut(new ShortCut(3, ShortCut.PAGE_FLY_TRANSFORM, ShortCut.TYPE_SKILL, 884, 1, 1));
-		newChar.registerShortCut(new ShortCut(4, ShortCut.PAGE_FLY_TRANSFORM, ShortCut.TYPE_SKILL, 885, 1, 1));
-		// air ship
-		newChar.registerShortCut(new ShortCut(0, ShortCut.PAGE_AIRSHIP, ShortCut.TYPE_ACTION, 70, 0, 1));
 
 		newChar.setCurrentHpMp(newChar.getMaxHp(), newChar.getMaxMp());
 		newChar.setCurrentCp(0); // retail
