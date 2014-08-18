@@ -392,6 +392,7 @@ public class FPCInfo
 			for(ClassId classId: ClassId.VALUES)
 			{
 				if(classId.getId() > 138 && classId.getId() < 147)
+					continue;
 				
 				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.AWAKED))
 				{
