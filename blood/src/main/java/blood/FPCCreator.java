@@ -83,7 +83,7 @@ public class FPCCreator
 			DbUtils.closeQuietly(con, statement);
 		}
 		
-		_log.info("Create NewChar:"+_name+" in Account: "+_account+" Class: " + newChar.getClassId() + " Sex: " + _sex);
+		_log.info("Create NewChar:"+_name+" in Account: "+_account+" Class: " + _classId + " Sex: " + _sex);
 		
 		int _obj_id = newChar.getObjectId();
 		
