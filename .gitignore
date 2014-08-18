@@ -1,3 +1,8 @@
-/build
-/bin
+*/build
+*/bin
 /.DS_Store
+*/.idea
+*.iml
+/.idea
+.gitignore
+blood/build.xml
