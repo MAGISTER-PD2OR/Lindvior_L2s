@@ -1,6 +1,7 @@
 package blood.handler.admincommands;
 
 import l2s.gameserver.ai.PlayerAI;
+import l2s.gameserver.dao.CharacterDAO;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
 //import l2s.gameserver.model.Effect;
 import l2s.gameserver.model.GameObject;
@@ -214,8 +215,9 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				String char_name = wordList[1];
 //				GameObjectsStorage.getPlayer(char_name);
 				Player player = GameObjectsStorage.getPlayer(char_name);
-				_log.info("spawn: "+player+ " name: "+char_name);
-				FPCInfo newChar = new FPCInfo(player.getObjectId());
+				int playerId = CharacterDAO.getInstance().getObjectIdByName(char_name);
+				_log.info("spawn: "+playerId+ " name: "+char_name);
+				FPCInfo newChar = new FPCInfo(playerId);
             	newChar.spawn();
 //				World.getPlayer(char_name);
 			break;
