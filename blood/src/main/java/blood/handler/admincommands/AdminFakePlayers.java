@@ -46,7 +46,8 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		admin_fp_spawn,
 		admin_fp_equip,
 		admin_fp_loc,
-		admin_set_level2
+		admin_set_level2,
+		admin_fp_class
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -219,12 +220,15 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				_log.info("spawn: "+playerId+ " name: "+char_name);
 				FPCInfo newChar = new FPCInfo(playerId);
             	newChar.spawn();
-            	newChar.setRole(FPCRole.NEXUS_EVENT);
+//            	newChar.setRole(FPCRole.NEXUS_EVENT);
 //				World.getPlayer(char_name);
 			break;
 			case admin_fp_equip:
 				System.out.println("admin_fp_equip");
 				FPReward.getInstance().giveReward(activeChar);
+			break;
+			case admin_fp_class:
+				FPCInfo.upClass(activeChar);
 			break;
 			case admin_fp_loc:
 				FPCInfo.getInstance(activeChar).teleToNextFarmZone();

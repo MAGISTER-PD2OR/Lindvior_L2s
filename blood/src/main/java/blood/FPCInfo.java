@@ -2,6 +2,7 @@ package blood;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -13,6 +14,7 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.World;
 import l2s.gameserver.model.base.ClassId;
+import l2s.gameserver.model.base.ClassLevel;
 import l2s.gameserver.model.base.InvisibleType;
 //import l2s.gameserver.model.entity.events.impl.DominionSiegeEvent;
 import l2s.gameserver.model.items.ItemInstance;
@@ -32,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import blood.ai.FPCDefaultAI;
 import blood.base.FPCBase;
 import blood.base.FPCItem;
+import blood.base.FPCParty;
+import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.data.holder.FarmZoneHolder;
@@ -54,6 +58,8 @@ public class FPCInfo
 	private ItemInstance _weapon;
 	private MerchantItem merchantItem;
 	private int AILoopCount = 0;
+	private FPCPveStyle _pveStyle = FPCPveStyle.PARTY;
+	private FPCParty _party = null;
 	
 	private static final String[][]	spawnLoc = {
 		//{"87358","-141982","-1341", "Schuttgart Town Center"},
@@ -208,23 +214,8 @@ public class FPCInfo
 	}
 	
 	public static void autoshot(Player player)
-	{
-		// bsps
-		FPCItem.supplyItem(player, 3950, 10);
-		FPCItem.supplyItem(player, 3951, 10);
-		FPCItem.supplyItem(player, 3952, 10);
-		// ss
-		FPCItem.supplyItem(player, 1465, 10);
-		FPCItem.supplyItem(player, 1466, 10);
-		FPCItem.supplyItem(player, 1467, 10);
-		// arrow
-		FPCItem.supplyItem(player, 1343, 10);
-		FPCItem.supplyItem(player, 1344, 10);
-		FPCItem.supplyItem(player, 1345, 10);
-		//ss beast
-		FPCItem.supplyItem(player, 6645, 10);
-		
-		// set auto ss
+	{	
+		// TODO add all ss plan to use here.
 		player.addAutoSoulShot(3950);
 		player.addAutoSoulShot(3951);
 		player.addAutoSoulShot(3952);
@@ -232,6 +223,16 @@ public class FPCInfo
 		player.addAutoSoulShot(1466);
 		player.addAutoSoulShot(1467);
 		player.addAutoSoulShot(6645);
+	}
+	
+	public void setParty(FPCParty party)
+	{
+		_party = party;
+	}
+	
+	public FPCParty getParty()
+	{
+		return _party;
 	}
 	
 	public void teleToNextFarmZone()
@@ -303,6 +304,109 @@ public class FPCInfo
 		return (FPCDefaultAI) ai;
 	}
 	
+	public static boolean canPveSolo(Player player)
+	{
+		if(player == null)
+			return false;
+		
+		switch(player.getClassId())
+		{
+			case FEOH_ARCHMAGE:
+			case FEOH_MYSTIC_MUSE:
+			case FEOH_SOUL_HOUND:
+			case FEOH_SOULTAKER:
+			case FEOH_STORM_SCREAMER:
+			case FEOH_WIZARD:
+			case WYNN_ARCANA_LORD:
+			case WYNN_ELEMENTAL_MASTER:
+			case WYNN_SPECTRAL_MASTER:
+			case WYNN_SUMMONER:
+			case ISS_DOMINATOR:
+			case ISS_DOOMCRYER:
+			case ISS_ENCHANTER:
+			case ISS_HIEROPHANT:
+			case ISS_SPECTRAL_DANCER:
+			case ISS_SWORD_MUSE:
+				return player.getLevel() < 91 && Rnd.chance(30);
+				
+			default:
+				return false;
+		}
+	}
+	
+	public static void upClass(Player player)
+	{
+		if (player == null)
+			return;
+		
+		ArrayList<ClassId> classList = new ArrayList<ClassId>();
+		
+		if (player.getLevel() >= 20 && player.getClassId().isOfLevel(ClassLevel.NONE))
+		{
+			classList = new ArrayList<ClassId>();
+			for(ClassId classId: ClassId.VALUES)
+			{
+				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.FIRST))
+				{
+					classList.add(classId);
+				}
+			}
+			
+			if(classList.size() > 0)
+				player.setClassId(classList.get(Rnd.get(classList.size())).getId(), true);
+		}
+		
+		if (player.getLevel() >= 40 && player.getClassId().isOfLevel(ClassLevel.FIRST))
+		{
+			classList = new ArrayList<ClassId>();
+			for(ClassId classId: ClassId.VALUES)
+			{
+				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.SECOND))
+				{
+					classList.add(classId);
+				}
+			}
+			
+			if(classList.size() > 0)
+				player.setClassId(classList.get(Rnd.get(classList.size())).getId(), true);
+		}
+		
+		if (player.getLevel() >= 76 && player.getClassId().isOfLevel(ClassLevel.SECOND))
+		{
+			classList = new ArrayList<ClassId>();
+			for(ClassId classId: ClassId.VALUES)
+			{
+				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.THIRD))
+				{
+					classList.add(classId);
+				}
+			}
+			
+			if(classList.size() > 0)
+				player.setClassId(classList.get(Rnd.get(classList.size())).getId(), true);
+		}
+		
+		if (player.getLevel() >= 85 && player.getClassId().isOfLevel(ClassLevel.THIRD))
+		{
+			classList = new ArrayList<ClassId>();
+			for(ClassId classId: ClassId.VALUES)
+			{
+				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.AWAKED))
+				{
+					classList.add(classId);
+				}
+			}
+			
+			if(classList.size() > 0)
+				player.setClassId(classList.get(Rnd.get(classList.size())).getId(), true);
+		}
+	}
+	
+	public void lookingParty()
+	{
+		FPCPartyManager.getInstance().getParty(this);
+	}
+		
 	public boolean uyThac()
 	{
 		
@@ -356,6 +460,8 @@ public class FPCInfo
 			_actor = actor;
 			_isMage = actor.isMageClass();
 	        _classId = actor.getClassId();
+	        
+	        
 			
 			actor.broadcastCharInfo();
 			actor.broadcastStatusUpdate();
@@ -406,6 +512,12 @@ public class FPCInfo
             player.broadcastCharInfo();
             
             _actor = player;
+            
+            if(canPveSolo(_actor))
+	        	_pveStyle = FPCPveStyle.SOLO;
+            else
+            	lookingParty();
+            	
 
 //            cancelShop();
             
