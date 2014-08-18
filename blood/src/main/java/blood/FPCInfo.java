@@ -239,7 +239,10 @@ public class FPCInfo
 		Player player = getActor();
 		FarmZone validFarmZone = FarmZoneHolder.getInstance().getZones(player);
 		if(validFarmZone != null)
+		{
+			_log.info("valid farmzone: "+validFarmZone);
 			player.teleToLocation(validFarmZone.getRndLocation());
+		}
 		
 	}
 	
@@ -376,7 +379,7 @@ public class FPCInfo
 		Player player = null;
     	try{
     		player = Player.restore(getObjectId());
-//            player.setFakePlayer();
+            player.setFakePlayer();
             player.spawnMe();
     		player.setRunning();
     		player.setHeading(Rnd.get(0, 9000));

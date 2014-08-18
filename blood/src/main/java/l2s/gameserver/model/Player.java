@@ -5,7 +5,6 @@ import static l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode.ZONE_PEACE_FLAG
 import static l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode.ZONE_PVP_FLAG;
 import static l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode.ZONE_SIEGE_FLAG;
 import static l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode.ZONE_SSQ_FLAG;
-
 import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.iterator.TIntLongIterator;
 import gnu.trove.iterator.TIntObjectIterator;
@@ -44,10 +43,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import l2s.gameserver.stats.triggers.TriggerType;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+
 import l2s.commons.collections.LazyArrayList;
 import l2s.commons.dao.JdbcEntityState;
 import l2s.commons.dbutils.DbUtils;
@@ -91,6 +92,7 @@ import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.data.xml.holder.TransformTemplateHolder;
 import l2s.gameserver.database.DatabaseFactory;
 import l2s.gameserver.database.mysql;
+import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.handler.bbs.CommunityBoardManager;
 import l2s.gameserver.handler.bbs.ICommunityBoardHandler;
 import l2s.gameserver.handler.items.IItemHandler;
@@ -359,6 +361,7 @@ import l2s.gameserver.utils.SiegeUtils;
 import l2s.gameserver.utils.SqlBatch;
 import l2s.gameserver.utils.Strings;
 import l2s.gameserver.utils.TeleportUtils;
+
 import org.napile.primitive.Containers;
 import org.napile.primitive.maps.IntObjectMap;
 import org.slf4j.Logger;
@@ -11676,5 +11679,85 @@ public final class Player extends Playable implements PlayerGroup
 	public int getArenaIdForLogout()
 	{
 		return _arenaIdForLogout;
+	}
+	
+	protected boolean _fakePlayer = false;
+
+	public void setFakePlayer() {
+		// TODO Auto-generated method stub
+		_fakePlayer = true;
+	}
+	
+	public void unSetFakePlayer(){
+		_fakePlayer = false;
+	}
+	
+	public boolean isFakePlayer(){
+		return _fakePlayer;
+	}
+	
+	public void teleToLocation(int x, int y, int z, Reflection r)
+	{
+		if(!isTeleporting.compareAndSet(false, true))
+			return;
+
+		if(isFakeDeath())
+			breakFakeDeath();
+
+		abortCast(true, false);
+		if(!isLockedTarget())
+			setTarget(null);
+		stopMove();
+
+		if(!isBoat() && !isFlying() && !World.isWater(new Location(x, y, z), r))
+			z = GeoEngine.getHeight(x, y, z, r.getGeoIndex());
+
+		//TODO [G1ta0] убрать DimensionalRiftManager.teleToLocation
+		if(isPlayer() && DimensionalRiftManager.getInstance().checkIfInRiftZone(getLoc(), true))
+		{
+			Player player = (Player) this;
+			if(player.isInParty() && player.getParty().isInDimensionalRift())
+			{
+				Location newCoords = DimensionalRiftManager.getInstance().getRoom(0, 0).getTeleportCoords();
+				x = newCoords.x;
+				y = newCoords.y;
+				z = newCoords.z;
+				player.getParty().getDimensionalRift().usedTeleport(player);
+			}
+		}
+
+		//TODO: [Bonux] Check ExTeleportToLocationActivate!
+		if(isPlayer() && !isFakePlayer())
+		{
+			Player player = (Player) this;
+
+			sendPacket(new TeleportToLocation(this, x, y, z));
+
+			player.getListeners().onTeleport(x, y, z, r);
+
+			decayMe();
+
+			setXYZ(x, y, z);
+
+			setReflection(r);
+
+			// Нужно при телепорте с более высокой точки на более низкую, иначе наносится вред от "падения"
+			player.setLastClientPosition(null);
+			player.setLastServerPosition(null);
+
+			sendPacket(new ExTeleportToLocationActivate(this, x, y, z));
+		}
+		else
+		{
+			broadcastPacket(new TeleportToLocation(this, x, y, z));
+
+			setXYZ(x, y, z);
+
+			setReflection(r);
+
+			sendPacket(new ExTeleportToLocationActivate(this, x, y, z));
+
+			onTeleported();
+		}
 	}
 }
