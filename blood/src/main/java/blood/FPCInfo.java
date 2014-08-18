@@ -64,11 +64,11 @@ public class FPCInfo
 		//{"147725","-56517","-2780","Goddard Town Center"},
 		//{"147705","-53066","-2731","Goddard Einhasad Temple"},
 		//{"-14225","123540","-3121","Gludio Town Center"},
-		{"-83063","150791","-3120","Gludin Town Center 1"},
-		{"-81784","150840","-3120","Gludin Town Center 2"},
+//		{"-83063","150791","-3120","Gludin Town Center 1"},
+//		{"-81784","150840","-3120","Gludin Town Center 2"},
 		//{"82698","148638","-3473","Giran Town Center"},
 		//{"18748","145437","-3132","Dion Town Center"},
-		//{"147450","27064","-2208","Aden Town Center"}
+		{"147450","27064","-2208","Aden Town Center"}
 	};
 
 	private static FPCBase _instances = new FPCBase();
@@ -386,7 +386,7 @@ public class FPCInfo
             player.restoreExp();
             //player.broadcastCharInfo();
             //_log.info("spawn " + player.getName());
-//            randomTown(player);
+            randomTown(player);
 //            if(Rnd.chance(20))
 //            	addClan(player);
 //            if(Rnd.chance(30) && player.getTitle().isEmpty() && player.getClan() != null)
@@ -460,7 +460,7 @@ public class FPCInfo
 												        Integer.parseInt(randomLoc[0]), 
 												        Integer.parseInt(randomLoc[1]), 
 												        Integer.parseInt(randomLoc[2]),
-														50, 650, player.getGeoIndex());
+														100, 850, player.getGeoIndex());
 		player.setLoc(baseLoc);
 	}
 	

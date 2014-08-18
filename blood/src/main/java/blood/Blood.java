@@ -93,7 +93,7 @@ class Blood {
             while (rs.next()) {
             	FPCInfo newChar = new FPCInfo(rs.getInt("obj_Id"));
             	newChar.spawn();
-            	newChar.uyThac();
+//            	newChar.uyThac();
             }
             rs.close();
             stm.close();

@@ -2,6 +2,7 @@ package blood.base;
 
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.base.ClassLevel;
 import blood.Blood;
 import blood.FPCInfo;
 import blood.ai.*;
@@ -181,6 +182,69 @@ public enum FPCRole {
 	
 	private FPCDefaultAI getAggresiveAI(Player player)
 	{
+		if(player.getClassId().isOfLevel(ClassLevel.AWAKED)){
+			switch (player.getClassId()) {
+			case FEOH_ARCHMAGE:
+			case FEOH_SOULTAKER:
+			case FEOH_MYSTIC_MUSE:
+			case FEOH_STORM_SCREAMER:
+			case FEOH_SOUL_HOUND:
+			case FEOH_WIZARD:
+				return new FPCFeoh(player);
+				
+			case WYNN_ARCANA_LORD:
+			case WYNN_ELEMENTAL_MASTER:
+			case WYNN_SPECTRAL_MASTER:
+			case WYNN_SUMMONER:
+				return new FPCWynn(player);
+				
+			case ISS_HIEROPHANT:
+			case ISS_DOMINATOR:
+			case ISS_DOOMCRYER:
+			case ISS_ENCHANTER:
+			case ISS_SPECTRAL_DANCER:
+			case ISS_SWORD_MUSE:
+				return new FPCIss(player);
+				
+			case AEORE_CARDINAL:
+			case AEORE_EVAS_SAINT:
+			case AEORE_SHILLIEN_SAINT:
+				return new FPCAeore(player);
+				
+			case SIGEL_PHOENIX_KNIGHT:
+			case SIGEL_HELL_KNIGHT:
+			case SIGEL_EVAS_TEMPLAR:
+			case SIGEL_SHILLIEN_TEMPLAR:
+			case SIGEL_KNIGHT:
+				return new FPCSigel(player);
+				
+			case OTHELL_ADVENTURER:
+			case OTHELL_WIND_RIDER:
+			case OTHELL_GHOST_HUNTER:
+			case OTHELL_FORTUNE_SEEKER:
+			case OTHELL_ROGUE:
+				return new FPCOthell(player);
+				
+			case YR_SAGITTARIUS:
+			case YR_MOONLIGHT_SENTINEL:
+			case YR_GHOST_SENTINEL:
+			case YR_TRICKSTER:
+			case YR_ARCHER:
+				return new FPCYul(player);
+				
+			case TYR_DUELIST:
+			case TYR_DREADNOUGHT:
+			case TYR_TITAN:
+			case TYR_GRAND_KHAVATARI:
+			case TYR_MAESTRO:
+			case TYR_DOOMBRINGER:
+			case TYR_WARRIOR:
+				return new FPCTyr(player);
+				
+			default:
+				break;
+			}
+		}
 		if(player.isMageClass())
         {
         	switch(player.getClassId())
