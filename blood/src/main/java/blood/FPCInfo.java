@@ -519,6 +519,8 @@ public class FPCInfo
     			player.addExpAndSp(exp_add, 0, true);
             }
             
+            upClass(player);
+            
             FPReward.getInstance().giveReward(player);
             
             player.broadcastCharInfo();
@@ -529,7 +531,6 @@ public class FPCInfo
 	        	_pveStyle = FPCPveStyle.SOLO;
             else
             	lookingParty();
-            	
 
 //            cancelShop();
             
