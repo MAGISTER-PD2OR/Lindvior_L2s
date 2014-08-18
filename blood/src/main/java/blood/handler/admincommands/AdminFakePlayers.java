@@ -219,6 +219,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				_log.info("spawn: "+playerId+ " name: "+char_name);
 				FPCInfo newChar = new FPCInfo(playerId);
             	newChar.spawn();
+            	newChar.setRole(FPCRole.NEXUS_EVENT);
 //				World.getPlayer(char_name);
 			break;
 			case admin_fp_equip:
