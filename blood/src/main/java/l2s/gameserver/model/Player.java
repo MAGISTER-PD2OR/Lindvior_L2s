@@ -784,10 +784,10 @@ public final class Player extends Playable implements PlayerGroup
 	{
 		if(_connection == null)
 		{
-			_log.info("connection null: "+_login);
+//			_log.info("connection null: "+_login);
 			return _login;
 		}
-		_log.info("acc:"+_connection.getLogin());
+//		_log.info("acc:"+_connection.getLogin());
 		return _connection.getLogin();
 	}
 
@@ -5011,7 +5011,7 @@ public final class Player extends Playable implements PlayerGroup
 		ClassId class_id = ClassId.VALUES[classId];
 		PlayerTemplate template = PlayerTemplateHolder.getInstance().getPlayerTemplate(class_id.getRace(), class_id, Sex.VALUES[sex]);
 		
-		_log.info("accountName: "+accountName);
+//		_log.info("accountName: "+accountName);
 
 		// Create a new L2Player with an account name
 		Player player = new Player(IdFactory.getInstance().getNextId(), template, accountName);

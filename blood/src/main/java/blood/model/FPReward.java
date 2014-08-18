@@ -33,8 +33,6 @@ public class FPReward {
 		System.out.println("playerLvl:" + playerLvl + " playerClassId:" + playerClassId);
 		for (int i = playerLvl; i > 0; i--) {
 			List<FPRewardList> rewardByLevel = FPItemHolder.getInstance().getLevelBonus(i);
-			System.out.println(rewardByLevel);
-			System.out.println(i);
 			if (rewardByLevel != null){
 				for (FPRewardList rewardByClass: rewardByLevel ){
 					if (rewardByClass.hasClass(playerClassId)){

@@ -45,7 +45,7 @@ public class FPCCreator
 		Connection con = null;
 		PreparedStatement statement = null;
 		
-		_log.info("createNewChar:"+_name);
+//		_log.info("createNewChar:"+_name);
 		
 		//int _classId = Integer.parseInt(wordList[1]);
 		int _sex = Rnd.get(0,1);

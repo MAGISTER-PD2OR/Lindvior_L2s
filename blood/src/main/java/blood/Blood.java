@@ -31,7 +31,7 @@ class Blood {
     private static final String LOAD_OFFLINE_STATUS = "SELECT obj_id FROM fpc LIMIT 50";
     private static final Logger 		_log = LoggerFactory.getLogger(Blood.class);
     private static Blood 	_instance;
-//    private static long _disconnect_timeout	= 60000L;  //every 10 minutes
+    private static long _disconnect_timeout	= 60000L;  //every 10 minutes
     
     public static int FPC_IDLE = 0;
     public static int FPC_EVENT = 0;
@@ -53,9 +53,7 @@ class Blood {
     
     private Blood() {
     	_log.info("Initiate BloodFakePlayers.");
-//    	SpawnParser.getInstance().load();
     	loadConfig();
-    	//buildContent();
 //    	FPCItem.getInstance();
     	FPCNameTable.getInstance();
 //    	FPCMerchantTable.getInstance();
@@ -69,7 +67,7 @@ class Blood {
     	
         AdminCommandHandler.getInstance().registerAdminCommandHandler(new AdminFakePlayers());
 		ThreadPoolManager.getInstance().scheduleAtFixedRate(new ManagerTask(), 30000L, 30000L); //every 30 seconds
-//		ThreadPoolManager.getInstance().scheduleAtFixedRate(new DisconnectTask(), _disconnect_timeout, _disconnect_timeout);
+		ThreadPoolManager.getInstance().scheduleAtFixedRate(new DisconnectTask(), _disconnect_timeout, _disconnect_timeout);
     }
     
     public static void loadConfig()
@@ -108,8 +106,8 @@ class Blood {
     
     public static void populationControl()
     {
-    	int max_giving_birth = 20;
-    	int max_move_role = 10;
+    	int max_giving_birth = 200;
+    	int max_move_role = 100;
     	int diff, i;
     	// birth
     	diff = FPCSpawnStatus.getDiff(); 
