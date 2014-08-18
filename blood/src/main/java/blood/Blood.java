@@ -91,7 +91,7 @@ class Blood {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
             	FPCInfo newChar = new FPCInfo(rs.getInt("obj_Id"));
-            	newChar.spawn();
+//            	newChar.spawn();
 //            	newChar.uyThac();
             }
             rs.close();
