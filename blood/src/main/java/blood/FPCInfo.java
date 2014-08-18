@@ -391,6 +391,8 @@ public class FPCInfo
 			classList = new ArrayList<ClassId>();
 			for(ClassId classId: ClassId.VALUES)
 			{
+				if(classId.getId() > 138 && classId.getId() < 147)
+				
 				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.AWAKED))
 				{
 					classList.add(classId);
@@ -400,6 +402,9 @@ public class FPCInfo
 			if(classList.size() > 0)
 				player.setClassId(classList.get(Rnd.get(classList.size())).getId(), true);
 		}
+		
+		// give all skills
+		player.rewardSkills(true, true, true, false);
 	}
 	
 	public void lookingParty()
