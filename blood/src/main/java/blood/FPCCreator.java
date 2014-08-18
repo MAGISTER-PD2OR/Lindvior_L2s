@@ -40,18 +40,15 @@ public class FPCCreator
 		createNewChar(_class_list[Rnd.get(_class_list.length)], FPCNameTable.getRandomName(), "_fake_account");
 	}
     
-    @SuppressWarnings("unused")
 	public static void createNewChar(int _classId, String _name, String _account)
 	{
 		Connection con = null;
 		PreparedStatement statement = null;
 		
+		_log.info("createNewChar:"+_name);
+		
 		//int _classId = Integer.parseInt(wordList[1]);
 		int _sex = Rnd.get(0,1);
-		int _hairStyle = Rnd.get(0, _sex == 1 ? 6 : 4);
-		int _hairColor = Rnd.get(0,2);
-		int _face = Rnd.get(0,2);
-		
 		if(_classId == 123){
 			_sex = 0;
 		}
@@ -59,6 +56,9 @@ public class FPCCreator
 		if(_classId == 124){
 			_sex = 1;
 		}
+		int _hairStyle = Rnd.get(0, _sex == 1 ? 6 : 4);
+		int _hairColor = Rnd.get(0,2);
+		int _face = Rnd.get(0,2);
 		
 		//String _account = wordList.length == 3 ? wordList[2] : "_mylove1412";
 		
@@ -74,7 +74,7 @@ public class FPCCreator
 		try
 		{
 			con = DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("INSERT INTO fake_players(obj_id) VALUES (?)");
+			statement = con.prepareStatement("INSERT INTO fpc(obj_id) VALUES (?)");
 			statement.setInt(1, newChar.getObjectId());
 			statement.execute();
 		}
@@ -104,11 +104,6 @@ public class FPCCreator
 		newChar.getSubClassList().restore();
 
        	newChar.setLoc(template.getStartLocation());
-
-		if(Config.CHAR_TITLE)
-			newChar.setTitle(Config.ADD_CHAR_TITLE);
-		else
-			newChar.setTitle("");
 
 		newChar.setHeading(Rnd.get(0, 90000));
 		

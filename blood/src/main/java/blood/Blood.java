@@ -28,7 +28,7 @@ import blood.table.FPCNameTable;
 public
 class Blood {
 	
-    private static final String LOAD_OFFLINE_STATUS = "SELECT obj_Id FROM characters LIMIT 50";
+    private static final String LOAD_OFFLINE_STATUS = "SELECT obj_id FROM fpc LIMIT 50";
     private static final Logger 		_log = LoggerFactory.getLogger(Blood.class);
     private static Blood 	_instance;
 //    private static long _disconnect_timeout	= 60000L;  //every 10 minutes
