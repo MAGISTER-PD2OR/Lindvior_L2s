@@ -10,6 +10,7 @@ import l2s.commons.util.Rnd;
 import l2s.gameserver.Config;
 import l2s.gameserver.ai.PlayerAI;
 import l2s.gameserver.data.xml.holder.ItemHolder;
+import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.World;
@@ -227,11 +228,33 @@ public class FPCInfo
 	public void teleToNextFarmZone()
 	{
 		Player player = getActor();
-		FarmZone validFarmZone = FarmZoneHolder.getInstance().getZones(player);
-		if(validFarmZone != null)
+		Location nextLoc;
+		switch(_pveStyle)
 		{
-			_log.info("valid farmzone: "+validFarmZone);
-			player.teleToLocation(validFarmZone.getRndLocation());
+			case SOLO:
+				nextLoc = FarmZoneHolder.getInstance().getLocation(player);
+				if(nextLoc != null)
+					player.teleToLocation(nextLoc);
+				break;
+			
+			case PARTY:
+				if(!getParty().isFull())
+					return;
+				Party party = player.getParty();
+				if(party == null)
+					return;
+				if (party.isLeader(player))
+				{
+					nextLoc = FarmZoneHolder.getInstance().getLocation(player);
+					if(nextLoc != null)
+					{
+						for(Player partyMember: party.getPartyMembers())
+						{
+							partyMember.teleToLocation(nextLoc);
+						}
+					}
+				}
+				break;
 		}
 		
 	}
