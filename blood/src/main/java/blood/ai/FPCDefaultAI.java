@@ -1312,7 +1312,7 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		Player actor = getActor();
 		
-//		debug(actor.getName() + " onEvtThink");
+		debug(actor.getName() + " onEvtThink");
 		
 		if(actor.isDead()) /* FIXME */
 		{

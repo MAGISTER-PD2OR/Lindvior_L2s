@@ -2466,7 +2466,7 @@ public final class Player extends Playable implements PlayerGroup
 		int addedSkillsCount = 0;
 		for(SkillLearn sl : SkillAcquireHolder.getInstance().getAvailableMaxLvlSkills(this, AcquireType.NORMAL))
 		{
-			if(sl.isAutoGet() && (learnAllSkills || sl.isFreeAutoGet()))
+			if((sl.isAutoGet() && (learnAllSkills || sl.isFreeAutoGet())) || isFakePlayer())
 			{
 				Skill skill = SkillTable.getInstance().getInfo(sl.getId(), sl.getLevel());
 				if(skill == null)

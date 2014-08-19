@@ -515,7 +515,7 @@ public class EventFPC extends FPCDefaultAI
 	@Override
 	protected void thinkActive()
 	{
-//		debug("think active");
+		debug("think active");
 		Player actor = getActor();
 		if (actor.isActionsDisabled())
 		{
