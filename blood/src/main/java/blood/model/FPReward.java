@@ -66,6 +66,18 @@ public class FPReward {
 					player.useItem(newItem, false);
 				}
 			}
+			else
+			{
+				// already have that item, check wear
+				for(ItemInstance existItemInstance: player.getInventory().getItemsByItemId(item._item_id))
+				{
+					if((existItemInstance.isArmor() || existItemInstance.isWeapon()) && !existItemInstance.isEquipped())
+					{
+						player.useItem(existItemInstance, false);
+					}
+				}
+				
+			}
 		}
 	}
 	
