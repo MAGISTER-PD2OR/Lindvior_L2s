@@ -52,6 +52,7 @@ public class FPReward {
 				for (FPRewardList rewardByClass: rewardByLevel ){
 					if (player.isMageClass() == rewardByClass.is_mage()){
 						distributeList(rewardByClass, player);
+						return;
 					}
 				}
 				break;
