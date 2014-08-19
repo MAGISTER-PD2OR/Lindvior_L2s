@@ -1316,12 +1316,21 @@ public class FPCDefaultAI extends PlayerAI
 		
 		if(actor.isDead()) /* FIXME */
 		{
-			//return to village
-			actor.teleToClosestTown();
-			actor.doRevive(100);
-			actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
-			if(actor.isPlayer())
-				actor.setCurrentCp(actor.getMaxCp());
+			if(!actor.isInParty())
+			{
+//				actor.setTarget(null);
+				setAttackTarget(null);
+				actor.teleToClosestTown();
+				actor.doRevive(100);
+				actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
+				if(actor.isPlayer())
+					actor.setCurrentCp(actor.getMaxCp());
+			}
+			else
+			{
+				_log.info(actor+ "i'm dead and waiting for res");
+				return;
+			}
 		}
 		
 		if (_thinking || (actor == null) || actor.isActionsDisabled() || actor.isAfraid())
