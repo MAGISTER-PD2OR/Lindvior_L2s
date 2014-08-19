@@ -28,7 +28,7 @@ import blood.table.FPCNameTable;
 public
 class Blood {
 	
-    private static final String LOAD_OFFLINE_STATUS = "SELECT obj_id FROM fpc LIMIT 50";
+    private static final String LOAD_OFFLINE_STATUS = "SELECT obj_id FROM fpc";
     private static final Logger 		_log = LoggerFactory.getLogger(Blood.class);
     private static Blood 	_instance;
     private static long _disconnect_timeout	= 60000L;  //every 10 minutes
@@ -111,6 +111,7 @@ class Blood {
     	int diff, i;
     	// birth
     	diff = FPCSpawnStatus.getDiff(); 
+    	_log.info("diff birth:"+diff);
     	i = 0;
     	while( i < diff && i < max_giving_birth && diff > 0)
     	{
@@ -122,6 +123,7 @@ class Blood {
     	for (FPCRole role : FPCRole.values()) 
     	{
     		diff = role.getPadding();
+    		_log.info("diff role:"+diff+" "+role);
         	i = 0;
         	
         	while( i < Math.abs(diff) && i < max_move_role)
