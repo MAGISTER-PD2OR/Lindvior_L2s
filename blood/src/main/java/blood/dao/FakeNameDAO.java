@@ -45,7 +45,7 @@ public class FakeNameDAO {
 		try
 		{
 			con = DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT char_name FROM fake_name WHERE is_used = ? LIMIT ? ORDER BY RAND");
+			statement = con.prepareStatement("SELECT char_name FROM fake_name WHERE is_used = ?  ORDER BY RAND() LIMIT ?");
 			statement.setInt(1, 0);
 			statement.setInt(2, limit);
 			rset = statement.executeQuery();
