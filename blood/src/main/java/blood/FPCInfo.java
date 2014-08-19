@@ -347,12 +347,12 @@ public class FPCInfo
 			case WYNN_ELEMENTAL_MASTER:
 			case WYNN_SPECTRAL_MASTER:
 			case WYNN_SUMMONER:
-			case ISS_DOMINATOR:
-			case ISS_DOOMCRYER:
-			case ISS_ENCHANTER:
-			case ISS_HIEROPHANT:
-			case ISS_SPECTRAL_DANCER:
-			case ISS_SWORD_MUSE:
+//			case ISS_DOMINATOR:
+//			case ISS_DOOMCRYER:
+//			case ISS_ENCHANTER:
+//			case ISS_HIEROPHANT:
+//			case ISS_SPECTRAL_DANCER:
+//			case ISS_SWORD_MUSE:
 				return player.getLevel() < 91 && Rnd.chance(30);
 				
 			default:
