@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import blood.base.FPCItem;
+import blood.dao.FakeNameDAO;
 import blood.table.FPCNameTable;
 
 public class FPCCreator
@@ -37,7 +38,7 @@ public class FPCCreator
    	public static void createNewChar()
 	{
 		int[] _class_list = {0,10,18,25,31,38,44,49,53,123,124};
-		createNewChar(_class_list[Rnd.get(_class_list.length)], FPCNameTable.getRandomName(), "_fake_account");
+		createNewChar(_class_list[Rnd.get(_class_list.length)], FakeNameDAO.getInstance().getName(), "_fake_account");
 	}
     
 	public static void createNewChar(int _classId, String _name, String _account)
@@ -66,6 +67,8 @@ public class FPCCreator
 		
 		if(newChar == null)
 			return;
+		
+		FakeNameDAO.getInstance().useName(_name);
 		
 		try
 		{
