@@ -46,7 +46,7 @@ public class TankerPC extends EventFPC
 		if(hpLevel < 80)
 		{
 			SkillList = getDrawTargetSkill();
-			if(Rnd.chance(10))
+			if(Rnd.chance(10) && SkillList != null)
 				tryCastSkill(SkillList.get(Rnd.get(SkillList.size())), attacked);
 		}
 	}

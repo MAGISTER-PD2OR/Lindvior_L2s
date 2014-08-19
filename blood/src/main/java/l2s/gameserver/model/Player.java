@@ -11715,25 +11715,23 @@ public final class Player extends Playable implements PlayerGroup
 		//TODO [G1ta0] убрать DimensionalRiftManager.teleToLocation
 		if(isPlayer() && DimensionalRiftManager.getInstance().checkIfInRiftZone(getLoc(), true))
 		{
-			Player player = (Player) this;
-			if(player.isInParty() && player.getParty().isInDimensionalRift())
+			if(isInParty() && getParty().isInDimensionalRift())
 			{
 				Location newCoords = DimensionalRiftManager.getInstance().getRoom(0, 0).getTeleportCoords();
 				x = newCoords.x;
 				y = newCoords.y;
 				z = newCoords.z;
-				player.getParty().getDimensionalRift().usedTeleport(player);
+				getParty().getDimensionalRift().usedTeleport(this);
 			}
 		}
 
 		//TODO: [Bonux] Check ExTeleportToLocationActivate!
 		if(isPlayer() && !isFakePlayer())
 		{
-			Player player = (Player) this;
 
 			sendPacket(new TeleportToLocation(this, x, y, z));
 
-			player.getListeners().onTeleport(x, y, z, r);
+			getListeners().onTeleport(x, y, z, r);
 
 			decayMe();
 
@@ -11742,8 +11740,8 @@ public final class Player extends Playable implements PlayerGroup
 			setReflection(r);
 
 			// Нужно при телепорте с более высокой точки на более низкую, иначе наносится вред от "падения"
-			player.setLastClientPosition(null);
-			player.setLastServerPosition(null);
+			setLastClientPosition(null);
+			setLastServerPosition(null);
 
 			sendPacket(new ExTeleportToLocationActivate(this, x, y, z));
 		}

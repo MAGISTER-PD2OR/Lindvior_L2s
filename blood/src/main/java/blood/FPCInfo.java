@@ -537,9 +537,15 @@ public class FPCInfo
             _actor = player;
             
             if(canPveSolo(_actor))
+            {
 	        	_pveStyle = FPCPveStyle.SOLO;
+	        	_log.info(player + " going solo.");
+            }
             else
+            {
             	lookingParty();
+            	_log.info(player + " going to party, size:" + _party.getSize());
+            }
 
 //            cancelShop();
             

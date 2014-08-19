@@ -20,8 +20,13 @@ public class FPCParty {
 		partyPosition(partyLeader);
 	}
 	
+	public int getSize()
+	{
+		return _leader.isInParty() ? _leader.getParty().getMemberCount() : 1; 
+	}
+	
 	public boolean isFull(){
-		return _leader.getParty() != null && _leader.getParty().getMemberCount() == Party.MAX_SIZE;
+		return _leader.isInParty() && _leader.getParty().getMemberCount() == Party.MAX_SIZE;
 	}
 	
 	public void partyPosition(Player player){

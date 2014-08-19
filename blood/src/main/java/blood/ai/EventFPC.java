@@ -525,7 +525,7 @@ public class EventFPC extends FPCDefaultAI
 		
 		if(actor.isInPeaceZone())
 		{
-			_log.info("tele to next farm zone");
+//			_log.info("tele to next farm zone");
 			FPCInfo.getInstance(actor).teleToNextFarmZone();
 			return;
 		}
