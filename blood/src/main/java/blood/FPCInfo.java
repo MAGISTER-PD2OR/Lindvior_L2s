@@ -214,18 +214,6 @@ public class FPCInfo
 		actor.getInventory().equipItem(_weapon);
 	}
 	
-	public static void autoshot(Player player)
-	{	
-		// TODO add all ss plan to use here.
-		player.addAutoSoulShot(3950);
-		player.addAutoSoulShot(3951);
-		player.addAutoSoulShot(3952);
-		player.addAutoSoulShot(1465);
-		player.addAutoSoulShot(1466);
-		player.addAutoSoulShot(1467);
-		player.addAutoSoulShot(6645);
-	}
-	
 	public void setParty(FPCParty party)
 	{
 		_party = party;
@@ -457,8 +445,7 @@ public class FPCInfo
 			// set uythac status
 //			actor.setUyThac(); FIXME
 //			actor.setFakePlayer(); FIXME
-			// auto ss
-			autoshot(actor);
+			
 			// gear up
 			FPCItem.semiGearUp(actor);
 			
@@ -496,7 +483,6 @@ public class FPCInfo
             player.spawnMe();
     		player.setRunning();
     		player.setHeading(Rnd.get(0, 9000));
-    		autoshot(player);
 //    		registerWithNexus(player);
             player.setOnlineStatus(true);
             player.restoreExp();
