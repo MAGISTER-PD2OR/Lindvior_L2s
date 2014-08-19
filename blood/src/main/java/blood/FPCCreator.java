@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import blood.base.FPCItem;
 import blood.dao.FakeNameDAO;
-import blood.table.FPCNameTable;
 
 public class FPCCreator
 {

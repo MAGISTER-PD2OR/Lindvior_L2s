@@ -24,7 +24,6 @@ import blood.base.FPCSpawnStatus;
 import blood.data.parser.FPItemParser;
 import blood.data.parser.FarmZoneParser;
 import blood.handler.admincommands.AdminFakePlayers;
-import blood.table.FPCNameTable;
 public
 class Blood {
 	
@@ -55,7 +54,6 @@ class Blood {
     	_log.info("Initiate BloodFakePlayers.");
     	loadConfig();
 //    	FPCItem.getInstance();
-    	FPCNameTable.getInstance();
 //    	FPCMerchantTable.getInstance();
     	storeFakePlayers();
     	FPItemParser.getInstance().load();

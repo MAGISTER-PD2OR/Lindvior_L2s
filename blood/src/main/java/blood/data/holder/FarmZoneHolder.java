@@ -41,7 +41,7 @@ public final class FarmZoneHolder  extends AbstractHolder{
 //			_log.info("FarmZone try zone:"+zone);
 			if (zone.isValid(player))
 			{
-				_log.info("FarmZone valid zone:"+zone);
+//				_log.info("FarmZone valid zone:"+zone);
 				tmp.add(zone);
 			}
 		}

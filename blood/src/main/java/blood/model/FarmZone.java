@@ -34,13 +34,13 @@ public class FarmZone {
 	}
 	
 	public boolean checkLevel(int level){
-		System.out.println("check level:"+level+" min:"+_min_level+" max:"+_max_level);
+//		System.out.println("check level:"+level+" min:"+_min_level+" max:"+_max_level);
 		return _min_level <= level && level <= _max_level;
 	}
 	
 	public boolean checkClass(int classId)
 	{
-		System.out.println("checklass size:"+_class_ids.size()+" class:"+classId);
+//		System.out.println("checklass size:"+_class_ids.size()+" class:"+classId);
 		return _class_ids.size() == 0 || _class_ids.contains(classId);
 	}
 	
