@@ -35,7 +35,7 @@ public class FPReward {
 	
 	public void giveReward(Player player){
 		
-		_log.error("just tracing", new Exception("trace"));
+//		_log.error("just tracing", new Exception("trace"));
 		
 		int playerLvl = player.getLevel();
 		int playerClassId = player.getClassId().getId();
