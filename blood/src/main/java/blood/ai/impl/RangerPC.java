@@ -47,7 +47,11 @@ public class RangerPC extends EventFPC
 	protected int getReuseDelay(Creature target)
 	{
 		Player actor = getActor();
-		return (int) (actor.getActiveWeaponTemplate().getAttackReuseDelay() * actor.getReuseModifier(target) * 666 * actor.calcStat(Stats.POWER_ATTACK_SPEED, 0, target, null) / 293. / actor.getPAtkSpd());
+		try{
+			return (int) (actor.getActiveWeaponTemplate().getAttackReuseDelay() * actor.getReuseModifier(target) * 666 * actor.calcStat(Stats.POWER_ATTACK_SPEED, 0, target, null) / 293. / actor.getPAtkSpd());
+		}catch(Exception e){
+			return 0;
+		}
 		//return 0;
 	}
 
