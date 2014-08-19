@@ -2,14 +2,19 @@ package blood.model;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.templates.item.EtcItemTemplate.EtcItemType;
 import l2s.gameserver.templates.item.ItemType;
 import l2s.gameserver.utils.ItemFunctions;
+import blood.Blood;
 import blood.data.holder.FPItemHolder;
 
 public class FPReward {
+	private static final Logger 		_log = LoggerFactory.getLogger(FPReward.class);
 	
 	/**
 	 * Field _instance.
@@ -29,6 +34,8 @@ public class FPReward {
 	}
 	
 	public void giveReward(Player player){
+		
+		_log.error("just tracing", new Exception("trace"));
 		
 		int playerLvl = player.getLevel();
 		int playerClassId = player.getClassId().getId();
