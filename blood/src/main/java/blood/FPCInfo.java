@@ -186,6 +186,20 @@ public class FPCInfo
 		if(_role != null)
 		{
 			setAI(_role.getAI(getActor()));
+			if(_role == FPCRole.NEXUS_EVENT)
+			{
+				if(canPveSolo(_actor))
+	            {
+		        	_pveStyle = FPCPveStyle.SOLO;
+		        	_log.info(_actor + " going solo.");
+	            }
+	            else
+	            {
+	            	lookingParty();
+	            	_log.info(_actor + " going to party, size:" + _party.getSize());
+	            }
+
+			}
 //			_log.info("SetRole: " + getActor().getAI());
 		}
 	}
@@ -536,17 +550,7 @@ public class FPCInfo
             
             _actor = player;
             
-            if(canPveSolo(_actor))
-            {
-	        	_pveStyle = FPCPveStyle.SOLO;
-	        	_log.info(player + " going solo.");
-            }
-            else
-            {
-            	lookingParty();
-            	_log.info(player + " going to party, size:" + _party.getSize());
-            }
-
+            
 //            cancelShop();
             
             setStatus(FPCSpawnStatus.ONLINE);
