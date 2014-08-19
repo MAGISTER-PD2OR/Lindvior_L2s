@@ -86,7 +86,8 @@ public class HealerPC extends EventFPC
 				if((int) member.getCurrentHpPercents() < 60 && member.isInRange(actor.getLoc(), 1000))
 				{
 					ArrayList<Integer>	SkillList = getNormalHealSkill();
-					tryCastSkill(SkillList.get(Rnd.get(SkillList.size())), member);
+					if(SkillList != null)
+						tryCastSkill(SkillList.get(Rnd.get(SkillList.size())), member);
 				}
 			}
 		}
