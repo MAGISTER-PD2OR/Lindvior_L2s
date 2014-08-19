@@ -34,7 +34,7 @@ class Blood {
     private static long _disconnect_timeout	= 60000L;  //every 10 minutes
     
     public static int FPC_IDLE = 0;
-    public static int FPC_EVENT = 0;
+    public static int FPC_NEXUS = 0;
     public static int FPC_MARKET = 0;
     public static boolean MQ_ENABLE = false;
     
@@ -77,7 +77,7 @@ class Blood {
     	FENCE_PARENT_ID = bfconfig.getProperty("fenceParentId", 0);
     	
     	FPC_IDLE = bfconfig.getProperty("FPC_IDLE", 10);
-    	FPC_EVENT = bfconfig.getProperty("FPC_EVENT", 0);
+    	FPC_NEXUS = bfconfig.getProperty("FPC_NEXUS", 0);
     	FPC_MARKET = bfconfig.getProperty("FPC_MARKET", 0);
     	MQ_ENABLE = bfconfig.getProperty("MQ_ENABLE", false);
     }

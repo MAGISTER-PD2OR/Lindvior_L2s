@@ -52,7 +52,7 @@ import blood.ai.impl.MysticPC;
 
 public enum FPCRole {
 	IDLE("idle", Blood.FPC_IDLE),
-	NEXUS_EVENT("nexus", Blood.FPC_EVENT),
+	NEXUS_EVENT("nexus", Blood.FPC_NEXUS),
 	MARKET("market", Blood.FPC_MARKET);
 	
 	private String _name;

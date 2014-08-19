@@ -225,12 +225,14 @@ public class HealerPC extends EventFPC
 		if(hpLevel < 30)
 		{
 			SkillList = getCriticalHealSkill();
-			tryCastSkill(SkillList.get(Rnd.get(SkillList.size())), attacked);
+			if(SkillList != null)
+				tryCastSkill(SkillList.get(Rnd.get(SkillList.size())), attacked);
 		}
 		else if(hpLevel < 60)
 		{
 			SkillList = getNormalHealSkill();
-			tryCastSkill(SkillList.get(Rnd.get(SkillList.size())), attacked);
+			if(SkillList != null)
+				tryCastSkill(SkillList.get(Rnd.get(SkillList.size())), attacked);
 		}
 	}
 	
