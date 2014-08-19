@@ -83,7 +83,7 @@ public class FPCInfo
 	
 	public FPCInfo(int obj_id)
 	{
-		_log.info("create new FPCInfo: "+obj_id);
+//		_log.info("create new FPCInfo: "+obj_id);
 		//_owner = owner;
 		_obj_id = obj_id;
 		setStatus(FPCSpawnStatus.OFFLINE);
@@ -94,7 +94,7 @@ public class FPCInfo
 	public FPCInfo(Player player)
 	{
 		int obj_id = player.getObjectId();
-		_log.info("create new FPCInfo: "+obj_id);
+//		_log.info("create new FPCInfo: "+obj_id);
 		//_owner = owner;
 		_obj_id = obj_id;
 		setStatus(FPCSpawnStatus.OFFLINE);
@@ -169,11 +169,11 @@ public class FPCInfo
 	{
 		if(_role == role)
 		{
-			_log.info(getActor()+": same old role "+role);
+//			_log.info(getActor()+": same old role "+role);
 		}
 		else
 		{
-			_log.info(getActor()+": change role from " + _role + " to "+role);
+//			_log.info(getActor()+": change role from " + _role + " to "+role);
 
 			if(_role != null)
 				_role.remove(this);
@@ -186,7 +186,7 @@ public class FPCInfo
 		if(_role != null)
 		{
 			setAI(_role.getAI(getActor()));
-			_log.info("SetRole: " + getActor().getAI());
+//			_log.info("SetRole: " + getActor().getAI());
 		}
 	}
 	

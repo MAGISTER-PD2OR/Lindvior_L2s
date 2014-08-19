@@ -56,7 +56,7 @@ public class EventFPC extends FPCDefaultAI
 	{
 		List<Integer> _list = getAllowSkill();
 		
-		_log.info("addSkill: " + skill+ " isAllow:"+_list.contains(skill.getId()));
+//		_log.info("addSkill: " + skill+ " isAllow:"+_list.contains(skill.getId()));
 		if(!_list.contains(skill.getId()))
 			return;
 		

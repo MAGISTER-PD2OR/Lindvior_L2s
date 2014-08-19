@@ -78,7 +78,7 @@ public class FPReward {
 		}
 		else if(item.isArmor() && !item.isEquipped())
 		{
-			System.out.println("try to use armor party:"+item.getBodyPart()+" "+item.getItemId());
+			System.out.println("try to use armor:"+item.getBodyPart()+" "+item.getItemId());
 			player.useItem(item, false);
 		}
 		
@@ -86,6 +86,7 @@ public class FPReward {
 				|| item.getItemType() == EtcItemType.SPIRITSHOT
 				|| item.getItemType() == EtcItemType.BLESSED_SPIRITSHOT)
 		{
+			System.out.println("active soulshot "+item.getItemId());
 			player.addAutoSoulShot(item.getItemId());
 		}
 	}
