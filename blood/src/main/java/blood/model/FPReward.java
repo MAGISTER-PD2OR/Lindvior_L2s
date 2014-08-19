@@ -32,7 +32,7 @@ public class FPReward {
 		
 		int playerLvl = player.getLevel();
 		int playerClassId = player.getClassId().getId();
-		System.out.println("playerLvl:" + playerLvl + " playerClassId:" + playerClassId);
+//		System.out.println("playerLvl:" + playerLvl + " playerClassId:" + playerClassId);
 		for (int i = playerLvl; i > 0; i--) {
 			List<FPRewardList> rewardByLevel = FPItemHolder.getInstance().getLevelBonus(i);
 			if (rewardByLevel != null){
@@ -53,10 +53,13 @@ public class FPReward {
 	}
 	
 	public void distributeList(FPRewardList itemList, Player player){
-		for(FPRewardData item: itemList.getReward()){
+		for(FPRewardData item: itemList.getReward())
+		{
 			long iventoryCount = player.getInventory().getCountOf(item._item_id);
 			if (iventoryCount < item._item_count)
+			{
 				ItemFunctions.addItem(player, item._item_id, item._item_count - iventoryCount, false);
+			}
 			
 			tryToUseItem(player, item._item_id);
 		}
@@ -78,7 +81,7 @@ public class FPReward {
 		}
 		else if(item.isArmor() && !item.isEquipped())
 		{
-			System.out.println("try to use armor:"+item.getBodyPart()+" "+item.getItemId());
+			System.out.println(player + " try to use armor:"+item.getBodyPart()+" "+item.getItemId());
 			player.useItem(item, false);
 		}
 		
@@ -86,7 +89,7 @@ public class FPReward {
 				|| item.getItemType() == EtcItemType.SPIRITSHOT
 				|| item.getItemType() == EtcItemType.BLESSED_SPIRITSHOT)
 		{
-			System.out.println("active soulshot "+item.getItemId());
+			System.out.println(player + " active soulshot "+item.getItemId());
 			player.addAutoSoulShot(item.getItemId());
 		}
 	}
