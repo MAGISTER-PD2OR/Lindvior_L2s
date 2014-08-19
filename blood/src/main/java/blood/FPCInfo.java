@@ -252,7 +252,7 @@ public class FPCInfo
 				break;
 			
 			case PARTY:
-				if(!getParty().isFull())
+				if(getParty() != null && !getParty().isFull())
 					return;
 				Party party = player.getParty();
 				if(party == null)
