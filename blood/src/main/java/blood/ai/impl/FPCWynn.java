@@ -1,11 +1,5 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import l2s.commons.math.random.RndSelector;
-import l2s.commons.util.Rnd;
-import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
@@ -150,8 +144,8 @@ public class FPCWynn extends SummonerPC
 		}
 		
 		double distance = actor.getDistance(target);
-		double targetHp = target.getCurrentHpPercents();
-		double actorHp = actor.getCurrentHpPercents();
+//		double targetHp = target.getCurrentHpPercents();
+//		double actorHp = actor.getCurrentHpPercents();
 		
 		Skill skillMarkOfVoid = actor.getKnownSkill(SKILL_MARK_OF_VOID);
 		Skill skillMarkOfWeakness = actor.getKnownSkill(SKILL_MARK_OF_WEAKNESS);

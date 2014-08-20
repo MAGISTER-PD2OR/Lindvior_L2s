@@ -3,7 +3,6 @@ package blood.ai.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;

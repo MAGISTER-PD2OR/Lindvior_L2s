@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Creature;
-import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
 import blood.ai.EventFPC;
 

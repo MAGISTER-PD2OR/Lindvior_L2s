@@ -1,10 +1,7 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import blood.ai.EventFPC;
 import l2s.gameserver.model.Player;
+import blood.ai.EventFPC;
 
 public class FighterPC extends EventFPC
 {

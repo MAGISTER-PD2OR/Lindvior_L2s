@@ -1,13 +1,8 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import blood.utils.ClassFunctions;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.Servitor;
-import l2s.gameserver.model.Skill;
+import blood.utils.ClassFunctions;
 
 public class FPCYul extends RangerPC
 {
@@ -78,8 +73,8 @@ public class FPCYul extends RangerPC
 		Player actor = getActor();
 		
 		double distance = actor.getDistance(target);
-		double targetHp = target.getCurrentHpPercents();
-		double actorHp = actor.getCurrentHpPercents();
+//		double targetHp = target.getCurrentHpPercents();
+//		double actorHp = actor.getCurrentHpPercents();
 		double actorMp = actor.getCurrentMpPercents();
 		
 		if(distance < 300 && canUseSkill(SKILL_QUICK_EVASION, target, distance))
