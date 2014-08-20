@@ -71,8 +71,7 @@ public class HealerPC extends EventFPC
 		return 90;
 	}
 	
-	@Override
-	public void thinkActive()
+	public void healerThinkActive()
 	{
 		Player actor = getActor();
 		
@@ -90,6 +89,12 @@ public class HealerPC extends EventFPC
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void thinkActive()
+	{
+		healerThinkActive();
 		super.thinkActive();
 	}
 	

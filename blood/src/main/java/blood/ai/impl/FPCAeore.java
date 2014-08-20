@@ -109,6 +109,12 @@ public class FPCAeore extends HealerPC
 			tryCastSkill(SKILL_RADIANT_HEAL, target);
 	}
 	
+	public void normalRechargeTarget(Creature target)
+	{
+		if(canUseSkill(SKILL_RADIANT_RECHARGE, target) && !hasEffect(target, SKILL_RADIANT_RECHARGE))
+			tryCastSkill(SKILL_RADIANT_RECHARGE, target);
+	}
+	
 	public void selfRegenMp()
 	{
 		Player actor = getActor(); 
@@ -120,7 +126,7 @@ public class FPCAeore extends HealerPC
 	}
 	
 	@Override
-	public void thinkActive()
+	public void healerThinkActive()
 	{
 		Player actor = getActor();
 		
@@ -130,34 +136,59 @@ public class FPCAeore extends HealerPC
 		
 		double lowestHpPercent = 100d;
 		Player lowestHpMember = null;
+		double lowestMpPercent = 100d;
+		Player lowestMpMember = null;
+		int normalLostHpMember = 0;
+		int normalLostMpMember = 0;
+		int criticalLostHpMember = 0;
+		int criticalLostMpMember = 0;
 		
 		if(party != null)
 		{
 			for(Player member: party.getPartyMembers())
 			{
-				partyBuff(member);
 				double currentMemberHpPercent = member.getCurrentHpPercents(); 
+				double currentMemberMpPercent = member.getCurrentMpPercents();
+				
+				if(currentMemberHpPercent < 50)
+					criticalLostHpMember++;
+				
+				if(currentMemberHpPercent < 80)
+					normalLostHpMember++;
+				
+				if(currentMemberMpPercent < 50)
+					criticalLostMpMember++;
+				
+				if(currentMemberMpPercent < 80)
+					normalLostMpMember++;
+				
+				if(member == actor)
+					continue;
+				
+				partyBuff(member);
 				if(currentMemberHpPercent < lowestHpPercent)
 				{
 					lowestHpPercent = currentMemberHpPercent;
 					lowestHpMember = member;
 				}
-			}
-			
-			if(lowestHpMember != null && lowestHpPercent < 80)
-				criticalHealTarget(lowestHpMember);
-			
-			for(Player member: party.getPartyMembers())
-			{
-				double currentMemberMpPercent = member.getCurrentMpPercents(); 
-				if(currentMemberMpPercent < 80)
+				
+				if(currentMemberMpPercent < lowestMpPercent)
 				{
-					tryCastSkill(SKILL_RADIANT_RECHARGE, member);
+					lowestMpPercent = currentMemberMpPercent;
+					lowestMpMember = member;
 				}
 			}
+			
+			if(canUseSkill(SKILL_REBIRTH, actor) && (criticalLostHpMember + criticalLostHpMember) > 5 || (normalLostHpMember + normalLostMpMember) > 10)
+				tryCastSkill(SKILL_REBIRTH, actor);
+			else if(lowestHpMember != null && lowestHpPercent < 50)
+				criticalHealTarget(lowestHpMember);
+			else if(lowestHpMember != null && lowestHpPercent < 80)
+				normalHealTarget(lowestHpMember);
+			else if(lowestMpMember != null && lowestMpPercent < 80)
+				normalRechargeTarget(lowestHpMember);
 				
 		}
-		super.thinkActive();
 	}
 	
 	@Override
