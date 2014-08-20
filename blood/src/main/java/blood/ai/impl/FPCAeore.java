@@ -150,7 +150,7 @@ public class FPCAeore extends HealerPC
 			for(Player member: party.getPartyMembers())
 			{
 				double currentMemberMpPercent = member.getCurrentMpPercents(); 
-				if(currentMemberMpPercent < 50)
+				if(currentMemberMpPercent < 80)
 				{
 					tryCastSkill(SKILL_RADIANT_RECHARGE, member);
 				}
