@@ -584,7 +584,7 @@ public class EventFPC extends FPCDefaultAI
 			{
 				Player leader = actor.getParty().getPartyLeader();
 				Creature target = leader.getAI().getAttackTarget();
-				if(checkAggression(target))
+				if(target != null && checkAggression(target))
 				{
 					return;
 				}

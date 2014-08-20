@@ -96,9 +96,13 @@ public class FPReward {
 		else if(item.getItemType() == EtcItemType.SOULSHOT 
 				|| item.getItemType() == EtcItemType.SPIRITSHOT
 				|| item.getItemType() == EtcItemType.BLESSED_SPIRITSHOT)
-		{
-			System.out.println(player + " active soulshot "+item.getItemId());
-			player.addAutoSoulShot(item.getItemId());
+		{	
+			if(!player.getAutoSoulShot().contains(item.getItemId()))
+			{
+				System.out.println(player + " active soulshot "+item.getItemId());
+				player.addAutoSoulShot(item.getItemId());
+			}
+			
 		}
 	}
 	
