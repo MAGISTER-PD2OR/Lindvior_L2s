@@ -934,9 +934,11 @@ public class EventFPC extends FPCDefaultAI
 	{
 		Player actor = getActor();
 		Skill skill = actor.getKnownSkill(skillId);
+		double distance = actor.getDistance(target);
+		debug(actor + " try cast skill on distance: "+ distance);
 		if(skill != null && target != null)
 		{
-			chooseTaskAndTargets(skill, target, 0);
+			chooseTaskAndTargets(skill, target, distance);
 		}
 			
 	}
