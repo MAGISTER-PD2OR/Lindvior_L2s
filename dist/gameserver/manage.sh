@@ -54,7 +54,7 @@ forcestop)
             PID=`cat $PIDFILE`
             cd $DAEMON_PATH
         if [ -f $PIDFILE ]; then
-            kill -HUP -9 $PID
+            kill -9 $PID
             printf "%s\n" "Ok"
             rm -f $PIDFILE
         else
@@ -87,6 +87,6 @@ watch)
 
 
 *)
-        echo "Usage: $0 {status|start|stop|forcerestart|update|watch}"
+        echo "Usage: $0 {status|start|stop|restart|forcerestart|update|watch}"
         exit 1
 esac
