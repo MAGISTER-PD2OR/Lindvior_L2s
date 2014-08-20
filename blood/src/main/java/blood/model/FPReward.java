@@ -2,18 +2,20 @@ package blood.model;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.templates.item.EtcItemTemplate.EtcItemType;
-import l2s.gameserver.templates.item.ItemType;
 import l2s.gameserver.utils.ItemFunctions;
-import blood.Blood;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import blood.data.holder.FPItemHolder;
 
 public class FPReward {
+	
+	
+	@SuppressWarnings("unused")
 	private static final Logger 		_log = LoggerFactory.getLogger(FPReward.class);
 	
 	/**
@@ -99,7 +101,7 @@ public class FPReward {
 		{	
 			if(!player.getAutoSoulShot().contains(item.getItemId()))
 			{
-				System.out.println(player + " active soulshot "+item.getItemId());
+//				System.out.println(player + " active soulshot "+item.getItemId());
 				player.addAutoSoulShot(item.getItemId());
 			}
 			

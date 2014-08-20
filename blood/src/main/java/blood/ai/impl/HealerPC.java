@@ -1,7 +1,6 @@
 package blood.ai.impl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Creature;

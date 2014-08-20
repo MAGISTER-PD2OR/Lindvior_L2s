@@ -3,14 +3,9 @@ package blood.ai.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import l2s.commons.math.random.RndSelector;
-import l2s.commons.util.Rnd;
-import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.Servitor;
-import l2s.gameserver.model.Skill;
 
 public class FPCAeore extends HealerPC
 {
@@ -116,7 +111,6 @@ public class FPCAeore extends HealerPC
 		
 		//check target critical level, base on HP level
 		int hpLevel 					= (int) actor.getCurrentHpPercents();
-		ArrayList<Integer>	SkillList;
 		//take action
 		if(hpLevel < 50)
 		{
@@ -140,7 +134,6 @@ public class FPCAeore extends HealerPC
 		
 		//check target critical level, base on HP level
 		int hpLevel 					= (int) attacked.getCurrentHpPercents();
-		ArrayList<Integer>	SkillList;
 		//take action
 		if(hpLevel < 50)
 		{

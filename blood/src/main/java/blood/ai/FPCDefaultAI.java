@@ -1467,7 +1467,7 @@ public class FPCDefaultAI extends PlayerAI
 //			return null;
 //		}
 		
-		Player actor = getActor();
+//		Player actor = getActor();
 		
 //		if (actor.isConfused())
 //		{

@@ -2,30 +2,20 @@ package blood;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.List;
 
 import l2s.commons.dbutils.DbUtils;
 import l2s.commons.util.Rnd;
-import l2s.gameserver.Config;
 import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.database.DatabaseFactory;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.SkillLearn;
-import l2s.gameserver.model.actor.instances.player.ShortCut;
 import l2s.gameserver.model.base.AcquireType;
-import l2s.gameserver.model.base.ClassId;
-import l2s.gameserver.model.base.Race;
-import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.tables.SkillTable;
-import l2s.gameserver.templates.item.ItemGrade;
-import l2s.gameserver.templates.item.ItemTemplate;
 import l2s.gameserver.templates.player.PlayerTemplate;
-import l2s.gameserver.utils.ItemFunctions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import blood.base.FPCItem;
 import blood.dao.FakeNameDAO;
 
 public class FPCCreator

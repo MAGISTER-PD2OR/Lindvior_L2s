@@ -3,14 +3,10 @@ package blood.ai.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import l2s.commons.math.random.RndSelector;
-import l2s.commons.util.Rnd;
 import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
-import l2s.gameserver.model.Skill.SkillType;
 
 public class FPCOthell extends WarriorPC
 {
@@ -92,8 +88,8 @@ public class FPCOthell extends WarriorPC
 		}
 		
 		double distance = actor.getDistance(target);
-		double targetHp = target.getCurrentHpPercents();
-		double actorHp = actor.getCurrentHpPercents();
+//		double targetHp = target.getCurrentHpPercents();
+//		double actorHp = actor.getCurrentHpPercents();
 		
 		Skill shadowChaseSkill = actor.getKnownSkill(SKILL_SHADOW_CHASE);
 		Skill powerBluffSkill = actor.getKnownSkill(SKILL_POWER_BLUFF);

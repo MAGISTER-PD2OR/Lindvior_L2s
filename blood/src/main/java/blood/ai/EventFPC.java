@@ -28,7 +28,6 @@ import l2s.gameserver.utils.PositionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import blood.FPCInfo;
-import blood.base.FPCItem;
 import blood.base.FPCParty;
 import blood.model.FPReward;
 

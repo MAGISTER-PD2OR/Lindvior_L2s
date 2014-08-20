@@ -3,7 +3,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-
 //import l2s.gameserver.network.loginservercon.LoginServerCommunication;
 import l2mq.L2MQ;
 import l2s.commons.configuration.ExProperties;
@@ -18,7 +17,6 @@ import l2s.gameserver.network.authcomm.AuthServerCommunication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import blood.base.FPCItem;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.data.parser.FPItemParser;
@@ -30,7 +28,7 @@ class Blood {
     private static final String LOAD_OFFLINE_STATUS = "SELECT obj_id FROM fpc";
     private static final Logger 		_log = LoggerFactory.getLogger(Blood.class);
     private static Blood 	_instance;
-    private static long _disconnect_timeout	= 60000L;  //every 10 minutes
+    private static long _disconnect_timeout	= 600000L;  //every 10 minutes
     
     public static int FPC_IDLE = 0;
     public static int FPC_NEXUS = 0;
@@ -88,9 +86,7 @@ class Blood {
             PreparedStatement stm = con.prepareStatement(LOAD_OFFLINE_STATUS);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-            	FPCInfo newChar = new FPCInfo(rs.getInt("obj_Id"));
-//            	newChar.spawn();
-//            	newChar.uyThac();
+            	new FPCInfo(rs.getInt("obj_Id"));
             }
             rs.close();
             stm.close();

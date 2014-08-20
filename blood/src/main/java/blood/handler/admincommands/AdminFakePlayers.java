@@ -22,9 +22,7 @@ import blood.base.FPCItem;
 import blood.base.FPCParty;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
-import blood.data.holder.FarmZoneHolder;
 import blood.model.FPReward;
-import blood.model.FarmZone;
 import blood.table.FPCMerchantTable;
 //import l2s.gameserver.cache.Msg;
 
@@ -229,7 +227,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				}
 				String char_name = wordList[1];
 //				GameObjectsStorage.getPlayer(char_name);
-				Player player = GameObjectsStorage.getPlayer(char_name);
+//				Player player = GameObjectsStorage.getPlayer(char_name);
 				int playerId = CharacterDAO.getInstance().getObjectIdByName(char_name);
 				_log.info("spawn: "+playerId+ " name: "+char_name);
 				FPCInfo newChar = new FPCInfo(playerId);

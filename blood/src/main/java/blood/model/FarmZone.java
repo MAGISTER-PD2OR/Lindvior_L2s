@@ -5,7 +5,6 @@ import java.util.List;
 
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.base.ClassId;
 import l2s.gameserver.utils.Location;
 
 public class FarmZone {

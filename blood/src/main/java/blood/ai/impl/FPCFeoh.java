@@ -3,12 +3,9 @@ package blood.ai.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import l2s.commons.math.random.RndSelector;
-import l2s.commons.util.Rnd;
 import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 
 /**
@@ -155,10 +152,10 @@ public class FPCFeoh extends MysticPC
 		debug("prepare target:" + target);
 		
 		double distance = actor.getDistance(target);
-		double targetHp = target.getCurrentHpPercents();
-		double actorHp = actor.getCurrentHpPercents();
+//		double targetHp = target.getCurrentHpPercents();
+//		double actorHp = actor.getCurrentHpPercents();
 		
-		long now = System.currentTimeMillis();
+//		long now = System.currentTimeMillis();
 		
 		Skill skillDeathCurse = actor.getKnownSkill(SKILL_DEVIL_CURSE);
 		Skill skillElementBurst = actor.getKnownSkill(SKILL_ELEMENT_BURST_DE);
