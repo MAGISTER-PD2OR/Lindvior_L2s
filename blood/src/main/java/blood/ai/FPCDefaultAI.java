@@ -1192,7 +1192,10 @@ public class FPCDefaultAI extends PlayerAI
 			case CAST:
 			{
 				debug("do cast:"+ currentTask.skill);
+				
 				Creature target = currentTask.target.get();
+				if(target != null)
+					actor.setTarget(target);
 				
 				if (actor.isMuted(currentTask.skill) || actor.isSkillDisabled(currentTask.skill) || actor.isUnActiveSkill(currentTask.skill.getId()))
 				{
