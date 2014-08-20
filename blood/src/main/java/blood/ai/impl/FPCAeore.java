@@ -94,6 +94,8 @@ public class FPCAeore extends HealerPC
 			{
 				if(member.isDead())
 				{
+					if(actor.getDistance(member) > 1000)
+						tryMoveToTarget(member, 600);
 					tryCastSkill(SKILL_BLESS_RES, member);
 				}
 				else if((int) member.getCurrentHpPercents() < 60 && member.isInRange(actor.getLoc(), 1000))
