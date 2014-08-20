@@ -89,14 +89,19 @@ public class FPCParty {
 		int y = 0;
 		int z = 0;
 		
-		int size = party.getMemberCount();
+		int size = 0;
 		
 		// TODO should try to use dd only
 		for(Player player: party.getPartyMembers())
 		{
+			if(ClassFunctions.isHealer(player)
+					|| ClassFunctions.isTanker(player)
+					|| ClassFunctions.isIss(player))
+				continue;
 			x += player.getX();
 			y += player.getY();
 			z += player.getZ();
+			size++;
 		}
 		
 		return new Location(x/size, y/size, z/size);

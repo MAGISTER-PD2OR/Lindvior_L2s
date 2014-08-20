@@ -605,7 +605,7 @@ public class EventFPC extends FPCDefaultAI
 					return;
 				}
 				
-				tryMoveToLoc(FPCParty.getPartyCenterLoc(actor.getParty()), 200);
+				tryMoveToLoc(FPCParty.getPartyCenterLoc(actor.getParty()), 300);
 				
 //				tryMoveToTarget(leader, 300);
 				
