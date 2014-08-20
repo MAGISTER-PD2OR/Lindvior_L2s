@@ -7,7 +7,7 @@
 SCRIPT_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
 DAEMON_PATH=$SCRIPT_DIR
 
-DATA_PATH="/opt/kain_dp"
+DATA_PATH=$SCRIPT_DIR
 
 DAEMON=./GameServer_loop.sh
 DAEMONOPTS="-my opts"
@@ -49,9 +49,28 @@ stop)
         fi
 ;;
 
+forcestop)
+        printf "%-50s" "Stopping $NAME"
+            PID=`cat $PIDFILE`
+            cd $DAEMON_PATH
+        if [ -f $PIDFILE ]; then
+            kill -HUP -9 $PID
+            printf "%s\n" "Ok"
+            rm -f $PIDFILE
+        else
+            printf "%s\n" "pidfile not found"
+        fi
+;;
+
 restart)
   	$0 stop
   	$0 start
+;;
+
+forcerestart)
+  	$0 forcestop
+  	$0 start
+  	$0 watch
 ;;
 
 update)
@@ -68,6 +87,6 @@ watch)
 
 
 *)
-        echo "Usage: $0 {status|start|stop|restart|update|watch}"
+        echo "Usage: $0 {status|start|stop|forcerestart|update|watch}"
         exit 1
 esac
