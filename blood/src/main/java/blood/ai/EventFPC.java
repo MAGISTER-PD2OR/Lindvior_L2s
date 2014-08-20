@@ -914,28 +914,12 @@ public class EventFPC extends FPCDefaultAI
 	}
 	
 
-//	protected void trySummon(int skillId)
-//	{
-//		Player actor 	= getActor();
-//		Summon servitor = actor.getPet();
-//		
-//		if(servitor == null && actor.getCurrentMp() > 300 && NexusEvents.isInEvent(actor))
-//		{
-//			Skill skill = actor.getKnownSkill(skillId);
-//			if(skill != null)
-//			{
-//				
-//				chooseTaskAndTargets(skill, actor, 0);
-//			}
-//		}
-//	}
-
 	protected void tryCastSkill(int skillId, Creature target)
 	{
 		Player actor = getActor();
 		Skill skill = actor.getKnownSkill(skillId);
 		double distance = actor.getDistance(target);
-//		debug(actor + " try cast skill:"+skillId+" on distance: "+ distance + " on: "+target);
+		debug(actor + " try cast skill:"+skillId+" on distance: "+ distance + " on: "+target);
 		if(skill != null && target != null)
 		{
 			chooseTaskAndTargets(skill, target, distance);

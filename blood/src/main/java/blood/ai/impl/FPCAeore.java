@@ -179,7 +179,7 @@ public class FPCAeore extends HealerPC
 				}
 			}
 			
-			if(canUseSkill(SKILL_REBIRTH, actor) && (criticalLostHpMember + criticalLostHpMember) > 5 || (normalLostHpMember + normalLostMpMember) > 10)
+			if(canUseSkill(SKILL_REBIRTH, actor) && (criticalLostHpMember + criticalLostMpMember) > 5 || (normalLostHpMember + normalLostMpMember) > 10)
 				tryCastSkill(SKILL_REBIRTH, actor);
 			else if(lowestHpMember != null && lowestHpPercent < 50)
 				criticalHealTarget(lowestHpMember);
