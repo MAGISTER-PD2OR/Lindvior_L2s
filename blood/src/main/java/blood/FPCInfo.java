@@ -199,6 +199,13 @@ public class FPCInfo
 		return _party;
 	}
 	
+	public static void fullRestore(Player actor)
+	{
+		actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
+		if(actor.isPlayer())
+			actor.setCurrentCp(actor.getMaxCp());
+	}
+	
 	public void teleToNextFarmZone()
 	{
 		Player player = getActor();
@@ -225,6 +232,7 @@ public class FPCInfo
 						for(Player partyMember: party.getPartyMembers())
 						{
 							partyMember.teleToLocation(nextLoc);
+							fullRestore(partyMember);
 						}
 					}
 				}

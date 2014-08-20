@@ -31,6 +31,8 @@ public class FPCAeore extends HealerPC
 	public final int SKILL_GIANT_FLAVOR			= 11772; // buff ud - 10 mins
 	public final int SKILL_BLESS_RES			= 11784;
 	
+	public final int SKILL_CRYSTAL_REGENERATION = 11765;
+	
 	
 	public FPCAeore(Player actor)
 	{
@@ -76,29 +78,84 @@ public class FPCAeore extends HealerPC
 		return SkillList;
 	}
 	
+	public boolean hasEffect(Creature target, int skillId)
+	{
+		return target.getEffectList().containsEffects(skillId);
+	}
+	
+	public void partyBuff(Creature target)
+	{
+		if(canUseSkill(SKILL_RESISTANCE_OF_SAHA, target) && !hasEffect(target, SKILL_RESISTANCE_OF_SAHA))
+			tryCastSkill(SKILL_RESISTANCE_OF_SAHA, target);
+		if(canUseSkill(SKILL_CLARITY_OF_SAHA, target) && !hasEffect(target, SKILL_CLARITY_OF_SAHA))
+			tryCastSkill(SKILL_CLARITY_OF_SAHA, target);
+		if(canUseSkill(SKILL_DIVINE_PRAYER, target) && !hasEffect(target, SKILL_DIVINE_PRAYER))
+			tryCastSkill(SKILL_DIVINE_PRAYER, target);
+	}
+	
+	public void normalHealTarget(Creature target)
+	{
+		if(canUseSkill(SKILL_CRYSTAL_REGENERATION, target) && !hasEffect(target, SKILL_CRYSTAL_REGENERATION))
+			tryCastSkill(SKILL_SUSTAIN, target);
+		if(canUseSkill(SKILL_FAIRY_OF_LIFE, target) && !hasEffect(target, SKILL_FAIRY_OF_LIFE))
+			tryCastSkill(SKILL_FAIRY_OF_LIFE, target);
+	}
+	
+	public void criticalHealTarget(Creature target)
+	{
+		if(canUseSkill(SKILL_CRYSTAL_REGENERATION, target) && !hasEffect(target, SKILL_CRYSTAL_REGENERATION))
+			tryCastSkill(SKILL_SUSTAIN, target);
+		if(canUseSkill(SKILL_RADIANT_HEAL, target) && !hasEffect(target, SKILL_RADIANT_HEAL))
+			tryCastSkill(SKILL_RADIANT_HEAL, target);
+	}
+	
+	public void selfRegenMp()
+	{
+		Player actor = getActor(); 
+		
+		if(actor.getCurrentMpPercents() < 80 && canUseSkill(SKILL_CRYSTAL_REGENERATION, actor))
+		{
+			tryCastSkill(SKILL_CRYSTAL_REGENERATION, actor);
+		}
+	}
+	
 	@Override
 	public void thinkActive()
 	{
 		Player actor = getActor();
 		
+		selfRegenMp();
+		
 		Party party = actor.getParty();
+		
+		double lowestHpPercent = 100d;
+		Player lowestHpMember = null;
 		
 		if(party != null)
 		{
 			for(Player member: party.getPartyMembers())
 			{
-				if(member.isDead())
+				partyBuff(member);
+				double currentMemberHpPercent = member.getCurrentHpPercents(); 
+				if(currentMemberHpPercent < lowestHpPercent)
 				{
-					if(actor.getDistance(member) > 1000)
-						tryMoveToTarget(member, 600);
-					tryCastSkill(SKILL_BLESS_RES, member);
-				}
-				else if((int) member.getCurrentHpPercents() < 60 && member.isInRange(actor.getLoc(), 1000))
-				{
-					tryCastSkill(SKILL_SUSTAIN, member);
-					tryCastSkill(SKILL_RADIANT_HEAL, member);
+					lowestHpPercent = currentMemberHpPercent;
+					lowestHpMember = member;
 				}
 			}
+			
+			if(lowestHpMember != null && lowestHpPercent < 80)
+				criticalHealTarget(lowestHpMember);
+			
+			for(Player member: party.getPartyMembers())
+			{
+				double currentMemberMpPercent = member.getCurrentMpPercents(); 
+				if(currentMemberMpPercent < 50)
+				{
+					tryCastSkill(SKILL_RADIANT_RECHARGE, member);
+				}
+			}
+				
 		}
 		super.thinkActive();
 	}
@@ -110,17 +167,15 @@ public class FPCAeore extends HealerPC
 		//check if target is in 1000 range
 		
 		//check target critical level, base on HP level
-		int hpLevel 					= (int) actor.getCurrentHpPercents();
+		double hpLevel = actor.getCurrentHpPercents();
 		//take action
 		if(hpLevel < 50)
 		{
-			tryCastSkill(SKILL_SUSTAIN, actor);
-			tryCastSkill(SKILL_RADIANT_HEAL, actor);
+			criticalHealTarget(actor);
 		}
 		else if(hpLevel < 80)
 		{
-			tryCastSkill(SKILL_SUSTAIN, actor);
-			tryCastSkill(SKILL_FAIRY_OF_LIFE, actor);
+			normalHealTarget(actor);
 		}
 	}
 	
@@ -129,21 +184,19 @@ public class FPCAeore extends HealerPC
 	{
 		Player actor = getActor();
 		//check if target is in 1000 range
-		if(!attacked.isInRange(actor.getLoc(), 1000)) 
+		if(!attacked.isInRange(actor.getLoc(), 1500)) 
 			return; 
 		
 		//check target critical level, base on HP level
-		int hpLevel 					= (int) attacked.getCurrentHpPercents();
+		double hpLevel 					= attacked.getCurrentHpPercents();
 		//take action
 		if(hpLevel < 50)
 		{
-			tryCastSkill(SKILL_SUSTAIN, actor);
-			tryCastSkill(SKILL_RADIANT_HEAL, actor);
+			criticalHealTarget(attacked);
 		}
 		else if(hpLevel < 80)
 		{
-			tryCastSkill(SKILL_SUSTAIN, actor);
-			tryCastSkill(SKILL_FAIRY_OF_LIFE, actor);
+			normalHealTarget(attacked);
 		}
 	}
 	
