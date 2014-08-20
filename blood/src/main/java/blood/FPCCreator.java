@@ -179,12 +179,11 @@ public class FPCCreator
 				_randomFactor.add(classId, 1);
 		}
 		
-		int selectedClass = _randomFactor.select();
-		
 		try{
+			int selectedClass = _randomFactor.select();
 			createNewChar(selectedClass, name, "_fake_account");
 		}catch(Exception e){
-			_log.error("create char name:"+name+" class:"+selectedClass, e);
+			_log.error("create char name:"+name, e);
 		}
 	}
     
