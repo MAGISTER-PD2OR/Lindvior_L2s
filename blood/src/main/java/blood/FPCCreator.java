@@ -178,7 +178,14 @@ public class FPCCreator
 			for(int classId: _class_list)
 				_randomFactor.add(classId, 1);
 		}
-		createNewChar(_randomFactor.select(), name, "_fake_account");
+		
+		int selectedClass = _randomFactor.select();
+		
+		try{
+			createNewChar(selectedClass, name, "_fake_account");
+		}catch(Exception e){
+			_log.error("create char name:"+name+" class:"+selectedClass, e);
+		}
 	}
     
 	public static void createNewChar(int _classId, String _name, String _account)
