@@ -2029,6 +2029,11 @@ public class FPCDefaultAI extends PlayerAI
 		return false;
 	}
 	
+	protected boolean fightTaskByClass(Creature target)
+	{
+		return false;
+	}
+	
 	protected boolean defaultFightTask()
 	{
 		clearTasks();
@@ -2048,12 +2053,17 @@ public class FPCDefaultAI extends PlayerAI
 		
 		debug("prepare target:" + target);
 		
+		if(fightTaskByClass(target))
+			return true;
+		
 		if (actor.getServitors().length > 0){
 			for (Servitor summon: actor.getServitors())
 			{
 				summon.getAI().Attack(target, true, false);
 			}
 		}
+		
+		
 		
 		
 		double distance = actor.getDistance(target);

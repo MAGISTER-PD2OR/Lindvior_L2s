@@ -518,6 +518,11 @@ public class EventFPC extends FPCDefaultAI
 		return 100000;
 	}
 	
+	protected boolean thinkActiveByClass()
+	{
+		return false;
+	}
+	
 	@Override
 	protected void thinkActive()
 	{
@@ -580,6 +585,9 @@ public class EventFPC extends FPCDefaultAI
 				if(thinkBuff()) return;
 				_checkBuffTimestamp = now;
 			}
+			
+			if(thinkActiveByClass())
+				return;
 			
 			if(!actor.isInParty() || actor.getParty().isLeader(actor))
 			{

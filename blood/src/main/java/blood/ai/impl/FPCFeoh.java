@@ -132,30 +132,10 @@ public class FPCFeoh extends MysticPC
 	protected int _last_target_id = 0;
 	protected boolean _last_target_dark_curse = false;
 	
-	protected boolean defaultFightTask()
+	protected boolean feohFightTask(Creature target)
 	{
-		clearTasks();
-		
 		Player actor = getActor();
-		if (actor.isDead() || actor.isAMuted())
-		{
-			return false;
-		}
-		
-		Creature target;
-		if ((target = prepareTarget()) == null)
-		{
-			setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-			return false;
-		}
-		
-		debug("prepare target:" + target);
-		
 		double distance = actor.getDistance(target);
-//		double targetHp = target.getCurrentHpPercents();
-//		double actorHp = actor.getCurrentHpPercents();
-		
-//		long now = System.currentTimeMillis();
 		
 		Skill skillDeathCurse = actor.getKnownSkill(SKILL_DEVIL_CURSE);
 		Skill skillElementBurst = actor.getKnownSkill(SKILL_ELEMENT_BURST_DE);
@@ -213,9 +193,15 @@ public class FPCFeoh extends MysticPC
 			return chooseTaskAndTargets(skillElementDestruction, target, distance);
 		
 		debug("try move to target");
-		tryMoveToTarget(target);
-			
+		tryMoveToTarget(target, 600);
 		return false;
-	}	
+	}
+	
+	protected boolean fightTaskByClass(Creature target)
+	{
+		feohFightTask(target);
+		return true;
+	}
+	
 }
 

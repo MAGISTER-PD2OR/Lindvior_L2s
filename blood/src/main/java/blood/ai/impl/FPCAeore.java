@@ -126,7 +126,7 @@ public class FPCAeore extends HealerPC
 	}
 	
 	@Override
-	public void healerThinkActive()
+	public boolean thinkActiveByClass()
 	{
 		Player actor = getActor();
 		
@@ -187,8 +187,9 @@ public class FPCAeore extends HealerPC
 				normalHealTarget(lowestHpMember);
 			else if(lowestMpMember != null && lowestMpPercent < 80)
 				normalRechargeTarget(lowestHpMember);
-				
 		}
+		
+		return false;
 	}
 	
 	@Override

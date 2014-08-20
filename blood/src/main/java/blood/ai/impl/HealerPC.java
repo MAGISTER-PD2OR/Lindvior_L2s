@@ -71,33 +71,6 @@ public class HealerPC extends EventFPC
 		return 90;
 	}
 	
-	public void healerThinkActive()
-	{
-		Player actor = getActor();
-		
-		Party party = actor.getParty();
-		
-		if(party != null)
-		{
-			for(Player member: party.getPartyMembers())
-			{
-				if((int) member.getCurrentHpPercents() < 60 && member.isInRange(actor.getLoc(), 1000))
-				{
-					ArrayList<Integer>	SkillList = getNormalHealSkill();
-					if(SkillList != null)
-						tryCastSkill(SkillList.get(Rnd.get(SkillList.size())), member);
-				}
-			}
-		}
-	}
-	
-	@Override
-	public void thinkActive()
-	{
-		healerThinkActive();
-		super.thinkActive();
-	}
-	
 	@Override
 	protected void onEvtAttacked(Creature attacker, int damage)
 	{
