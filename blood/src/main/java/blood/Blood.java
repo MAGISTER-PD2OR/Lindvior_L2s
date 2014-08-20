@@ -109,7 +109,7 @@ class Blood {
     	int diff, i;
     	// birth
     	diff = FPCSpawnStatus.getDiff(); 
-    	_log.info("diff birth:"+diff);
+//    	_log.info("diff birth:"+diff);
     	i = 0;
     	while( i < diff && i < max_giving_birth && diff > 0)
     	{
@@ -121,7 +121,7 @@ class Blood {
     	for (FPCRole role : FPCRole.values()) 
     	{
     		diff = role.getPadding();
-    		_log.info("diff role:"+diff+" "+role);
+//    		_log.info("diff role:"+diff+" "+role);
         	i = 0;
         	
         	while( i < Math.abs(diff) && i < max_move_role)

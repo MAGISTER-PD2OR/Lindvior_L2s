@@ -28,6 +28,7 @@ import l2s.gameserver.utils.PositionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import blood.FPCInfo;
+import blood.base.FPCItem;
 import blood.model.FPReward;
 
 public class EventFPC extends FPCDefaultAI
@@ -365,7 +366,6 @@ public class EventFPC extends FPCDefaultAI
 			// real buff
 			else if(actor.getEffectList().getEffectsCount(skill) == 0)
 			{
-				debug("Skill is not cubic summoning. " + skill + ", chooseTaskAndTargets");
 				chooseTaskAndTargets(skill, actor, 0);
 				return true;
 			}
@@ -561,12 +561,7 @@ public class EventFPC extends FPCDefaultAI
 			
 			long now = System.currentTimeMillis();
 			
-			// check equip each 5 mins
-			if(now - _checkEquipTimestamp > 300000)
-			{
-				_checkEquipTimestamp = now;
-				FPReward.getInstance().giveReward(actor);
-			}
+			gearUp(now);
 			
 			if(now - _checkSummonTimestamp > 5000)
 			{
@@ -582,19 +577,11 @@ public class EventFPC extends FPCDefaultAI
 			
 			if(thinkAggressive(3000, 1000)) return;
 			
-//			if(getCurrentEventType() == EventType.Domination)
-//			{
-//				if(tacticMove(300))
-//				{
-//					return;
-//				}
-//			}
-			
 //			if(thinkAggressive(3000)) return;
 			
 //			if(tacticMove()) return;
-			
-			randomWalk();
+			if(!actor.isInParty())
+				randomWalk();
 //		}
 //		else 
 //		{
@@ -630,6 +617,7 @@ public class EventFPC extends FPCDefaultAI
 		}
 		
 		reArm();
+		makeNpcBuffs();
 		
 		/*
 		if(isStuck(7000 + Rnd.get(3000)))
@@ -1122,5 +1110,30 @@ public class EventFPC extends FPCDefaultAI
 		
 		return skill;
 	}
+	
+	/*
+	 * Gear UP
+	 */
+	protected long _gearUpTimeStamp = 0;
+	
+	public void gearUp()
+	{
+		gearUp(System.currentTimeMillis());
+	}
+	
+	public void gearUp(Long now)
+	{
+		gearUp(now, 60*5*1000);
+	}
+	
+	public void gearUp(Long now, int limit)
+	{
+		if(now < (_gearUpTimeStamp + limit))
+			return;
+		
+		_gearUpTimeStamp = now;
+		FPReward.getInstance().giveReward(getActor());
+	}
+	
 
 }

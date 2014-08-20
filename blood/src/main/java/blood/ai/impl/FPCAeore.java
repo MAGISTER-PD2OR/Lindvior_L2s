@@ -7,6 +7,7 @@ import l2s.commons.math.random.RndSelector;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.model.Creature;
+import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
@@ -18,6 +19,7 @@ public class FPCAeore extends HealerPC
 	public final int SKILL_DIVINE_PRAYER		= 11851;
 	
 	public final int SKILL_SUMMON_LUMI			= 11776;
+	public final int SKILL_SUMMON_TREE			= 11774;
 	
 	public final int SKILL_DARK_BACKFIRE		= 11769;
 	public final int SKILL_MARK_LUMI			= 11777;
@@ -26,6 +28,14 @@ public class FPCAeore extends HealerPC
 	
 	public final int SKILL_SUSTAIN				= 11752;
 	public final int SKILL_FAIRY_OF_LIFE		= 11754;
+	public final int SKILL_RADIANT_HEAL			= 11755;
+	public final int SKILL_PANIC_HEAL			= 11756;
+	public final int SKILL_BRILLIANT_HEAL		= 11757; // party
+	public final int SKILL_RADIANT_RECHARGE		= 11760; // mp
+	public final int SKILL_REBIRTH				= 11768; // party full recover - 10mins
+	public final int SKILL_GIANT_FLAVOR			= 11772; // buff ud - 10 mins
+	public final int SKILL_BLESS_RES			= 11784;
+	
 	
 	public FPCAeore(Player actor)
 	{
@@ -45,14 +55,14 @@ public class FPCAeore extends HealerPC
 		return super.thinkBuff();
 	}
 	
-	@Override
-	protected boolean thinkSummon()
-	{
-		if(thinkSummon(SKILL_SUMMON_LUMI))
-			return true;
-		
-		return false;
-	}
+//	@Override
+//	protected boolean thinkSummon()
+//	{
+//		if(thinkSummon(SKILL_SUMMON_LUMI))
+//			return true;
+//		
+//		return false;
+//	}
 	
 	@Override
 	protected void makeNpcBuffs()
@@ -71,86 +81,75 @@ public class FPCAeore extends HealerPC
 		return SkillList;
 	}
 	
-	protected boolean defaultFightTask()
+	@Override
+	public void thinkActive()
 	{
-		clearTasks();
-		
 		Player actor = getActor();
-		if (actor.isDead() || actor.isAMuted())
+		
+		Party party = actor.getParty();
+		
+		if(party != null)
 		{
-			return false;
-		}
-		
-		Creature target;
-		if ((target = prepareTarget()) == null)
-		{
-			debug("dont have target, try to think active again");
-			setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-			return false;
-		}
-		
-		double distance = actor.getDistance(target);
-		double targetHp = target.getCurrentHpPercents();
-		double actorHp = actor.getCurrentHpPercents();
-		
-		Skill[] dam = Rnd.chance(getRateDAM()) ? selectUsableSkills(target, distance, _damSkills) : null;
-		Skill[] dot = Rnd.chance(getRateDOT()) ? selectUsableSkills(target, distance, _dotSkills) : null;
-		Skill[] debuff = targetHp > 10 ? Rnd.chance(getRateDEBUFF()) ? selectUsableSkills(target, distance, _debuffSkills) : null : null;
-		Skill[] stun = Rnd.chance(getRateSTUN()) ? selectUsableSkills(target, distance, _stunSkills) : null;
-		Skill[] heal = actorHp < 50 ? Rnd.chance(getRateHEAL()) ? selectUsableSkills(actor, 0, _healSkills) : null : null;
-		Skill[] buff = Rnd.chance(getRateBUFF()) ? selectUsableSkills(actor, 0, _buffSkills) : null;
-		
-		RndSelector<Skill[]> rnd = new RndSelector<Skill[]>();
-		if (!actor.isAMuted())
-		{
-			rnd.add(null, getRatePHYS());
-		}
-		
-		if(dam != null && dam.length > 0)
-			rnd.add(dam, getRateDAM());
-		
-		if(dot != null && dot.length > 0)
-		rnd.add(dot, getRateDOT());
-		
-		if(debuff != null && debuff.length > 0)
-		rnd.add(debuff, getRateDEBUFF());
-		
-		if(heal != null && heal.length > 0)
-		rnd.add(heal, getRateHEAL());
-		
-		if(buff != null && buff.length > 0)
-		rnd.add(buff, getRateBUFF());
-		
-		if(stun != null && stun.length > 0)
-		rnd.add(stun, getRateSTUN());
-		
-		Skill[] selected = rnd.select();
-		if (selected != null)
-		{
-			if ((selected == dam) || (selected == dot))
+			for(Player member: party.getPartyMembers())
 			{
-				return chooseTaskAndTargets(selectTopSkillByDamage(actor, target, distance, selected), target, distance);
-			}
-			
-			if ((selected == debuff) || (selected == stun))
-			{
-				return chooseTaskAndTargets(selectTopSkillByDebuff(actor, target, distance, selected), target, distance);
-			}
-			
-			if (selected == buff)
-			{
-				return chooseTaskAndTargets(selectTopSkillByBuff(actor, selected), actor, distance);
-			}
-			
-			if (selected == heal)
-			{
-				return chooseTaskAndTargets(selectTopSkillByHeal(actor, selected), actor, distance);
+				if(member.isDead())
+				{
+					tryCastSkill(SKILL_BLESS_RES, member);
+				}
+				else if((int) member.getCurrentHpPercents() < 60 && member.isInRange(actor.getLoc(), 1000))
+				{
+					tryCastSkill(SKILL_SUSTAIN, member);
+					tryCastSkill(SKILL_RADIANT_HEAL, member);
+				}
 			}
 		}
+		super.thinkActive();
+	}
+	
+	@Override
+	protected void onEvtAttacked(Creature attacker, int damage)
+	{
+		Player actor = getActor();
+		//check if target is in 1000 range
 		
-		// TODO make treatment and buff friendly targets
+		//check target critical level, base on HP level
+		int hpLevel 					= (int) actor.getCurrentHpPercents();
+		ArrayList<Integer>	SkillList;
+		//take action
+		if(hpLevel < 50)
+		{
+			tryCastSkill(SKILL_SUSTAIN, actor);
+			tryCastSkill(SKILL_RADIANT_HEAL, actor);
+		}
+		else if(hpLevel < 80)
+		{
+			tryCastSkill(SKILL_SUSTAIN, actor);
+			tryCastSkill(SKILL_FAIRY_OF_LIFE, actor);
+		}
+	}
+	
+	@Override
+	protected void onEvtClanAttacked(Creature attacked, Creature attacker, int damage)
+	{
+		Player actor = getActor();
+		//check if target is in 1000 range
+		if(!attacked.isInRange(actor.getLoc(), 1000)) 
+			return; 
 		
-		return chooseTaskAndTargets(null, target, distance);
+		//check target critical level, base on HP level
+		int hpLevel 					= (int) attacked.getCurrentHpPercents();
+		ArrayList<Integer>	SkillList;
+		//take action
+		if(hpLevel < 50)
+		{
+			tryCastSkill(SKILL_SUSTAIN, actor);
+			tryCastSkill(SKILL_RADIANT_HEAL, actor);
+		}
+		else if(hpLevel < 80)
+		{
+			tryCastSkill(SKILL_SUSTAIN, actor);
+			tryCastSkill(SKILL_FAIRY_OF_LIFE, actor);
+		}
 	}
 	
 	

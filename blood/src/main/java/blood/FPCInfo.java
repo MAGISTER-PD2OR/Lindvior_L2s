@@ -484,7 +484,7 @@ public class FPCInfo
 //			actor.setFakePlayer(); FIXME
 			
 			// gear up
-			FPCItem.semiGearUp(actor);
+//			FPCItem.semiGearUp(actor);
 			
 			//randomTown(actor);
 			
