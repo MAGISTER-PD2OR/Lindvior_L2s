@@ -44,6 +44,9 @@ public class ClassFunctions {
 			if(!classId.childOf(currentClassId))
 				continue;
 			
+			if(classId == ClassId.JUDICATOR || classId == ClassId.INSPECTOR)
+				continue;
+			
 			if(classId.getId() > 138 && classId.getId() < 147) // remove old GOD 4th class
 				continue;
 			
