@@ -377,6 +377,11 @@ public class EventFPC extends FPCDefaultAI
 	
 	protected void makeNpcBuffs()
 	{
+		basicNpcBuffs();
+	}
+	
+	protected void basicNpcBuffs()
+	{
 		npcBuff( 15642, 1 ); // Путешественник - Поэма Рога
 		npcBuff( 15643, 1 ); // Путешественник - Поэма Барабана
 		npcBuff( 15644, 1 ); // Путешественник - Поэма Органа

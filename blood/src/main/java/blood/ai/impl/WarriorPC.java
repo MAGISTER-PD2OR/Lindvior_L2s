@@ -17,7 +17,7 @@ public class WarriorPC extends EventFPC
 	protected void makeNpcBuffs()
 	{
 		npcBuff( 15649, 1 ); // Warriors Harmony
-		super.makeNpcBuffs();
+		basicNpcBuffs();
 	}
 
 	@Override

@@ -11,7 +11,7 @@ public class FPCIss extends WarriorPC
 	{
 		super(actor);
 	}
-
+	
 	@Override
 	protected boolean thinkBuff()
 	{
@@ -63,47 +63,7 @@ public class FPCIss extends WarriorPC
 		return SkillList;
 	}
 	
-	@Override
-	public int getRatePHYS()
-	{
-		return 50;
-	}
-
-	@Override
-	public int getRateDOT()
-	{
-		return 0;
-	}
-
-	@Override
-	public int getRateDEBUFF()
-	{
-		return 0;
-	}
-
-	@Override
-	public int getRateDAM()
-	{
-		return 50;
-	}
-
-	@Override
-	public int getRateSTUN()
-	{
-		return 0;
-	}
-
-	@Override
-	public int getRateBUFF()
-	{
-		return 50;
-	}
-
-	@Override
-	public int getRateHEAL()
-	{
-		return 0;
-	}
+	
 	
 }
 

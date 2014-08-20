@@ -59,12 +59,12 @@ public class FPCAeore extends HealerPC
 //		return false;
 //	}
 	
-	@Override
-	protected void makeNpcBuffs()
-	{
-		npcBuff( 15649, 1 ); // Warrior Harmony
-		super.makeNpcBuffs();
-	}
+//	@Override
+//	protected void makeNpcBuffs()
+//	{
+//		npcBuff( 15649, 1 ); // Warrior Harmony
+//		super.makeNpcBuffs();
+//	}
 	
 	@Override public List<Integer> getAllowSkill()
 	{

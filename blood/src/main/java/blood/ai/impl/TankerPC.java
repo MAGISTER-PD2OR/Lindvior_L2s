@@ -20,7 +20,7 @@ public class TankerPC extends EventFPC
 	protected void makeNpcBuffs()
 	{
 		npcBuff( 15648, 1 ); // Tanker Harmony
-		super.makeNpcBuffs();
+		basicNpcBuffs();
 	}
 	
 	protected boolean thinkBuff()

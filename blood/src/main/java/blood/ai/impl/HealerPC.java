@@ -20,7 +20,7 @@ public class HealerPC extends EventFPC
 	protected void makeNpcBuffs()
 	{
 		npcBuff( 15650, 1 ); // Wizard Harmony
-		super.makeNpcBuffs();
+		basicNpcBuffs();
 	}
 
 	@Override
