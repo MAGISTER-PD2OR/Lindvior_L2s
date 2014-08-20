@@ -28,6 +28,7 @@ import l2s.gameserver.utils.PositionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import blood.FPCInfo;
+import blood.base.FPCParty;
 import blood.model.FPReward;
 import blood.utils.ClassFunctions;
 
@@ -583,13 +584,26 @@ public class EventFPC extends FPCDefaultAI
 			else
 			{
 				Player leader = actor.getParty().getPartyLeader();
-				Creature target = leader.getAI().getAttackTarget();
-				if(!ClassFunctions.isHealer(actor) && target != null && checkAggression(target))
+				
+				if(ClassFunctions.isHealer(actor)
+						|| ClassFunctions.isTanker(actor)
+						|| ClassFunctions.isIss(actor))
 				{
+					tryMoveToLoc(FPCParty.getPartyCenterLoc(actor.getParty()), 500);
 					return;
 				}
 				
-				tryMoveToTarget(leader, 300);
+				Creature target = leader.getAI().getAttackTarget();
+				
+				if(target != null && checkAggression(target))
+				{	
+					return;
+				}
+				
+				tryMoveToLoc(FPCParty.getPartyCenterLoc(actor.getParty()), 500);
+				
+//				tryMoveToTarget(leader, 300);
+				
 			}
 			
 //			if(thinkAggressive(3000)) return;

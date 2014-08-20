@@ -3,8 +3,10 @@ package blood.base;
 import java.util.ArrayList;
 
 import blood.utils.ClassFunctions;
+import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.utils.Location;
 
 public class FPCParty {
 	
@@ -80,6 +82,25 @@ public class FPCParty {
 		}
 		
 		return result;
+	}
+	
+	public static Location getPartyCenterLoc(Party party)
+	{
+		int x = 0;
+		int y = 0;
+		int z = 0;
+		
+		int size = party.getMemberCount();
+		
+		// TODO should try to use dd only
+		for(Player player: party.getPartyMembers())
+		{
+			x += player.getX();
+			y += player.getY();
+			z += player.getZ();
+		}
+		
+		return new Location(x/size, y/size, z/size);
 	}
 
 	public void debug() {

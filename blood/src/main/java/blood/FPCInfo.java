@@ -52,10 +52,11 @@ public class FPCInfo
 	private FPCSpawnStatus _status;
 	private FPCRole	_role;
 	private boolean _isMage;
-	private String	_shop_status = "none";
 	private ClassId _classId;
-	private ItemInstance _weapon;
+	
+	private String	_shop_status = "none";
 	private MerchantItem merchantItem;
+	
 	private int AILoopCount = 0;
 	private FPCPveStyle _pveStyle = FPCPveStyle.PARTY;
 	private FPCParty _party = null;

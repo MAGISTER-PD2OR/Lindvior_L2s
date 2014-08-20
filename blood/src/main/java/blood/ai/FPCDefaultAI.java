@@ -1046,6 +1046,19 @@ public class FPCDefaultAI extends PlayerAI
 		return true;
 	}
 	
+	protected boolean tryMoveToLoc(Location loc, int range)
+	{
+		Player actor = getActor();
+		double distance = actor.getDistance(loc);
+		
+		if(distance < range)
+			return false;
+		
+		Location nextLoc = Location.findAroundPosition(loc, range, actor.getGeoIndex());
+		addTaskMove(nextLoc, true);
+		return true;
+	}
+	
 	protected boolean maybeNextTask(Task currentTask)
 	{
 
