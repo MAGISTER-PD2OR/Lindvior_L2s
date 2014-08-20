@@ -220,17 +220,27 @@ public class FPCInfo
 			
 			case PARTY:
 				if(getParty() == null)
+				{
+					getAI().debug("fparty is null");
 					return;
+				}
 				if(!getParty().isFull())
+				{
+					getAI().debug("fparty is not full");
 					return;
+				}
 				Party party = player.getParty();
 				if(party == null)
+				{
+					getAI().debug("party is full");
 					return;
+				}
 				if (party.isLeader(player))
 				{
 					nextLoc = FarmZoneHolder.getInstance().getLocation(player);
 					if(nextLoc != null)
 					{
+						getAI().debug("found zone");
 						for(Player partyMember: party.getPartyMembers())
 						{
 							partyMember.teleToLocation(nextLoc);
@@ -241,6 +251,10 @@ public class FPCInfo
 					{
 						System.out.println(player+" not found next zone");
 					}
+				}
+				else
+				{
+					getAI().debug("not a party leader");
 				}
 				break;
 		}
