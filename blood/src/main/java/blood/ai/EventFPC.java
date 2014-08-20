@@ -575,13 +575,28 @@ public class EventFPC extends FPCDefaultAI
 				_checkBuffTimestamp = now;
 			}
 			
-			if(thinkAggressive(3000, 1000)) return;
+			if(!actor.isInParty() || actor.getParty().isLeader(actor))
+			{
+				if(thinkAggressive(3000, 1000)) return;
+				randomWalk();
+			}
+			else
+			{
+				Player leader = actor.getParty().getPartyLeader();
+				Creature target = leader.getAI().getAttackTarget();
+				if(checkAggression(target))
+				{
+					return;
+				}
+				
+				tryMoveToTarget(leader, 300);
+			}
 			
 //			if(thinkAggressive(3000)) return;
 			
 //			if(tacticMove()) return;
-			if(!actor.isInParty())
-				randomWalk();
+//			if(!actor.isInParty())
+//				randomWalk();
 //		}
 //		else 
 //		{

@@ -1328,8 +1328,10 @@ public class FPCDefaultAI extends PlayerAI
 			}
 			else
 			{
-				_log.info(actor+ "i'm dead and waiting for res");
-				return;
+				actor.doRevive(100);
+				actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
+				if(actor.isPlayer())
+					actor.setCurrentCp(actor.getMaxCp());
 			}
 		}
 		
