@@ -196,7 +196,7 @@ public class FPCInfo
 	            else
 	            {
 	            	lookingParty();
-	            	_log.info(_actor + " going to party, size:" + _party.getSize());
+//	            	_log.info(_actor + " going to party, size:" + _party.getSize());
 	            }
 
 			}

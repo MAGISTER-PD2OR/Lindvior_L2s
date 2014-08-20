@@ -1008,19 +1008,38 @@ public class FPCDefaultAI extends PlayerAI
 		{
 			_pathfindFails = 0;
 			
-			if (target.isPlayable())
+//			if (target.isPlayable())
+//			{
+//				AggroInfoPC hate = _aggroList.get(target);
+//				if ((hate == null) || (hate.hate < 100))
+//				{
+//					return false;
+//				}
+//			}
+			double distance = actor.getDistance(target);
+			Location loc;
+			if(distance > 1500)
 			{
-				AggroInfoPC hate = _aggroList.get(target);
-				if ((hate == null) || (hate.hate < 100))
-				{
-					return false;
-				}
+				loc = Location.findAroundPosition(target, 1500);
 			}
-			Location loc = GeoEngine.moveCheckForAI(target.getLoc(), actor.getLoc(), actor.getGeoIndex());
+			else if(distance > 1000)
+			{
+				loc = Location.findAroundPosition(target, 1000);
+			}
+			else if(distance > 500)
+			{
+				loc = Location.findAroundPosition(target, 500);
+			}
+			else
+			{
+				loc = GeoEngine.moveCheckForAI(target.getLoc(), actor.getLoc(), actor.getGeoIndex());
+			}
+			
 			if (!GeoEngine.canMoveToCoord(actor.getX(), actor.getY(), actor.getZ(), loc.x, loc.y, loc.z, actor.getGeoIndex()))
 			{
 				loc = target.getLoc();
 			}
+			
 			actor.teleToLocation(loc);
 		}
 		

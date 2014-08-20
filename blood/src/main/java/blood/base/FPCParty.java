@@ -40,7 +40,7 @@ public class FPCParty {
 			_dds.add(player);
 	}
 	
-	public boolean isTanker(Player player){
+	public static boolean isTanker(Player player){
 		if(player == null)
 			return false;
 		
@@ -58,7 +58,7 @@ public class FPCParty {
 		}
 	}
 	
-	public boolean isIss(Player player){
+	public static boolean isIss(Player player){
 		if(player == null)
 			return false;
 		
@@ -77,7 +77,7 @@ public class FPCParty {
 		}
 	}
 	
-	public boolean isHealer(Player player){
+	public static boolean isHealer(Player player){
 		if(player == null)
 			return false;
 		
@@ -93,7 +93,7 @@ public class FPCParty {
 		}
 	}
 	
-	public boolean isDamageDealer(Player player){
+	public static boolean isDamageDealer(Player player){
 		if(player == null)
 			return false;
 		
@@ -131,6 +131,13 @@ public class FPCParty {
 		
 		if(result)
 			partyPosition(player);
+		
+		if (isFull())
+		{
+			_leader = _dds.get(0);
+			party.changePartyLeader(_leader);
+			System.out.println("party is full, change party leader to"+_leader);
+		}
 		
 		return result;
 	}

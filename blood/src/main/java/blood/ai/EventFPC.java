@@ -29,6 +29,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import blood.FPCInfo;
 import blood.base.FPCItem;
+import blood.base.FPCParty;
 import blood.model.FPReward;
 
 public class EventFPC extends FPCDefaultAI
@@ -584,7 +585,7 @@ public class EventFPC extends FPCDefaultAI
 			{
 				Player leader = actor.getParty().getPartyLeader();
 				Creature target = leader.getAI().getAttackTarget();
-				if(target != null && checkAggression(target))
+				if(!FPCParty.isHealer(actor) && target != null && checkAggression(target))
 				{
 					return;
 				}
