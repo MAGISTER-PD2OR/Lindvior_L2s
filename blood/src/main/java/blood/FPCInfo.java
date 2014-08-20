@@ -38,6 +38,7 @@ import blood.base.FPCParty;
 import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
+import blood.dao.FakeNameDAO;
 import blood.data.holder.FarmZoneHolder;
 import blood.model.FPReward;
 import blood.table.MerchantItem;
@@ -357,74 +358,220 @@ public class FPCInfo
 		}
 	}
 	
+	public static boolean tryUpClass(Player player)
+	{
+		if(player == null)
+			return false;
+		
+		ArrayList<ClassId> classList = new ArrayList<ClassId>();
+		
+		ClassLevel nextClassLevel = null;
+		ClassId currentClassId = player.getClassId();
+		ClassId nextClassId = null;
+		String name = player.getName();
+		
+		if (player.getLevel() >= 20 && player.getClassId().isOfLevel(ClassLevel.NONE))
+			nextClassLevel = ClassLevel.FIRST;
+		
+		if (player.getLevel() >= 40 && player.getClassId().isOfLevel(ClassLevel.FIRST))
+			nextClassLevel = ClassLevel.SECOND;
+		
+		if (player.getLevel() >= 76 && player.getClassId().isOfLevel(ClassLevel.SECOND))
+			nextClassLevel = ClassLevel.THIRD;
+			
+		if (player.getLevel() >= 85 && player.getClassId().isOfLevel(ClassLevel.THIRD))
+			nextClassLevel = ClassLevel.AWAKED;
+		
+		if(nextClassLevel == null)
+			return false;
+		
+		for(ClassId classId: ClassId.VALUES)
+		{
+			if(!classId.isOfLevel(nextClassLevel))
+				continue;
+			
+			if(!classId.childOf(currentClassId))
+				continue;
+			
+			if(classId.getId() > 138 && classId.getId() < 147) // remove old GOD 4th class
+				continue;
+			
+			classList.add(classId);
+		}
+		
+		if(classList.size() <= 0)
+			return false;
+		
+		if(classList.size() == 1) // apply for 3rd and 4th
+		{
+			// look like we have no choice
+			nextClassId = classList.get(0);
+		}
+		else
+		{
+			switch (currentClassId) {
+			case HUMAN_FIGHTER:
+				if(FakeNameDAO.isTankerName(name))
+					nextClassId = ClassId.KNIGHT;
+				else if(FakeNameDAO.isWarriorName(name))
+					nextClassId = ClassId.WARRIOR;
+				else if(FakeNameDAO.isDaggerName(name) || FakeNameDAO.isRangerName(name))
+					nextClassId = ClassId.ROGUE;
+				break;
+			case HUMAN_MAGE:
+				if(FakeNameDAO.isNukerName(name) || FakeNameDAO.isSummonerName(name))
+					nextClassId = ClassId.WIZARD;
+				else if(FakeNameDAO.isHealerName(name) || FakeNameDAO.isBufferName(name))
+					nextClassId = ClassId.CLERIC;
+				break;
+			case ELVEN_FIGHTER:
+				if(FakeNameDAO.isTankerName(name) || FakeNameDAO.isBufferName(name))
+					nextClassId = ClassId.ELVEN_KNIGHT;
+				else if(FakeNameDAO.isDaggerName(name) || FakeNameDAO.isRangerName(name))
+					nextClassId = ClassId.ELVEN_SCOUT;
+				break;
+			case ELVEN_MAGE:
+				if(FakeNameDAO.isNukerName(name) || FakeNameDAO.isSummonerName(name))
+					nextClassId = ClassId.ELVEN_WIZARD;
+				else if(FakeNameDAO.isHealerName(name))
+					nextClassId = ClassId.ORACLE;
+				break;
+			case DARK_FIGHTER:
+				if(FakeNameDAO.isTankerName(name) || FakeNameDAO.isBufferName(name))
+					nextClassId = ClassId.PALUS_KNIGHT;
+				else if(FakeNameDAO.isDaggerName(name) || FakeNameDAO.isRangerName(name))
+					nextClassId = ClassId.ASSASIN;
+				break;
+			case DARK_MAGE:
+				if(FakeNameDAO.isNukerName(name) || FakeNameDAO.isSummonerName(name))
+					nextClassId = ClassId.DARK_WIZARD;
+				else if(FakeNameDAO.isHealerName(name))
+					nextClassId = ClassId.SHILLEN_ORACLE;
+				break;
+			case ORC_FIGHTER:
+				if(FakeNameDAO.isDestroyerName(name))
+					nextClassId = ClassId.ORC_RAIDER;
+				else if(FakeNameDAO.isTyrantName(name))
+					nextClassId = ClassId.ORC_MONK;
+				break;
+			case DWARVEN_FIGHTER:
+				if(FakeNameDAO.isWarriorName(name))
+					nextClassId = ClassId.ARTISAN;
+				else if(FakeNameDAO.isDaggerName(name))
+					nextClassId = ClassId.SCAVENGER;
+				break;
+			// 2nd
+			case WARRIOR:
+				if(FakeNameDAO.isWarlordName(name))
+					nextClassId = ClassId.WARLORD;
+				else if(FakeNameDAO.isGladiatorName(name))
+					nextClassId = ClassId.GLADIATOR;
+				break;
+			case KNIGHT:
+				if(FakeNameDAO.isPaladinName(name))
+					nextClassId = ClassId.PALADIN;
+				else if(FakeNameDAO.isDarkAvengerName(name))
+					nextClassId = ClassId.DARK_AVENGER;
+				break;
+			case ROGUE:
+				if(FakeNameDAO.isTreasureHunterName(name))
+					nextClassId = ClassId.TREASURE_HUNTER;
+				else if(FakeNameDAO.isHawkeyeName(name))
+					nextClassId = ClassId.HAWKEYE;
+				break;
+			case WIZARD:
+				if(FakeNameDAO.isSummonerName(name))
+					nextClassId = ClassId.WARLOCK;
+				else if(FakeNameDAO.isNecromancerName(name))
+					nextClassId = ClassId.NECROMANCER;
+				else if(FakeNameDAO.isSorcererName(name))
+					nextClassId = ClassId.SORCERER;
+				break;
+			case CLERIC:
+				if(FakeNameDAO.isHealerName(name))
+					nextClassId = ClassId.BISHOP;
+				else if(FakeNameDAO.isBufferName(name))
+					nextClassId = ClassId.PROPHET;
+				break;
+			case ELVEN_KNIGHT:
+				if(FakeNameDAO.isTankerName(name))
+					nextClassId = ClassId.TEMPLE_KNIGHT;
+				else if(FakeNameDAO.isBufferName(name))
+					nextClassId = ClassId.SWORDSINGER;
+				break;
+			case ELVEN_SCOUT:
+				if(FakeNameDAO.isRangerName(name))
+					nextClassId = ClassId.SILVER_RANGER;
+				else if(FakeNameDAO.isDaggerName(name))
+					nextClassId = ClassId.PLAIN_WALKER;
+				break;
+			case ELVEN_WIZARD:
+				if(FakeNameDAO.isSummonerName(name))
+					nextClassId = ClassId.ELEMENTAL_SUMMONER;
+				else if(FakeNameDAO.isNukerName(name))
+					nextClassId = ClassId.SPELLSINGER;
+				break;
+			case PALUS_KNIGHT:
+				if(FakeNameDAO.isTankerName(name))
+					nextClassId = ClassId.SHILLEN_KNIGHT;
+				else if(FakeNameDAO.isBufferName(name))
+					nextClassId = ClassId.BLADEDANCER;
+				break;
+			case ASSASIN:
+				if(FakeNameDAO.isRangerName(name))
+					nextClassId = ClassId.PHANTOM_RANGER;
+				else if(FakeNameDAO.isDaggerName(name))
+					nextClassId = ClassId.ABYSS_WALKER;
+				break;
+			case DARK_WIZARD:
+				if(FakeNameDAO.isSummonerName(name))
+					nextClassId = ClassId.PHANTOM_SUMMONER;
+				else if(FakeNameDAO.isNukerName(name))
+					nextClassId = ClassId.SPELLHOWLER;
+				break;
+			case ORC_SHAMAN:
+				if(FakeNameDAO.isOverlordName(name))
+					nextClassId = ClassId.OVERLORD;
+				else if(FakeNameDAO.isWarcryerName(name))
+					nextClassId = ClassId.WARCRYER;
+				break;
+			case TROOPER:
+				if(FakeNameDAO.isNukerName(name))
+					nextClassId = ClassId.M_SOUL_BREAKER;
+				else if(FakeNameDAO.isWarriorName(name))
+					nextClassId = ClassId.BERSERKER;
+				break;
+			case WARDER:
+				if(FakeNameDAO.isNukerName(name))
+					nextClassId = ClassId.F_SOUL_BREAKER;
+				else if(FakeNameDAO.isRangerName(name))
+					nextClassId = ClassId.ARBALESTER;
+				break;
+
+			default:
+				break;
+			}
+			
+			if(nextClassId == null || !classList.contains(nextClassId))
+				nextClassId = classList.get(Rnd.get(classList.size()));
+		}
+		
+		if(nextClassId == null)
+			return false;
+		
+		player.setClassId(nextClassId.getId(), true);
+		return true;
+	}
+	
 	public static void upClass(Player player)
 	{
 		if (player == null)
 			return;
 		
-		ArrayList<ClassId> classList = new ArrayList<ClassId>();
-		
-		if (player.getLevel() >= 20 && player.getClassId().isOfLevel(ClassLevel.NONE))
+		boolean tryUpClass = true;
+		while(tryUpClass)
 		{
-			classList = new ArrayList<ClassId>();
-			for(ClassId classId: ClassId.VALUES)
-			{
-				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.FIRST))
-				{
-					classList.add(classId);
-				}
-			}
-			
-			if(classList.size() > 0)
-				player.setClassId(classList.get(Rnd.get(classList.size())).getId(), true);
-		}
-		
-		if (player.getLevel() >= 40 && player.getClassId().isOfLevel(ClassLevel.FIRST))
-		{
-			classList = new ArrayList<ClassId>();
-			for(ClassId classId: ClassId.VALUES)
-			{
-				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.SECOND))
-				{
-					classList.add(classId);
-				}
-			}
-			
-			if(classList.size() > 0)
-				player.setClassId(classList.get(Rnd.get(classList.size())).getId(), true);
-		}
-		
-		if (player.getLevel() >= 76 && player.getClassId().isOfLevel(ClassLevel.SECOND))
-		{
-			classList = new ArrayList<ClassId>();
-			for(ClassId classId: ClassId.VALUES)
-			{
-				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.THIRD))
-				{
-					classList.add(classId);
-				}
-			}
-			
-			if(classList.size() > 0)
-				player.setClassId(classList.get(Rnd.get(classList.size())).getId(), true);
-		}
-		
-		if (player.getLevel() >= 85 && player.getClassId().isOfLevel(ClassLevel.THIRD))
-		{
-			classList = new ArrayList<ClassId>();
-			for(ClassId classId: ClassId.VALUES)
-			{
-				if(classId.getId() > 138 && classId.getId() < 147)
-					continue;
-				
-				if(classId.childOf(player.getClassId()) && classId.isOfLevel(ClassLevel.AWAKED))
-				{
-					classList.add(classId);
-				}
-			}
-			
-			if(classList.size() > 0)
-				player.setClassId(classList.get(Rnd.get(classList.size())).getId(), true);
+			tryUpClass = tryUpClass(player);
 		}
 		
 		// give all skills

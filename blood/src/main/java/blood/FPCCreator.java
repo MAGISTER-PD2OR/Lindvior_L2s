@@ -53,6 +53,11 @@ public class FPCCreator
 				_randomFactor.add(0, 1);
 			if(!FakeNameDAO.isFighterName(name))
 				_randomFactor.add(10, 1);
+			if(FakeNameDAO.isMysticName(name) && FakeNameDAO.isFighterName(name))
+			{
+				_randomFactor.add(0, 1);
+				_randomFactor.add(10, 1);
+			}
 		}
 		else if(FakeNameDAO.isElfName(name))
 		{
@@ -60,6 +65,11 @@ public class FPCCreator
 				_randomFactor.add(18, 1);
 			if(!FakeNameDAO.isFighterName(name))
 				_randomFactor.add(25, 1);
+			if(FakeNameDAO.isMysticName(name) && FakeNameDAO.isFighterName(name))
+			{
+				_randomFactor.add(18, 1);
+				_randomFactor.add(25, 1);
+			}
 		}
 		else if(FakeNameDAO.isDarkElfName(name))
 		{
@@ -67,6 +77,11 @@ public class FPCCreator
 				_randomFactor.add(31, 1);
 			if(!FakeNameDAO.isFighterName(name))
 				_randomFactor.add(38, 1);
+			if(FakeNameDAO.isMysticName(name) && FakeNameDAO.isFighterName(name))
+			{
+				_randomFactor.add(31, 1);
+				_randomFactor.add(38, 1);
+			}
 		}
 		else if(FakeNameDAO.isOrcName(name))
 		{
@@ -74,6 +89,11 @@ public class FPCCreator
 				_randomFactor.add(44, 1);
 			if(!FakeNameDAO.isFighterName(name))
 				_randomFactor.add(49, 1);
+			if(FakeNameDAO.isMysticName(name) && FakeNameDAO.isFighterName(name))
+			{
+				_randomFactor.add(44, 1);
+				_randomFactor.add(49, 1);
+			}
 		}
 		else if(FakeNameDAO.isDwarfName(name))
 		{

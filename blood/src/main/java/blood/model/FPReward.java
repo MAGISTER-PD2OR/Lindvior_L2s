@@ -91,7 +91,12 @@ public class FPReward {
 		}
 		else if(item.isArmor() && !item.isEquipped())
 		{
-			System.out.println(player + " try to use armor:"+item.getBodyPart()+" "+item.getItemId());
+//			System.out.println(player + " try to use armor:"+item.getBodyPart()+" "+item.getItemId());
+			player.useItem(item, false);
+		}
+		else if(item.isAccessory() && !item.isEquipped())
+		{
+//			System.out.println(player + " try to use accessory:"+item.getBodyPart()+" "+item.getItemId()+" "+item.getName());
 			player.useItem(item, false);
 		}
 		
