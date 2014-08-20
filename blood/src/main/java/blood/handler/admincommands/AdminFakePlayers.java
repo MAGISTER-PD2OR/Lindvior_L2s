@@ -193,7 +193,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				if(party == null)
 					return false;
 				
-				party.debug():
+				party.debug();
 				
 				break;
 			
