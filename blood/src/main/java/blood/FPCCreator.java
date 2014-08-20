@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import l2s.commons.dbutils.DbUtils;
+import l2s.commons.math.random.RndSelector;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.database.DatabaseFactory;
@@ -23,11 +24,161 @@ public class FPCCreator
 	// TODO - move code here
 	
 	private static final Logger 		_log = LoggerFactory.getLogger(FPCCreator.class);
+	
+	public static void isHumanName(String name)
+	{
+		name.toLowerCase().contains("human");
+	}
    	
    	public static void createNewChar()
 	{
-		int[] _class_list = {0,10,18,25,31,38,44,49,53,123,124};
-		createNewChar(_class_list[Rnd.get(_class_list.length)], FakeNameDAO.getInstance().getName(), "_fake_account");
+		int[] _class_list = {
+				0, // human F
+				10, // human M
+				18, // elf F
+				25, // elf M
+				31, // delf F
+				38, // delf M
+				44, // orc F
+				49, // orc M
+				53, // dwarf
+				123, // kamael Male
+				124 // kamael Female
+				};
+		RndSelector<Integer> _randomFactor = new RndSelector<Integer>(); 
+		String name = FakeNameDAO.getInstance().getName();
+		if(FakeNameDAO.isHumanName(name))
+		{
+			if(!FakeNameDAO.isMysticName(name))
+				_randomFactor.add(0, 1);
+			if(!FakeNameDAO.isFighterName(name))
+				_randomFactor.add(10, 1);
+		}
+		else if(FakeNameDAO.isElfName(name))
+		{
+			if(!FakeNameDAO.isMysticName(name))
+				_randomFactor.add(18, 1);
+			if(!FakeNameDAO.isFighterName(name))
+				_randomFactor.add(25, 1);
+		}
+		else if(FakeNameDAO.isDarkElfName(name))
+		{
+			if(!FakeNameDAO.isMysticName(name))
+				_randomFactor.add(31, 1);
+			if(!FakeNameDAO.isFighterName(name))
+				_randomFactor.add(38, 1);
+		}
+		else if(FakeNameDAO.isOrcName(name))
+		{
+			if(!FakeNameDAO.isMysticName(name))
+				_randomFactor.add(44, 1);
+			if(!FakeNameDAO.isFighterName(name))
+				_randomFactor.add(49, 1);
+		}
+		else if(FakeNameDAO.isDwarfName(name))
+		{
+			_randomFactor.add(53, 1);
+		}
+		else if(FakeNameDAO.isKamaelName(name))
+		{
+			if(!FakeNameDAO.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!FakeNameDAO.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(FakeNameDAO.isTankerName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+		}
+		else if(FakeNameDAO.isWarriorName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+			_randomFactor.add(44, 1);
+			_randomFactor.add(53, 1);
+			if(!FakeNameDAO.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!FakeNameDAO.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(FakeNameDAO.isDaggerName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+			_randomFactor.add(53, 1);
+		}
+		else if(FakeNameDAO.isRangerName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+			if(!FakeNameDAO.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(FakeNameDAO.isFighterName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+			_randomFactor.add(44, 1);
+			_randomFactor.add(53, 1);
+			if(!FakeNameDAO.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!FakeNameDAO.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(FakeNameDAO.isNukerName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+			if(!FakeNameDAO.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!FakeNameDAO.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(FakeNameDAO.isSummonerName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+		}
+		else if(FakeNameDAO.isHealerName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+		}
+		else if(FakeNameDAO.isBufferName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+			_randomFactor.add(49, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+		}
+		else if(FakeNameDAO.isMysticName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+			_randomFactor.add(49, 1);
+			if(!FakeNameDAO.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!FakeNameDAO.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else // add all
+		{
+			for(int classId: _class_list)
+				_randomFactor.add(classId, 1);
+		}
+		createNewChar(_randomFactor.select(), name, "_fake_account");
 	}
     
 	public static void createNewChar(int _classId, String _name, String _account)
@@ -39,11 +190,11 @@ public class FPCCreator
 		
 		//int _classId = Integer.parseInt(wordList[1]);
 		int _sex = Rnd.get(0,1);
-		if(_classId == 123){
+		if(_classId == 123 || FakeNameDAO.isMaleName(_name)){
 			_sex = 0;
 		}
 		
-		if(_classId == 124){
+		if(_classId == 124 || FakeNameDAO.isFemaleName(_name)){
 			_sex = 1;
 		}
 		int _hairStyle = Rnd.get(0, _sex == 1 ? 6 : 4);
