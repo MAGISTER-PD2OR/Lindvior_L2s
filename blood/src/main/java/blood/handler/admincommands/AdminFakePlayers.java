@@ -19,6 +19,7 @@ import blood.Blood;
 import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
 import blood.base.FPCParty;
+import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.model.FPReward;
@@ -45,7 +46,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		admin_fp_equip,
 		admin_fp_loc,
 		admin_set_level2,
-		admin_fp_class
+		admin_fp_class, admin_tryai
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -206,6 +207,12 @@ public class AdminFakePlayers implements IAdminCommandHandler
 					}
 				activeChar.getInventory().store();
 				activeChar.sendMessage("Clear Inventory.");
+			break;
+			case admin_tryai:
+				FPCInfo newInfo = new FPCInfo(activeChar);
+				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
+				newInfo.setPVEStyle(FPCPveStyle.PARTY);
+				newInfo.lookingParty();
 			break;
 			case admin_add_ai:
 				activeChar.sendMessage("Current Player AI: " + activeChar.getAI());

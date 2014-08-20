@@ -287,6 +287,11 @@ public class FPCInfo
 		FPCPartyManager.getInstance().getParty(this);
 	}
 	
+	public void setPVEStyle(FPCPveStyle style)
+	{
+		_pveStyle = style;
+	}
+	
 	public void spawn()
 	{
 		//_log.info("spawn function");
@@ -357,7 +362,7 @@ public class FPCInfo
 		
 		if(actor.isInParty())
 		{
-			_log.info(actor +"inparty: kicked");
+			_log.info(actor +": kicked <--- Party");
 		}
 		
 		_log.info(actor +": kicked");
