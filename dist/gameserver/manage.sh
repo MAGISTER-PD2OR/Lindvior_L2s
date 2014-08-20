@@ -9,7 +9,7 @@ DAEMON_PATH=$SCRIPT_DIR
 
 DATA_PATH=$SCRIPT_DIR
 
-DAEMON=./GameServer_loop.sh
+DAEMON=./StartGameServer.sh
 DAEMONOPTS="-my opts"
 
 NAME=l2gs
