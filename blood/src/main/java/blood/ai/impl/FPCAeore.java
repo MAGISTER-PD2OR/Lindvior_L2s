@@ -78,11 +78,6 @@ public class FPCAeore extends HealerPC
 		return SkillList;
 	}
 	
-	public boolean hasEffect(Creature target, int skillId)
-	{
-		return target.getEffectList().containsEffects(skillId);
-	}
-	
 	public void partyBuff(Creature target)
 	{
 		if(canUseSkill(SKILL_RESISTANCE_OF_SAHA, target) && !hasEffect(target, SKILL_RESISTANCE_OF_SAHA))

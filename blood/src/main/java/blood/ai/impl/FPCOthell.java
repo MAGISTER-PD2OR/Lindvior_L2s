@@ -58,108 +58,51 @@ public class FPCOthell extends WarriorPC
 		return super.thinkBuff();
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	protected boolean fightTaskByClass(Creature target)
 	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
-		
-		// skill 4th
-		SkillList.add(SKILL_BLOOD_STAB);
-		
-		return SkillList;
+		othellFightTask(target);
+		return true;
 	}
 	
-	protected boolean defaultFightTask()
+	protected boolean othellFightTask(Creature target)
 	{
-		clearTasks();
-		
 		Player actor = getActor();
-		if (actor.isDead() || actor.isAMuted())
-		{
-			return false;
-		}
-		
-		Creature target;
-		if ((target = prepareTarget()) == null)
-		{
-			debug("dont have target, try to think active again");
-			setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-			return false;
-		}
 		
 		double distance = actor.getDistance(target);
-//		double targetHp = target.getCurrentHpPercents();
-//		double actorHp = actor.getCurrentHpPercents();
+		double targetHp = target.getCurrentHpPercents();
+		double actorHp = actor.getCurrentHpPercents();
+		double actorMp = actor.getCurrentMpPercents();
 		
-		Skill shadowChaseSkill = actor.getKnownSkill(SKILL_SHADOW_CHASE);
-		Skill powerBluffSkill = actor.getKnownSkill(SKILL_POWER_BLUFF);
-		Skill kickSkill = actor.getKnownSkill(SKILL_KICK);
-		Skill darkParalysisSkill = actor.getKnownSkill(SKILL_DARK_PARALYSIS);
-		Skill criticalWoundSkill = actor.getKnownSkill(SKILL_CRITICAL_WOUND);
-		
-		Skill heartBreakerSkill = actor.getKnownSkill(SKILL_HEART_BREAKER);
-		Skill bloodStabSkill = actor.getKnownSkill(SKILL_BLOOD_STAB);
-		Skill chainBlowSkill = actor.getKnownSkill(SKILL_CHAIN_BLOW);
-		Skill reverseSkill = actor.getKnownSkill(SKILL_REVERSE);
-		
-		boolean alreadyDisable = false;
-		
-		// debuff
-		if(canUseSkill(criticalWoundSkill, target, distance) && target.getEffectList().getEffectsCount(criticalWoundSkill) == 0)
-			return chooseTaskAndTargets(criticalWoundSkill, target, distance);
-		
-		// disable
-		if(target.getEffectList().getEffectsCount(shadowChaseSkill) > 0){
-			debug("get shadowChaseSkill");
-			alreadyDisable = true;
+		if(!hasEffect(target, SKILL_SHADOW_CHASE) 
+				&& !hasEffect(target, SKILL_POWER_BLUFF) 
+				&& !hasEffect(target, SKILL_KICK)
+				&& !hasEffect(target, SKILL_DARK_PARALYSIS))
+		{
+			if(actorMp > 50 && canUseSkill(SKILL_SHADOW_CHASE, target, distance))
+				tryCastSkill(SKILL_SHADOW_CHASE, target, distance);
+			else if(actorMp > 50 && canUseSkill(SKILL_POWER_BLUFF, target, distance))
+				tryCastSkill(SKILL_POWER_BLUFF, target, distance);
+			else if(actorMp > 50 && canUseSkill(SKILL_KICK, target, distance))
+				tryCastSkill(SKILL_KICK, target, distance);
+			else if(actorMp > 50 && canUseSkill(SKILL_DARK_PARALYSIS, target, distance))
+				tryCastSkill(SKILL_DARK_PARALYSIS, target, distance);
 		}
 		
-		if(target.getEffectList().getEffectsCount(powerBluffSkill) > 0){
-			debug("get powerBluffSkill");
-			alreadyDisable = true;
-		}
+		if(hasEffect(target, SKILL_KICK) && canUseSkill(SKILL_HEART_BREAKER, target, distance))
+			tryCastSkill(SKILL_HEART_BREAKER, target, distance);
 		
-		if(target.getEffectList().getEffectsCount(kickSkill) > 0){
-			debug("get kickSkill");
-			alreadyDisable = true;
-		}
+		if(hasEffect(target, SKILL_BLOOD_STAB) && canUseSkill(SKILL_CHAIN_BLOW, target, distance))
+			tryCastSkill(SKILL_CHAIN_BLOW, target, distance);
 		
-		if(target.getEffectList().getEffectsCount(darkParalysisSkill) > 0){
-			debug("get darkParalysisSkill");
-			alreadyDisable = true;
-		}
+		if(canUseSkill(SKILL_BLOOD_STAB, target, distance))
+			tryCastSkill(SKILL_BLOOD_STAB, target, distance);
 		
-		if(!alreadyDisable){
-			if (canUseSkill(shadowChaseSkill, target, distance))
-				return chooseTaskAndTargets(shadowChaseSkill, target, distance);
-			if (canUseSkill(powerBluffSkill, target, distance))
-				return chooseTaskAndTargets(powerBluffSkill, target, distance);
-			if (canUseSkill(kickSkill, target, distance))
-				return chooseTaskAndTargets(kickSkill, target, distance);
-			if (canUseSkill(darkParalysisSkill, target, distance))
-				return chooseTaskAndTargets(darkParalysisSkill, target, distance);
-		}
+		if(canUseSkill(SKILL_REVERSE, target, distance))
+			tryCastSkill(SKILL_REVERSE, target, distance);
+			
+		chooseTaskAndTargets(null, target, distance);
 		
-		// combo kick -> heartbreaker
-		if(target.getEffectList().getEffectsCount(kickSkill) > 0 && canUseSkill(heartBreakerSkill, target, distance))
-			return chooseTaskAndTargets(heartBreakerSkill, target, distance);
-		
-		// combo bloodstab -> chainblow
-		if(target.getEffectList().getEffectsCount(bloodStabSkill) > 0 && canUseSkill(chainBlowSkill, target, distance))
-			return chooseTaskAndTargets(chainBlowSkill, target, distance);
-		
-		if(canUseSkill(bloodStabSkill, target, distance))
-			return chooseTaskAndTargets(bloodStabSkill, target, distance);
-		
-		if(canUseSkill(reverseSkill, target, distance))
-			return chooseTaskAndTargets(reverseSkill, target, distance);
-		
-//		if(target.isMonster())
-//			return false;
-		
-		// TODO make treatment and buff friendly targets
-		
-		return chooseTaskAndTargets(null, target, distance);
+		return false;
 	}
 	
 }

@@ -1521,6 +1521,11 @@ public class FPCDefaultAI extends PlayerAI
 		return null;
 	}
 	
+	public boolean hasEffect(Creature target, int skillId)
+	{
+		return target.getEffectList().containsEffects(skillId);
+	}
+	
 	protected boolean canUseSkill(Skill skill, Creature target, double distance)
 	{
 
