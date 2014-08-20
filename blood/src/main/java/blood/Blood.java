@@ -159,8 +159,7 @@ class Blood {
     	for(int i=0;i<disconnectCount;i++)
     	{
     		FPCInfo actor = FPCSpawnStatus.ONLINE.getRandom();
-    		
-    		if(!actor.isInEvent()) actor.kick(); 
+    		actor.kick(); 
     	}
 	
 	}

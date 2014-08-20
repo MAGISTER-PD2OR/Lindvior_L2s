@@ -30,6 +30,7 @@ import l2s.gameserver.model.instances.ChestInstance;
 import l2s.gameserver.stats.Stats;
 import l2s.gameserver.taskmanager.AiTaskManager;
 import l2s.gameserver.templates.skill.EffectTemplate;
+import l2s.gameserver.utils.ItemFunctions;
 import l2s.gameserver.utils.Location;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -37,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import blood.Blood;
-import blood.base.FPCItem;
 import blood.model.AggroListPC;
 import blood.model.AggroListPC.AggroInfoPC;
 
@@ -1211,7 +1211,7 @@ public class FPCDefaultAI extends PlayerAI
 					
 					for(int item_id : currentTask.skill.getItemConsumeId())
 					{
-						FPCItem.supplyItem(actor, item_id, 500);
+						ItemFunctions.addItem(actor, item_id, 500, false);
 					}
 					
 					actor.doCast(currentTask.skill, isAoE ? actor : target, false);
@@ -1285,7 +1285,7 @@ public class FPCDefaultAI extends PlayerAI
 					_pathfindFails = 0;
 					for(int item_id : currentTask.skill.getItemConsumeId())
 					{
-						FPCItem.supplyItem(actor, item_id, 500);
+						ItemFunctions.addItem(actor, item_id, 500, false);
 					}
 					actor.doCast(currentTask.skill, isAoE ? actor : target, !target.isPlayable());
 					return maybeNextTask(currentTask);

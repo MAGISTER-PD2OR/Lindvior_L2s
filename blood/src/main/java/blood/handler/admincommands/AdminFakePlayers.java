@@ -18,13 +18,12 @@ import org.slf4j.LoggerFactory;
 import blood.Blood;
 import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
-import blood.base.FPCItem;
 import blood.base.FPCParty;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.model.FPReward;
 import blood.table.FPCMerchantTable;
-//import l2s.gameserver.cache.Msg;
+import blood.utils.ClassFunctions;
 
 public class AdminFakePlayers implements IAdminCommandHandler
 {
@@ -39,7 +38,6 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		admin_fp_quota,
 		admin_fp_padding,
 		admin_reload_merchant,
-		admin_fp_autoarm,
 		admin_clear_inv,
 		admin_add_ai,
 		admin_check_ring,
@@ -198,9 +196,6 @@ public class AdminFakePlayers implements IAdminCommandHandler
 			case admin_reload_merchant:
 				FPCMerchantTable.GetMerchantItemListFromDB();
 				break;
-			case admin_fp_autoarm:
-				FPCItem.gearUp(activeChar);
-				break;
 				
 			case admin_clear_inv:
 				ItemInstance[] itemArray = activeChar.getInventory().getItems();
@@ -240,7 +235,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				FPReward.getInstance().giveReward(activeChar);
 			break;
 			case admin_fp_class:
-				FPCInfo.upClass(activeChar);
+				ClassFunctions.upClass(activeChar);
 			break;
 			case admin_fp_loc:
 				FPCInfo.getInstance(activeChar).teleToNextFarmZone();

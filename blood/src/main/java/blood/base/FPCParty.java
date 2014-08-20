@@ -2,9 +2,9 @@ package blood.base;
 
 import java.util.ArrayList;
 
+import blood.utils.ClassFunctions;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.base.ClassLevel;
 
 public class FPCParty {
 	
@@ -30,90 +30,30 @@ public class FPCParty {
 	}
 	
 	public void partyPosition(Player player){
-		if(isTanker(player))
+		if(ClassFunctions.isTanker(player))
 			_tanker = player;
-		else if (isIss(player))
+		else if (ClassFunctions.isIss(player))
 			_iss = player;
-		else if (isHealer(player))
+		else if (ClassFunctions.isHealer(player))
 			_healer = player;
-		else if (isDamageDealer(player))
+		else if (ClassFunctions.isDamageDealer(player))
 			_dds.add(player);
-	}
-	
-	public static boolean isTanker(Player player){
-		if(player == null)
-			return false;
-		
-		switch(player.getClassId())
-		{
-			case SIGEL_PHOENIX_KNIGHT:
-			case SIGEL_HELL_KNIGHT:
-			case SIGEL_EVAS_TEMPLAR:
-			case SIGEL_SHILLIEN_TEMPLAR:
-			case SIGEL_KNIGHT:
-				return true;
-			
-			default:
-				return false;
-		}
-	}
-	
-	public static boolean isIss(Player player){
-		if(player == null)
-			return false;
-		
-		switch(player.getClassId())
-		{
-			case ISS_HIEROPHANT:
-			case ISS_SWORD_MUSE:
-			case ISS_SPECTRAL_DANCER:
-			case ISS_DOOMCRYER:
-			case ISS_DOMINATOR:
-			case ISS_ENCHANTER:
-				return true;
-			
-			default:
-				return false;
-		}
-	}
-	
-	public static boolean isHealer(Player player){
-		if(player == null)
-			return false;
-		
-		switch(player.getClassId())
-		{
-			case AEORE_CARDINAL:
-			case AEORE_EVAS_SAINT:
-			case AEORE_SHILLIEN_SAINT:
-				return true;
-			
-			default:
-				return false;
-		}
-	}
-	
-	public static boolean isDamageDealer(Player player){
-		if(player == null)
-			return false;
-		
-		return player.getClassId().isOfLevel(ClassLevel.AWAKED) && !isTanker(player) && !isIss(player) && !isHealer(player);
 	}
 	
 	public boolean addMember(Player player){
 		if(isFull())
 			return false;
 		
-		if(_tanker != null && isTanker(player))
+		if(_tanker != null && ClassFunctions.isTanker(player))
 			return false;
 		
-		if(_iss != null && isIss(player))
+		if(_iss != null && ClassFunctions.isIss(player))
 			return false;
 		
-		if(_healer != null && isHealer(player))
+		if(_healer != null && ClassFunctions.isHealer(player))
 			return false;
 		
-		if(_dds.size() >= 4 && isDamageDealer(player))
+		if(_dds.size() >= 4 && ClassFunctions.isDamageDealer(player))
 			return false;
 		
 		if(player.getLevel() > (_leader.getLevel() +5) || player.getLevel() < (_leader.getLevel() - 5))
