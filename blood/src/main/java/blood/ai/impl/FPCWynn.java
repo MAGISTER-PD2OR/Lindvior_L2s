@@ -66,12 +66,6 @@ public class FPCWynn extends SummonerPC
 		}))
 			return true;
 		
-//		if(thinkBuff(getUniqueSkill(SKILL_SMART_CUBIC)))
-//			return true;
-		
-//		if(thinkBuff(SKILL_AVENGING_CUBIC))
-//			return true;
-
 		Player actor = getActor();
 		Skill skillUniqueBuff = getUniqueSkill(new int[]{
 			SKILL_SERVITOR_GHASTE,

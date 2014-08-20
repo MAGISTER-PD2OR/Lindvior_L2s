@@ -276,29 +276,6 @@ public class EventFPC extends FPCDefaultAI
 		}
 	}
 	
-	@Override
-	public void onEvtThink()
-	{
-//		Player actor = getActor();
-		
-		//debug("event state: "+EventManager.getInstance().getMainEventManager().getState());
-		
-//		if(!NexusEvents.isInEvent(actor))
-//		{
-//			switch(EventManager.getInstance().getMainEventManager().getState())
-//			{
-//				case REGISTERING:
-//						registerToEvent();
-//					break;
-//				
-//				default:
-//					
-//			}
-//		}
-		
-		super.onEvtThink();
-	}
-	
 	protected boolean _thinkActiveCheckCondition()
 	{
 		
@@ -536,7 +513,7 @@ public class EventFPC extends FPCDefaultAI
 		
 		if(actor.isInPeaceZone())
 		{
-//			_log.info("tele to next farm zone");
+			debug("tele to next farm zone");
 			FPCInfo.getInstance(actor).teleToNextFarmZone();
 			return;
 		}

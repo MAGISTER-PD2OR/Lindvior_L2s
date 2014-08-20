@@ -22,31 +22,6 @@ public class SummonerPC extends EventFPC
 		basicNpcBuffs();
 	}
 
-	@Override
-	public void onEvtThink()
-	{
-		super.onEvtThink();
-		
-		Player actor = getActor();
-		Servitor[] servitors = actor.getServitors();
-		if (servitors.length == 0)
-			return;
-		Servitor servitor = servitors[0]; /* TODO fix summon */
-		
-		if(servitor == null)  return;
-		
-		int petHPLevel = (int) servitor.getCurrentHpPercents();
-		
-		if(petHPLevel < 80)
-		{
-			try
-			{
-				//cast Servitor Heal
-				tryCastSkill(1127, servitor);
-			}
-			catch(Exception e){}
-		}
-	}
 	
 	@Override
 	protected void onEvtAttacked(Creature attacker, int damage)
