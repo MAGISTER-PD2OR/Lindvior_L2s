@@ -898,12 +898,15 @@ public class EventFPC extends FPCDefaultAI
 //		EventBuffer.getInstance().setPlayersCurrentPetScheme(actor.getObjectId(), "Summon");
 	}
 	
-
 	protected void tryCastSkill(int skillId, Creature target)
+	{
+		tryCastSkill(skillId, target, getActor().getDistance(target));
+	}
+
+	protected void tryCastSkill(int skillId, Creature target, double distance)
 	{
 		Player actor = getActor();
 		Skill skill = actor.getKnownSkill(skillId);
-		double distance = actor.getDistance(target);
 		debug(actor + " try cast skill:"+skillId+" on distance: "+ distance + " on: "+target);
 		if(skill != null && target != null)
 		{
