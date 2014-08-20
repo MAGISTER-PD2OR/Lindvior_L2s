@@ -6,23 +6,16 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import l2s.commons.util.Rnd;
-import l2s.gameserver.Config;
 import l2s.gameserver.ai.PlayerAI;
-import l2s.gameserver.data.xml.holder.ItemHolder;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.Servitor;
-import l2s.gameserver.model.World;
 import l2s.gameserver.model.base.ClassId;
 import l2s.gameserver.model.base.Experience;
-import l2s.gameserver.model.base.InvisibleType;
 //import l2s.gameserver.model.entity.events.impl.DominionSiegeEvent;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.model.items.TradeItem;
 import l2s.gameserver.network.l2.s2c.PrivateStoreMsgBuy;
 import l2s.gameserver.network.l2.s2c.PrivateStoreMsgSell;
-import l2s.gameserver.skills.AbnormalEffect;
-import l2s.gameserver.templates.item.ItemTemplate;
 import l2s.gameserver.utils.ItemFunctions;
 import l2s.gameserver.utils.Location;
 
@@ -65,8 +58,6 @@ public class FPCInfo
 	
 	public FPCInfo(int obj_id)
 	{
-//		_log.info("create new FPCInfo: "+obj_id);
-		//_owner = owner;
 		_obj_id = obj_id;
 		setStatus(FPCSpawnStatus.OFFLINE);
 		_instances.addInfo(this);
@@ -76,8 +67,6 @@ public class FPCInfo
 	public FPCInfo(Player player)
 	{
 		int obj_id = player.getObjectId();
-//		_log.info("create new FPCInfo: "+obj_id);
-		//_owner = owner;
 		_obj_id = obj_id;
 		setStatus(FPCSpawnStatus.OFFLINE);
 		_instances.addInfo(this);
@@ -86,7 +75,6 @@ public class FPCInfo
 	
 	public static FPCInfo getInstance(int obj_id)
 	{
-		//_log.info("obj_id " + obj_id);
 		return _instances.getPlayer(obj_id) != null ? _instances.getPlayer(obj_id) : new FPCInfo(obj_id);
 	}
 	
@@ -464,9 +452,7 @@ public class FPCInfo
 		}
 		//set the current character as shop, so stop asking it to do anything else
 		setShopStatus(item.getStatus());
-		
 	}
-	
 		
 	public MerchantItem getMerchantItem()
 	{

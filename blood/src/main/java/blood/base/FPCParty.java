@@ -2,11 +2,10 @@ package blood.base;
 
 import java.util.ArrayList;
 
-import blood.utils.ClassFunctions;
-import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.utils.Location;
+import blood.utils.ClassFunctions;
 
 public class FPCParty {
 	
@@ -78,7 +77,7 @@ public class FPCParty {
 		{
 			_leader = _dds.get(0);
 			party.changePartyLeader(_leader);
-			System.out.println("party is full, change party leader to"+_leader);
+			System.out.println("party is full, change party leader to: "+_leader);
 		}
 		
 		return result;

@@ -6,7 +6,6 @@ import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassId;
 import l2s.gameserver.model.base.ClassLevel;
-import blood.dao.FakeNameDAO;
 
 public class ClassFunctions {
 
@@ -63,140 +62,140 @@ public class ClassFunctions {
 		{
 			switch (currentClassId) {
 			case HUMAN_FIGHTER:
-				if(FakeNameDAO.isTankerName(name))
+				if(NameFunctions.isTankerName(name))
 					nextClassId = ClassId.KNIGHT;
-				else if(FakeNameDAO.isWarriorName(name))
+				else if(NameFunctions.isWarriorName(name))
 					nextClassId = ClassId.WARRIOR;
-				else if(FakeNameDAO.isDaggerName(name) || FakeNameDAO.isRangerName(name))
+				else if(NameFunctions.isDaggerName(name) || NameFunctions.isRangerName(name))
 					nextClassId = ClassId.ROGUE;
 				break;
 			case HUMAN_MAGE:
-				if(FakeNameDAO.isNukerName(name) || FakeNameDAO.isSummonerName(name))
+				if(NameFunctions.isNukerName(name) || NameFunctions.isSummonerName(name))
 					nextClassId = ClassId.WIZARD;
-				else if(FakeNameDAO.isHealerName(name) || FakeNameDAO.isBufferName(name))
+				else if(NameFunctions.isHealerName(name) || NameFunctions.isBufferName(name))
 					nextClassId = ClassId.CLERIC;
 				break;
 			case ELVEN_FIGHTER:
-				if(FakeNameDAO.isTankerName(name) || FakeNameDAO.isBufferName(name))
+				if(NameFunctions.isTankerName(name) || NameFunctions.isBufferName(name))
 					nextClassId = ClassId.ELVEN_KNIGHT;
-				else if(FakeNameDAO.isDaggerName(name) || FakeNameDAO.isRangerName(name))
+				else if(NameFunctions.isDaggerName(name) || NameFunctions.isRangerName(name))
 					nextClassId = ClassId.ELVEN_SCOUT;
 				break;
 			case ELVEN_MAGE:
-				if(FakeNameDAO.isNukerName(name) || FakeNameDAO.isSummonerName(name))
+				if(NameFunctions.isNukerName(name) || NameFunctions.isSummonerName(name))
 					nextClassId = ClassId.ELVEN_WIZARD;
-				else if(FakeNameDAO.isHealerName(name))
+				else if(NameFunctions.isHealerName(name))
 					nextClassId = ClassId.ORACLE;
 				break;
 			case DARK_FIGHTER:
-				if(FakeNameDAO.isTankerName(name) || FakeNameDAO.isBufferName(name))
+				if(NameFunctions.isTankerName(name) || NameFunctions.isBufferName(name))
 					nextClassId = ClassId.PALUS_KNIGHT;
-				else if(FakeNameDAO.isDaggerName(name) || FakeNameDAO.isRangerName(name))
+				else if(NameFunctions.isDaggerName(name) || NameFunctions.isRangerName(name))
 					nextClassId = ClassId.ASSASIN;
 				break;
 			case DARK_MAGE:
-				if(FakeNameDAO.isNukerName(name) || FakeNameDAO.isSummonerName(name))
+				if(NameFunctions.isNukerName(name) || NameFunctions.isSummonerName(name))
 					nextClassId = ClassId.DARK_WIZARD;
-				else if(FakeNameDAO.isHealerName(name))
+				else if(NameFunctions.isHealerName(name))
 					nextClassId = ClassId.SHILLEN_ORACLE;
 				break;
 			case ORC_FIGHTER:
-				if(FakeNameDAO.isDestroyerName(name))
+				if(NameFunctions.isDestroyerName(name))
 					nextClassId = ClassId.ORC_RAIDER;
-				else if(FakeNameDAO.isTyrantName(name))
+				else if(NameFunctions.isTyrantName(name))
 					nextClassId = ClassId.ORC_MONK;
 				break;
 			case DWARVEN_FIGHTER:
-				if(FakeNameDAO.isWarriorName(name))
+				if(NameFunctions.isWarriorName(name))
 					nextClassId = ClassId.ARTISAN;
-				else if(FakeNameDAO.isDaggerName(name))
+				else if(NameFunctions.isDaggerName(name))
 					nextClassId = ClassId.SCAVENGER;
 				break;
 			// 2nd
 			case WARRIOR:
-				if(FakeNameDAO.isWarlordName(name))
+				if(NameFunctions.isWarlordName(name))
 					nextClassId = ClassId.WARLORD;
-				else if(FakeNameDAO.isGladiatorName(name))
+				else if(NameFunctions.isGladiatorName(name))
 					nextClassId = ClassId.GLADIATOR;
 				break;
 			case KNIGHT:
-				if(FakeNameDAO.isPaladinName(name))
+				if(NameFunctions.isPaladinName(name))
 					nextClassId = ClassId.PALADIN;
-				else if(FakeNameDAO.isDarkAvengerName(name))
+				else if(NameFunctions.isDarkAvengerName(name))
 					nextClassId = ClassId.DARK_AVENGER;
 				break;
 			case ROGUE:
-				if(FakeNameDAO.isTreasureHunterName(name))
+				if(NameFunctions.isTreasureHunterName(name))
 					nextClassId = ClassId.TREASURE_HUNTER;
-				else if(FakeNameDAO.isHawkeyeName(name))
+				else if(NameFunctions.isHawkeyeName(name))
 					nextClassId = ClassId.HAWKEYE;
 				break;
 			case WIZARD:
-				if(FakeNameDAO.isSummonerName(name))
+				if(NameFunctions.isSummonerName(name))
 					nextClassId = ClassId.WARLOCK;
-				else if(FakeNameDAO.isNecromancerName(name))
+				else if(NameFunctions.isNecromancerName(name))
 					nextClassId = ClassId.NECROMANCER;
-				else if(FakeNameDAO.isSorcererName(name))
+				else if(NameFunctions.isSorcererName(name))
 					nextClassId = ClassId.SORCERER;
 				break;
 			case CLERIC:
-				if(FakeNameDAO.isHealerName(name))
+				if(NameFunctions.isHealerName(name))
 					nextClassId = ClassId.BISHOP;
-				else if(FakeNameDAO.isBufferName(name))
+				else if(NameFunctions.isBufferName(name))
 					nextClassId = ClassId.PROPHET;
 				break;
 			case ELVEN_KNIGHT:
-				if(FakeNameDAO.isTankerName(name))
+				if(NameFunctions.isTankerName(name))
 					nextClassId = ClassId.TEMPLE_KNIGHT;
-				else if(FakeNameDAO.isBufferName(name))
+				else if(NameFunctions.isBufferName(name))
 					nextClassId = ClassId.SWORDSINGER;
 				break;
 			case ELVEN_SCOUT:
-				if(FakeNameDAO.isRangerName(name))
+				if(NameFunctions.isRangerName(name))
 					nextClassId = ClassId.SILVER_RANGER;
-				else if(FakeNameDAO.isDaggerName(name))
+				else if(NameFunctions.isDaggerName(name))
 					nextClassId = ClassId.PLAIN_WALKER;
 				break;
 			case ELVEN_WIZARD:
-				if(FakeNameDAO.isSummonerName(name))
+				if(NameFunctions.isSummonerName(name))
 					nextClassId = ClassId.ELEMENTAL_SUMMONER;
-				else if(FakeNameDAO.isNukerName(name))
+				else if(NameFunctions.isNukerName(name))
 					nextClassId = ClassId.SPELLSINGER;
 				break;
 			case PALUS_KNIGHT:
-				if(FakeNameDAO.isTankerName(name))
+				if(NameFunctions.isTankerName(name))
 					nextClassId = ClassId.SHILLEN_KNIGHT;
-				else if(FakeNameDAO.isBufferName(name))
+				else if(NameFunctions.isBufferName(name))
 					nextClassId = ClassId.BLADEDANCER;
 				break;
 			case ASSASIN:
-				if(FakeNameDAO.isRangerName(name))
+				if(NameFunctions.isRangerName(name))
 					nextClassId = ClassId.PHANTOM_RANGER;
-				else if(FakeNameDAO.isDaggerName(name))
+				else if(NameFunctions.isDaggerName(name))
 					nextClassId = ClassId.ABYSS_WALKER;
 				break;
 			case DARK_WIZARD:
-				if(FakeNameDAO.isSummonerName(name))
+				if(NameFunctions.isSummonerName(name))
 					nextClassId = ClassId.PHANTOM_SUMMONER;
-				else if(FakeNameDAO.isNukerName(name))
+				else if(NameFunctions.isNukerName(name))
 					nextClassId = ClassId.SPELLHOWLER;
 				break;
 			case ORC_SHAMAN:
-				if(FakeNameDAO.isOverlordName(name))
+				if(NameFunctions.isOverlordName(name))
 					nextClassId = ClassId.OVERLORD;
-				else if(FakeNameDAO.isWarcryerName(name))
+				else if(NameFunctions.isWarcryerName(name))
 					nextClassId = ClassId.WARCRYER;
 				break;
 			case TROOPER:
-				if(FakeNameDAO.isNukerName(name))
+				if(NameFunctions.isNukerName(name))
 					nextClassId = ClassId.M_SOUL_BREAKER;
-				else if(FakeNameDAO.isWarriorName(name))
+				else if(NameFunctions.isWarriorName(name))
 					nextClassId = ClassId.BERSERKER;
 				break;
 			case WARDER:
-				if(FakeNameDAO.isNukerName(name))
+				if(NameFunctions.isNukerName(name))
 					nextClassId = ClassId.F_SOUL_BREAKER;
-				else if(FakeNameDAO.isRangerName(name))
+				else if(NameFunctions.isRangerName(name))
 					nextClassId = ClassId.ARBALESTER;
 				break;
 	

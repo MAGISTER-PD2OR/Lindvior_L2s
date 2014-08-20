@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import blood.dao.FakeNameDAO;
+import blood.utils.NameFunctions;
 
 public class FPCCreator
 {
@@ -47,133 +48,133 @@ public class FPCCreator
 				};
 		RndSelector<Integer> _randomFactor = new RndSelector<Integer>(); 
 		String name = FakeNameDAO.getInstance().getName();
-		if(FakeNameDAO.isHumanName(name))
+		if(NameFunctions.isHumanName(name))
 		{
-			if(!FakeNameDAO.isMysticName(name))
+			if(!NameFunctions.isMysticName(name))
 				_randomFactor.add(0, 1);
-			if(!FakeNameDAO.isFighterName(name))
+			if(!NameFunctions.isFighterName(name))
 				_randomFactor.add(10, 1);
-			if(FakeNameDAO.isMysticName(name) && FakeNameDAO.isFighterName(name))
+			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
 			{
 				_randomFactor.add(0, 1);
 				_randomFactor.add(10, 1);
 			}
 		}
-		else if(FakeNameDAO.isElfName(name))
+		else if(NameFunctions.isElfName(name))
 		{
-			if(!FakeNameDAO.isMysticName(name))
+			if(!NameFunctions.isMysticName(name))
 				_randomFactor.add(18, 1);
-			if(!FakeNameDAO.isFighterName(name))
+			if(!NameFunctions.isFighterName(name))
 				_randomFactor.add(25, 1);
-			if(FakeNameDAO.isMysticName(name) && FakeNameDAO.isFighterName(name))
+			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
 			{
 				_randomFactor.add(18, 1);
 				_randomFactor.add(25, 1);
 			}
 		}
-		else if(FakeNameDAO.isDarkElfName(name))
+		else if(NameFunctions.isDarkElfName(name))
 		{
-			if(!FakeNameDAO.isMysticName(name))
+			if(!NameFunctions.isMysticName(name))
 				_randomFactor.add(31, 1);
-			if(!FakeNameDAO.isFighterName(name))
+			if(!NameFunctions.isFighterName(name))
 				_randomFactor.add(38, 1);
-			if(FakeNameDAO.isMysticName(name) && FakeNameDAO.isFighterName(name))
+			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
 			{
 				_randomFactor.add(31, 1);
 				_randomFactor.add(38, 1);
 			}
 		}
-		else if(FakeNameDAO.isOrcName(name))
+		else if(NameFunctions.isOrcName(name))
 		{
-			if(!FakeNameDAO.isMysticName(name))
+			if(!NameFunctions.isMysticName(name))
 				_randomFactor.add(44, 1);
-			if(!FakeNameDAO.isFighterName(name))
+			if(!NameFunctions.isFighterName(name))
 				_randomFactor.add(49, 1);
-			if(FakeNameDAO.isMysticName(name) && FakeNameDAO.isFighterName(name))
+			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
 			{
 				_randomFactor.add(44, 1);
 				_randomFactor.add(49, 1);
 			}
 		}
-		else if(FakeNameDAO.isDwarfName(name))
+		else if(NameFunctions.isDwarfName(name))
 		{
 			_randomFactor.add(53, 1);
 		}
-		else if(FakeNameDAO.isKamaelName(name))
+		else if(NameFunctions.isKamaelName(name))
 		{
-			if(!FakeNameDAO.isFemaleName(name))
+			if(!NameFunctions.isFemaleName(name))
 				_randomFactor.add(123, 1);
-			if(!FakeNameDAO.isMaleName(name))
+			if(!NameFunctions.isMaleName(name))
 				_randomFactor.add(124, 1);
 		}
-		else if(FakeNameDAO.isTankerName(name))
+		else if(NameFunctions.isTankerName(name))
 		{
 			_randomFactor.add(0, 1);
 			_randomFactor.add(18, 1);
 			_randomFactor.add(31, 1);
 		}
-		else if(FakeNameDAO.isWarriorName(name))
+		else if(NameFunctions.isWarriorName(name))
 		{
 			_randomFactor.add(0, 1);
 			_randomFactor.add(18, 1);
 			_randomFactor.add(31, 1);
 			_randomFactor.add(44, 1);
 			_randomFactor.add(53, 1);
-			if(!FakeNameDAO.isFemaleName(name))
+			if(!NameFunctions.isFemaleName(name))
 				_randomFactor.add(123, 1);
-			if(!FakeNameDAO.isMaleName(name))
+			if(!NameFunctions.isMaleName(name))
 				_randomFactor.add(124, 1);
 		}
-		else if(FakeNameDAO.isDaggerName(name))
+		else if(NameFunctions.isDaggerName(name))
 		{
 			_randomFactor.add(0, 1);
 			_randomFactor.add(18, 1);
 			_randomFactor.add(31, 1);
 			_randomFactor.add(53, 1);
 		}
-		else if(FakeNameDAO.isRangerName(name))
+		else if(NameFunctions.isRangerName(name))
 		{
 			_randomFactor.add(0, 1);
 			_randomFactor.add(18, 1);
 			_randomFactor.add(31, 1);
-			if(!FakeNameDAO.isMaleName(name))
+			if(!NameFunctions.isMaleName(name))
 				_randomFactor.add(124, 1);
 		}
-		else if(FakeNameDAO.isFighterName(name))
+		else if(NameFunctions.isFighterName(name))
 		{
 			_randomFactor.add(0, 1);
 			_randomFactor.add(18, 1);
 			_randomFactor.add(31, 1);
 			_randomFactor.add(44, 1);
 			_randomFactor.add(53, 1);
-			if(!FakeNameDAO.isFemaleName(name))
+			if(!NameFunctions.isFemaleName(name))
 				_randomFactor.add(123, 1);
-			if(!FakeNameDAO.isMaleName(name))
+			if(!NameFunctions.isMaleName(name))
 				_randomFactor.add(124, 1);
 		}
-		else if(FakeNameDAO.isNukerName(name))
+		else if(NameFunctions.isNukerName(name))
 		{
 			_randomFactor.add(10, 1);
 			_randomFactor.add(25, 1);
 			_randomFactor.add(38, 1);
-			if(!FakeNameDAO.isFemaleName(name))
+			if(!NameFunctions.isFemaleName(name))
 				_randomFactor.add(123, 1);
-			if(!FakeNameDAO.isMaleName(name))
+			if(!NameFunctions.isMaleName(name))
 				_randomFactor.add(124, 1);
 		}
-		else if(FakeNameDAO.isSummonerName(name))
+		else if(NameFunctions.isSummonerName(name))
 		{
 			_randomFactor.add(10, 1);
 			_randomFactor.add(25, 1);
 			_randomFactor.add(38, 1);
 		}
-		else if(FakeNameDAO.isHealerName(name))
+		else if(NameFunctions.isHealerName(name))
 		{
 			_randomFactor.add(10, 1);
 			_randomFactor.add(25, 1);
 			_randomFactor.add(38, 1);
 		}
-		else if(FakeNameDAO.isBufferName(name))
+		else if(NameFunctions.isBufferName(name))
 		{
 			_randomFactor.add(10, 1);
 			_randomFactor.add(25, 1);
@@ -182,15 +183,15 @@ public class FPCCreator
 			_randomFactor.add(18, 1);
 			_randomFactor.add(31, 1);
 		}
-		else if(FakeNameDAO.isMysticName(name))
+		else if(NameFunctions.isMysticName(name))
 		{
 			_randomFactor.add(10, 1);
 			_randomFactor.add(25, 1);
 			_randomFactor.add(38, 1);
 			_randomFactor.add(49, 1);
-			if(!FakeNameDAO.isFemaleName(name))
+			if(!NameFunctions.isFemaleName(name))
 				_randomFactor.add(123, 1);
-			if(!FakeNameDAO.isMaleName(name))
+			if(!NameFunctions.isMaleName(name))
 				_randomFactor.add(124, 1);
 		}
 		else // add all
@@ -216,11 +217,11 @@ public class FPCCreator
 		
 		//int _classId = Integer.parseInt(wordList[1]);
 		int _sex = Rnd.get(0,1);
-		if(_classId == 123 || FakeNameDAO.isMaleName(_name)){
+		if(_classId == 123 || NameFunctions.isMaleName(_name)){
 			_sex = 0;
 		}
 		
-		if(_classId == 124 || FakeNameDAO.isFemaleName(_name)){
+		if(_classId == 124 || NameFunctions.isFemaleName(_name)){
 			_sex = 1;
 		}
 		int _hairStyle = Rnd.get(0, _sex == 1 ? 6 : 4);
