@@ -1,8 +1,6 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 
 public class FPCOthell extends WarriorPC
@@ -14,7 +12,7 @@ public class FPCOthell extends WarriorPC
 	public final int SKILL_MORTAL_STRIKE	= 410; // ELF, DE
 	public final int SKILL_SHADOW_DODGE		= 10606; // ELF
 	public final int SKILL_MELEE_REFLECT	= 10653; // DE
-	public final int SKILL_CRITICAL_ADVEN	= 10562;
+	public final int SKILL_CRITICAL_ADVEN	= 10562; // valliance, not done
 	public final int SKILL_SHADOW_DASH		= 10525;
 	public final int SKILL_SHADOW_HIDE		= 10517;
 	public final int SKILL_EVASION_COUNTER	= 10524;
@@ -30,7 +28,7 @@ public class FPCOthell extends WarriorPC
 	public final int SKILL_PLUNDER			= 10702;
 
 	public final int SKILL_CRITICAL_WOUND	= 531;
-	public final int SKILL_THROW_DAGGER		= 10539;
+	public final int SKILL_THROW_DAGGER		= 10539; // damage, -spd
 	public final int SKILL_POWER_BLUFF		= 10554;
 	public final int SKILL_POISON_ZONE		= 10522;
 	public final int SKILL_THROW_SAND		= 10540;
@@ -38,11 +36,6 @@ public class FPCOthell extends WarriorPC
 	public final int SKILL_DARK_PARALYSIS	= 10514;
 	public final int SKILL_KICK				= 10549;
 	public final int SKILL_UPPERCUT			= 10546; // lv 89
-
-
-
-
-
 
 	public FPCOthell(Player actor)
 	{
@@ -53,76 +46,58 @@ public class FPCOthell extends WarriorPC
 	protected boolean thinkBuff()
 	{
 		if(thinkBuff(new int[] {
-			10757
+			SKILL_MORTAL_STRIKE
 		}))
 			return true;
 		
 		return super.thinkBuff();
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	protected boolean fightTaskByClass(Creature target)
 	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
-		
-		// skill 4th
-		// buff
-		SkillList.add(10757);	// dead eye stance
-		// damage skills
-		SkillList.add(10760);	// tornado shot
-		SkillList.add(10761);	// bow strike
-		SkillList.add(10762);	// quick shot
-		SkillList.add(10763);	// pinpoint shot
-		SkillList.add(10769);	// impact shot
-		SkillList.add(10771);	// multiple arrow
-		SkillList.add(10772);	// heavy arrow rain
-		
-//		SkillList.add(10787);	// summon hawk
-		
-		
-		return SkillList;
+		othellFightTask(target);
+		return true;
 	}
 	
-	@Override
-	public int getRatePHYS()
+	protected boolean othellFightTask(Creature target)
 	{
-		return 50;
-	}
-
-	@Override
-	public int getRateDOT()
-	{
-		return 0;
-	}
-
-	@Override
-	public int getRateDEBUFF()
-	{
-		return 0;
-	}
-
-	@Override
-	public int getRateDAM()
-	{
-		return 50;
-	}
-
-	@Override
-	public int getRateSTUN()
-	{
-		return 0;
-	}
-
-	@Override
-	public int getRateBUFF()
-	{
-		return 50;
-	}
-
-	@Override
-	public int getRateHEAL()
-	{
-		return 0;
+		Player actor = getActor();
+		
+		double distance = actor.getDistance(target);
+//		double targetHp = target.getCurrentHpPercents();
+//		double actorHp = actor.getCurrentHpPercents();
+		double actorMp = actor.getCurrentMpPercents();
+		
+		if(!hasEffect(target, SKILL_SHADOW_CHASE) 
+				&& !hasEffect(target, SKILL_POWER_BLUFF) 
+				&& !hasEffect(target, SKILL_KICK)
+				&& !hasEffect(target, SKILL_DARK_PARALYSIS))
+		{
+			if(actorMp > 50 && canUseSkill(SKILL_SHADOW_CHASE, target, distance))
+				tryCastSkill(SKILL_SHADOW_CHASE, target, distance);
+			else if(actorMp > 50 && canUseSkill(SKILL_POWER_BLUFF, target, distance))
+				tryCastSkill(SKILL_POWER_BLUFF, target, distance);
+			else if(actorMp > 50 && canUseSkill(SKILL_KICK, target, distance))
+				tryCastSkill(SKILL_KICK, target, distance);
+			else if(actorMp > 50 && canUseSkill(SKILL_DARK_PARALYSIS, target, distance))
+				tryCastSkill(SKILL_DARK_PARALYSIS, target, distance);
+		}
+		
+		if(hasEffect(target, SKILL_KICK) && canUseSkill(SKILL_HEART_BREAKER, target, distance))
+			tryCastSkill(SKILL_HEART_BREAKER, target, distance);
+		
+		if(hasEffect(target, SKILL_BLOOD_STAB) && canUseSkill(SKILL_CHAIN_BLOW, target, distance))
+			tryCastSkill(SKILL_CHAIN_BLOW, target, distance);
+		
+		if(canUseSkill(SKILL_BLOOD_STAB, target, distance))
+			tryCastSkill(SKILL_BLOOD_STAB, target, distance);
+		
+		if(canUseSkill(SKILL_REVERSE, target, distance))
+			tryCastSkill(SKILL_REVERSE, target, distance);
+			
+		chooseTaskAndTargets(null, target, distance);
+		
+		return false;
 	}
 	
 }

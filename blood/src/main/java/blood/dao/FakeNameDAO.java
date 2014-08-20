@@ -45,7 +45,7 @@ public class FakeNameDAO {
 		try
 		{
 			con = DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT char_name FROM fake_name WHERE is_used = ? LIMIT ? ORDER BY RAND()");
+			statement = con.prepareStatement("SELECT char_name FROM fake_name WHERE is_used = ?  ORDER BY RAND() LIMIT ?");
 			statement.setInt(1, 0);
 			statement.setInt(2, limit);
 			rset = statement.executeQuery();
@@ -72,15 +72,15 @@ public class FakeNameDAO {
 		try
 		{
 			con = DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("UPDATE fake_name set is_used = ? WHERE char_name = ?");
+			statement = con.prepareStatement("UPDATE fake_name SET is_used = ? WHERE char_name = ?");
 			statement.setInt(1, 1);
 			statement.setString(2, char_name);
-			statement.executeQuery();
+			statement.execute();
 			
 		}
 		catch(final Exception e)
 		{
-			_log.error("", e);
+			_log.error("error on query ad update used name:"+char_name, e);
 		}
 		finally
 		{

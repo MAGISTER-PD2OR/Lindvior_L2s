@@ -5,6 +5,9 @@ import java.util.List;
 
 import l2s.commons.data.xml.AbstractHolder;
 import l2s.commons.util.Rnd;
+import l2s.gameserver.model.Party;
+import l2s.gameserver.model.Player;
+import l2s.gameserver.utils.Location;
 import blood.model.FarmZone;
 
 public final class FarmZoneHolder  extends AbstractHolder{
@@ -32,11 +35,13 @@ public final class FarmZoneHolder  extends AbstractHolder{
 		_lists.add(zone);
 	}
 	
-	public FarmZone getZones(int level){
+	public FarmZone getZones(Player player){
 		List<FarmZone> tmp = new ArrayList<FarmZone>();
 		for (FarmZone zone: _lists){
-			if (zone.isValid(level))
+//			_log.info("FarmZone try zone:"+zone);
+			if (zone.isValid(player))
 			{
+//				_log.info("FarmZone valid zone:"+zone);
 				tmp.add(zone);
 			}
 		}
@@ -45,6 +50,21 @@ public final class FarmZoneHolder  extends AbstractHolder{
 			return tmp.get(Rnd.get(tmp.size()));
 		
 		return null;
+	}
+	
+	public Location getLocation(Player player)
+	{
+		FarmZone validZone = getZones(player);
+		
+		if(validZone == null)
+			return null;
+		
+		return validZone.getRndLocation();
+	}
+	
+	public Location getLocation(Party party)
+	{
+		return getLocation(party.getPartyLeader());
 	}
 
 	@Override

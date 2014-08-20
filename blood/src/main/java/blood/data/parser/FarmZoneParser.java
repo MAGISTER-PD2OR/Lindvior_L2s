@@ -68,7 +68,13 @@ public final class FarmZoneParser  extends AbstractFileParser<FarmZoneHolder>{
 			Element groupElement = iterator.next();
 			int min_level = Integer.parseInt(groupElement.attributeValue("min_level"));
 			int max_level = Integer.parseInt(groupElement.attributeValue("max_level"));
+			String[] class_ids_str = groupElement.attributeValue("class_ids") != null ? groupElement.attributeValue("class_ids").split(",") : new String[]{};
 			FarmZone farmZone = new FarmZone(min_level, max_level);
+			
+			for(int i = 0;i < class_ids_str.length;i++)
+			{
+				farmZone.addClass(Integer.parseInt(class_ids_str[i]));
+			}
 			 
 			for (Element locElement : groupElement.elements())
 			{

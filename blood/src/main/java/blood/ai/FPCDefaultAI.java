@@ -30,6 +30,7 @@ import l2s.gameserver.model.instances.ChestInstance;
 import l2s.gameserver.stats.Stats;
 import l2s.gameserver.taskmanager.AiTaskManager;
 import l2s.gameserver.templates.skill.EffectTemplate;
+import l2s.gameserver.utils.ItemFunctions;
 import l2s.gameserver.utils.Location;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -37,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import blood.Blood;
-import blood.base.FPCItem;
 import blood.model.AggroListPC;
 import blood.model.AggroListPC.AggroInfoPC;
 
@@ -1008,22 +1008,54 @@ public class FPCDefaultAI extends PlayerAI
 		{
 			_pathfindFails = 0;
 			
-			if (target.isPlayable())
+//			if (target.isPlayable())
+//			{
+//				AggroInfoPC hate = _aggroList.get(target);
+//				if ((hate == null) || (hate.hate < 100))
+//				{
+//					return false;
+//				}
+//			}
+			double distance = actor.getDistance(target);
+			Location loc;
+			if(distance > 1500)
 			{
-				AggroInfoPC hate = _aggroList.get(target);
-				if ((hate == null) || (hate.hate < 100))
-				{
-					return false;
-				}
+				loc = Location.findAroundPosition(target, 1500);
 			}
-			Location loc = GeoEngine.moveCheckForAI(target.getLoc(), actor.getLoc(), actor.getGeoIndex());
+			else if(distance > 1000)
+			{
+				loc = Location.findAroundPosition(target, 1000);
+			}
+			else if(distance > 500)
+			{
+				loc = Location.findAroundPosition(target, 500);
+			}
+			else
+			{
+				loc = GeoEngine.moveCheckForAI(target.getLoc(), actor.getLoc(), actor.getGeoIndex());
+			}
+			
 			if (!GeoEngine.canMoveToCoord(actor.getX(), actor.getY(), actor.getZ(), loc.x, loc.y, loc.z, actor.getGeoIndex()))
 			{
 				loc = target.getLoc();
 			}
+			
 			actor.teleToLocation(loc);
 		}
 		
+		return true;
+	}
+	
+	protected boolean tryMoveToLoc(Location loc, int range)
+	{
+		Player actor = getActor();
+		double distance = actor.getDistance(loc);
+		
+		if(distance < range)
+			return false;
+		
+		Location nextLoc = Location.findAroundPosition(loc, range, actor.getGeoIndex());
+		addTaskMove(nextLoc, true);
 		return true;
 	}
 	
@@ -1160,7 +1192,10 @@ public class FPCDefaultAI extends PlayerAI
 			case CAST:
 			{
 				debug("do cast:"+ currentTask.skill);
+				
 				Creature target = currentTask.target.get();
+				if(target != null)
+					actor.setTarget(target);
 				
 				if (actor.isMuted(currentTask.skill) || actor.isSkillDisabled(currentTask.skill) || actor.isUnActiveSkill(currentTask.skill.getId()))
 				{
@@ -1192,7 +1227,7 @@ public class FPCDefaultAI extends PlayerAI
 					
 					for(int item_id : currentTask.skill.getItemConsumeId())
 					{
-						FPCItem.supplyItem(actor, item_id, 500);
+						ItemFunctions.addItem(actor, item_id, 500, false);
 					}
 					
 					actor.doCast(currentTask.skill, isAoE ? actor : target, false);
@@ -1266,7 +1301,7 @@ public class FPCDefaultAI extends PlayerAI
 					_pathfindFails = 0;
 					for(int item_id : currentTask.skill.getItemConsumeId())
 					{
-						FPCItem.supplyItem(actor, item_id, 500);
+						ItemFunctions.addItem(actor, item_id, 500, false);
 					}
 					actor.doCast(currentTask.skill, isAoE ? actor : target, !target.isPlayable());
 					return maybeNextTask(currentTask);
@@ -1287,7 +1322,6 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean createNewTask()
 	{
-
 		return false;
 	}
 	
@@ -1312,16 +1346,27 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		Player actor = getActor();
 		
-//		debug(actor.getName() + " onEvtThink");
+		debug(actor.getName() + " onEvtThink");
 		
 		if(actor.isDead()) /* FIXME */
 		{
-			//return to village
-//			actor.teleToClosestTown();
-			actor.doRevive(100);
-			actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
-			if(actor.isPlayer())
-				actor.setCurrentCp(actor.getMaxCp());
+			if(!actor.isInParty())
+			{
+//				actor.setTarget(null);
+				setAttackTarget(null);
+				actor.teleToClosestTown();
+				actor.doRevive(100);
+				actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
+				if(actor.isPlayer())
+					actor.setCurrentCp(actor.getMaxCp());
+			}
+			else
+			{
+				actor.doRevive(100);
+				actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
+				if(actor.isPlayer())
+					actor.setCurrentCp(actor.getMaxCp());
+			}
 		}
 		
 		if (_thinking || (actor == null) || actor.isActionsDisabled() || actor.isAfraid())
@@ -1437,35 +1482,19 @@ public class FPCDefaultAI extends PlayerAI
 //			return null;
 //		}
 		
-		Player actor = getActor();
+//		Player actor = getActor();
 		
-		if (actor.isConfused())
-		{
-			return getAttackTarget();
-		}
+//		if (actor.isConfused())
+//		{
+//			return getAttackTarget();
+//		}
 		
 		Creature target = getAttackTarget();
 		
-		if(target != null && !target.isDead())
+		if(target != null && checkTarget(target, MAX_PURSUE_RANGE))
+		{
 			return target;
-		
-		
-		
-		// "move" bosses sometimes choose a random target
-//		if (Rnd.chance(actor.getParameter("isMadness", 0)))
-//		{
-//			Creature randomHated = _aggroList.getRandomHated();
-//			if (randomHated != null)
-//			{
-//				setAttackTarget(randomHated);
-//				if ((_madnessTask == null) && !actor.isConfused())
-//				{
-//					actor.startConfused();
-//					_madnessTask = ThreadPoolManager.getInstance().schedule(new MadnessTask(), 10000);
-//				}
-//				return randomHated;
-//			}
-//		}
+		}
 		
 		// The new goal based on the aggressiveness
 		List<Creature> hateList = _aggroList.getHateList();
@@ -1490,6 +1519,11 @@ public class FPCDefaultAI extends PlayerAI
 		}
 		
 		return null;
+	}
+	
+	public boolean hasEffect(Creature target, int skillId)
+	{
+		return target.getEffectList().containsEffects(skillId);
 	}
 	
 	protected boolean canUseSkill(Skill skill, Creature target, double distance)
@@ -1547,7 +1581,17 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean canUseSkill(Skill sk, Creature target)
 	{
-		return canUseSkill(sk, target, 0);
+		return canUseSkill(sk, target, getActor().getDistance(target));
+	}
+	
+	protected boolean canUseSkill(int sk, Creature target, double distance)
+	{
+		return canUseSkill(getActor().getKnownSkill(sk), target, distance);
+	}
+	
+	protected boolean canUseSkill(int sk, Creature target)
+	{
+		return canUseSkill(sk, target, getActor().getDistance(target));
 	}
 	
 	protected Skill[] selectUsableSkills(Creature target, double distance, Skill[] skills)
@@ -1995,6 +2039,11 @@ public class FPCDefaultAI extends PlayerAI
 		return false;
 	}
 	
+	protected boolean fightTaskByClass(Creature target)
+	{
+		return false;
+	}
+	
 	protected boolean defaultFightTask()
 	{
 		clearTasks();
@@ -2014,12 +2063,17 @@ public class FPCDefaultAI extends PlayerAI
 		
 		debug("prepare target:" + target);
 		
+		if(fightTaskByClass(target))
+			return true;
+		
 		if (actor.getServitors().length > 0){
 			for (Servitor summon: actor.getServitors())
 			{
 				summon.getAI().Attack(target, true, false);
 			}
 		}
+		
+		
 		
 		
 		double distance = actor.getDistance(target);

@@ -1,5 +1,7 @@
 package blood;
 
+import java.lang.management.ManagementFactory;
+
 import l2mq.L2MQ;
 
 
@@ -18,7 +20,8 @@ public class BloodTest
 	public static void main(String[] args)
 	{
 		// TODO Auto-generated method stub
-		L2MQ.getInstance();
+//		L2MQ.getInstance();
+		System.out.println("pid:"+Blood.getPID());
 			
 	}
 	

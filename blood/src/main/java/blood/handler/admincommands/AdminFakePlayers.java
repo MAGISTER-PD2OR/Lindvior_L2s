@@ -1,6 +1,7 @@
 package blood.handler.admincommands;
 
 import l2s.gameserver.ai.PlayerAI;
+import l2s.gameserver.dao.CharacterDAO;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
 //import l2s.gameserver.model.Effect;
 import l2s.gameserver.model.GameObject;
@@ -17,14 +18,13 @@ import org.slf4j.LoggerFactory;
 import blood.Blood;
 import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
-import blood.base.FPCItem;
+import blood.base.FPCParty;
+import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
-import blood.data.holder.FarmZoneHolder;
 import blood.model.FPReward;
-import blood.model.FarmZone;
 import blood.table.FPCMerchantTable;
-//import l2s.gameserver.cache.Msg;
+import blood.utils.ClassFunctions;
 
 public class AdminFakePlayers implements IAdminCommandHandler
 {
@@ -35,17 +35,18 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		admin_fp_debug,
 		admin_fp_attack,
 		admin_fp_check,
+		admin_fp_party_check,
 		admin_fp_quota,
 		admin_fp_padding,
 		admin_reload_merchant,
-		admin_fp_autoarm,
 		admin_clear_inv,
 		admin_add_ai,
 		admin_check_ring,
 		admin_fp_spawn,
 		admin_fp_equip,
 		admin_fp_loc,
-		admin_set_level2
+		admin_set_level2,
+		admin_fp_class, admin_tryai
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -180,12 +181,21 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		    		activeChar.sendMessage(report);
 		    	}
 				break;
+			case admin_fp_party_check:
+				GameObject target = activeChar.getTarget();
+				if(!target.isPlayer() || !target.getPlayer().isFakePlayer())
+					return false;
+				
+				FPCParty party = FPCInfo.getInstance(target.getPlayer()).getParty();
+				if(party == null)
+					return false;
+				
+				party.debug();
+				
+				break;
 			
 			case admin_reload_merchant:
 				FPCMerchantTable.GetMerchantItemListFromDB();
-				break;
-			case admin_fp_autoarm:
-				FPCItem.gearUp(activeChar);
 				break;
 				
 			case admin_clear_inv:
@@ -197,6 +207,12 @@ public class AdminFakePlayers implements IAdminCommandHandler
 					}
 				activeChar.getInventory().store();
 				activeChar.sendMessage("Clear Inventory.");
+			break;
+			case admin_tryai:
+				FPCInfo newInfo = new FPCInfo(activeChar);
+				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
+				newInfo.setPVEStyle(FPCPveStyle.PARTY);
+				newInfo.lookingParty();
 			break;
 			case admin_add_ai:
 				activeChar.sendMessage("Current Player AI: " + activeChar.getAI());
@@ -213,19 +229,23 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				}
 				String char_name = wordList[1];
 //				GameObjectsStorage.getPlayer(char_name);
-				Player player = GameObjectsStorage.getPlayer(char_name);
-				FPCInfo newChar = new FPCInfo(player.getObjectId());
+//				Player player = GameObjectsStorage.getPlayer(char_name);
+				int playerId = CharacterDAO.getInstance().getObjectIdByName(char_name);
+				_log.info("spawn: "+playerId+ " name: "+char_name);
+				FPCInfo newChar = new FPCInfo(playerId);
             	newChar.spawn();
+//            	newChar.setRole(FPCRole.NEXUS_EVENT);
 //				World.getPlayer(char_name);
 			break;
 			case admin_fp_equip:
 				System.out.println("admin_fp_equip");
 				FPReward.getInstance().giveReward(activeChar);
 			break;
+			case admin_fp_class:
+				ClassFunctions.upClass(activeChar);
+			break;
 			case admin_fp_loc:
-				FarmZone zone = FarmZoneHolder.getInstance().getZones(activeChar.getLevel());
-				if(zone != null)
-					activeChar.teleToLocation(zone.getRndLocation());
+				FPCInfo.getInstance(activeChar).teleToNextFarmZone();
 			break;
 		default:
 			break;

@@ -27,7 +27,10 @@ import l2s.gameserver.utils.PositionUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import blood.FPCInfo;
+import blood.base.FPCParty;
 import blood.model.FPReward;
+import blood.utils.ClassFunctions;
 
 public class EventFPC extends FPCDefaultAI
 {
@@ -55,7 +58,7 @@ public class EventFPC extends FPCDefaultAI
 	{
 		List<Integer> _list = getAllowSkill();
 		
-		_log.info("addSkill: " + skill+ " isAllow:"+_list.contains(skill.getId()));
+//		_log.info("addSkill: " + skill+ " isAllow:"+_list.contains(skill.getId()));
 		if(!_list.contains(skill.getId()))
 			return;
 		
@@ -188,6 +191,7 @@ public class EventFPC extends FPCDefaultAI
 			_aggroList.addDamageHate(attacker.getPlayer(), damage, damage);
 		}
 		
+		// if not attack, set attacker to target
 		if (getIntention() != CtrlIntention.AI_INTENTION_ATTACK)
 		{
 			if (!actor.isRunning())
@@ -272,29 +276,6 @@ public class EventFPC extends FPCDefaultAI
 		}
 	}
 	
-	@Override
-	public void onEvtThink()
-	{
-//		Player actor = getActor();
-		
-		//debug("event state: "+EventManager.getInstance().getMainEventManager().getState());
-		
-//		if(!NexusEvents.isInEvent(actor))
-//		{
-//			switch(EventManager.getInstance().getMainEventManager().getState())
-//			{
-//				case REGISTERING:
-//						registerToEvent();
-//					break;
-//				
-//				default:
-//					
-//			}
-//		}
-		
-		super.onEvtThink();
-	}
-	
 	protected boolean _thinkActiveCheckCondition()
 	{
 		
@@ -363,7 +344,6 @@ public class EventFPC extends FPCDefaultAI
 			// real buff
 			else if(actor.getEffectList().getEffectsCount(skill) == 0)
 			{
-				debug("Skill is not cubic summoning. " + skill + ", chooseTaskAndTargets");
 				chooseTaskAndTargets(skill, actor, 0);
 				return true;
 			}
@@ -373,6 +353,11 @@ public class EventFPC extends FPCDefaultAI
 	}
 	
 	protected void makeNpcBuffs()
+	{
+		basicNpcBuffs();
+	}
+	
+	protected void basicNpcBuffs()
 	{
 		npcBuff( 15642, 1 ); // Путешественник - Поэма Рога
 		npcBuff( 15643, 1 ); // Путешественник - Поэма Барабана
@@ -510,14 +495,26 @@ public class EventFPC extends FPCDefaultAI
 		return 100000;
 	}
 	
+	protected boolean thinkActiveByClass()
+	{
+		return false;
+	}
+	
 	@Override
 	protected void thinkActive()
 	{
-//		debug("think active");
+		debug("think active");
 		Player actor = getActor();
 		if (actor.isActionsDisabled())
 		{
 //			debug("action disabled");
+			return;
+		}
+		
+		if(actor.isInPeaceZone())
+		{
+			debug("tele to next farm zone");
+			FPCInfo.getInstance(actor).teleToNextFarmZone();
 			return;
 		}
 		
@@ -552,12 +549,7 @@ public class EventFPC extends FPCDefaultAI
 			
 			long now = System.currentTimeMillis();
 			
-			// check equip each 5 mins
-			if(now - _checkEquipTimestamp > 300000)
-			{
-				_checkEquipTimestamp = now;
-				FPReward.getInstance().giveReward(actor);
-			}
+			gearUp(now);
 			
 			if(now - _checkSummonTimestamp > 5000)
 			{
@@ -571,21 +563,42 @@ public class EventFPC extends FPCDefaultAI
 				_checkBuffTimestamp = now;
 			}
 			
-			if(thinkAggressive(3000, 1000)) return;
+			if(thinkActiveByClass())
+				return;
 			
-//			if(getCurrentEventType() == EventType.Domination)
-//			{
-//				if(tacticMove(300))
-//				{
-//					return;
-//				}
-//			}
+			if(!actor.isInParty() || actor.getParty().isLeader(actor))
+			{
+				if(thinkAggressive(3000, 1000)) return;
+				randomWalk();
+			}
+			else
+			{
+				Player leader = actor.getParty().getPartyLeader();
+				
+				if(ClassFunctions.isHealer(actor) || ClassFunctions.isTanker(actor))
+				{
+					tryMoveToLoc(FPCParty.getPartyCenterLoc(actor.getParty()), 500);
+					return;
+				}
+				
+				Creature target = leader.getAI().getAttackTarget();
+				
+				if(target != null && checkAggression(target))
+				{	
+					return;
+				}
+				
+				tryMoveToLoc(FPCParty.getPartyCenterLoc(actor.getParty()), 300);
+				
+//				tryMoveToTarget(leader, 300);
+				
+			}
 			
 //			if(thinkAggressive(3000)) return;
 			
 //			if(tacticMove()) return;
-			
-			randomWalk();
+//			if(!actor.isInParty())
+//				randomWalk();
 //		}
 //		else 
 //		{
@@ -621,6 +634,7 @@ public class EventFPC extends FPCDefaultAI
 		}
 		
 		reArm();
+		makeNpcBuffs();
 		
 		/*
 		if(isStuck(7000 + Rnd.get(3000)))
@@ -636,69 +650,6 @@ public class EventFPC extends FPCDefaultAI
 			createNewTask();
 		}
 	}
-	
-//	public static FastMap<Integer, List<EventSpawn>> _team_tactic_spawn = new FastMap<Integer, List<EventSpawn>>();
-	
-//	public static boolean checkSpawn(EventSpawn spawn, int teamId, EventType eventType)
-//	{
-//		//if(spawn.getSpawnType() == SpawnType.Regular && spawn.getSpawnTeam() != teamId)
-//		//	return true;
-//		
-//		switch(spawn.getSpawnType())
-//		{
-//			case Regular:
-//			case Flag:
-//				if(spawn.getSpawnTeam() != teamId && getCurrentEventType() == EventType.TvT)
-//					return true;
-//				else
-//					return false;
-//				
-//			case Base:
-//			case Zone:
-//				if(getCurrentEventType() == EventType.Domination)
-//					return true;
-//				else 
-//					return false;
-//			default:
-//				return false;
-//		}
-//	}
-	
-//	public void clearSpawns()
-//	{
-//		_team_tactic_spawn.clear();
-//	}
-//	
-//	public static EventType getCurrentEventType()
-//	{
-//		return EventManager.getInstance().getMainEventManager().getCurrent().getEventType();
-//	}
-//	
-//	public List<EventSpawn> getSpawns()
-//	{
-//		return getSpawns(NexusEvents.getPlayer(getActor()).getTeamId());
-//	}
-	
-//	public static List<EventSpawn> getSpawns(int teamId)
-//	{
-//		if(_team_tactic_spawn.get(teamId) == null)
-//		{
-//			_team_tactic_spawn.put(teamId, new ArrayList<EventSpawn>());
-//			
-//			List<EventSpawn> spawnList = EventManager.getInstance().getMainEventManager().getMap().getSpawns();
-//			
-//			for(EventSpawn spawn: spawnList)
-//			{
-//				if(checkSpawn(spawn, teamId, EventManager.getInstance().getMainEventManager().getCurrent().getEventType()))
-//				{
-//					// must improve algorithms to choose tactic point 
-//					_team_tactic_spawn.get(teamId).add(spawn);
-//				}
-//			}
-//		}
-//		
-//		return _team_tactic_spawn.get(teamId);
-//	}
 	
 	public static Location findFrontPosition(GameObject obj, int posX, int posY, int radiusmin, int radiusmax)
 	{
@@ -822,90 +773,19 @@ public class EventFPC extends FPCDefaultAI
 	 * Nexus function
 	 */
 	
-//	public PlayerEventInfo getEventActor()
-//	{
-//		return NexusEvents.getPlayer(getActor());
-//	}
-	
-	public void registerToEvent()
-	{
-		// randomize to join event
-		if(!Rnd.chance(1))
-			return;
-		/* FIXME */
-		
-//		Player actor = getActor();
-//		PlayerEventInfo actorEvent = NexusEvents.getPlayer(actor);
-//		if(EventManager.getInstance().getMainEventManager().registerPlayer(actorEvent))
-//		{
-//			clearSpawns();
-//			checkEventBuffScheme();
-//			debug("register to event");
-//		}
-//		
-//		//cancel shop if available
-//		if(actor.getPrivateStoreType() == Player.STORE_PRIVATE_SELL || actor.getPrivateStoreType() == Player.STORE_PRIVATE_BUY)
-//		{
-//			actor.setPrivateStoreType(Player.STORE_PRIVATE_NONE);
-//			actor.standUp();
-//			actor.broadcastCharInfo();
-//		}
-	}
-	
-	public void checkEventBuffScheme()
-	{
-		/* FIXME */
-//		Player actor = getActor();
-//		PlayerEventInfo actorEvent = NexusEvents.getPlayer(actor);
-//		
-//		if(EventBuffer.getInstance().getSchemes(actorEvent).isEmpty())
-//		{
-//			String scheme = "Main";
-//			EventBuffer.getInstance().addScheme(actorEvent, scheme);
-//			for(int buffId: getEventBuffList())
-//			{
-//				EventBuffer.getInstance().addBuff(buffId, actorEvent);
-//			}
-//		}
-//		
-//		if(EventBuffer.getInstance().getSchemes(actorEvent).size() < 2)
-//		{
-//			String scheme = "Summon";
-//			EventBuffer.getInstance().addScheme(actorEvent, scheme);
-//			for(int buffId: getEventPetBuffList())
-//			{
-//				EventBuffer.getInstance().addBuff(buffId, actorEvent);
-//			}
-//		}
-//		
-//		EventBuffer.getInstance().setPlayersCurrentScheme(actor.getObjectId(), "Main");
-//		EventBuffer.getInstance().setPlayersCurrentPetScheme(actor.getObjectId(), "Summon");
-	}
-	
-
-//	protected void trySummon(int skillId)
-//	{
-//		Player actor 	= getActor();
-//		Summon servitor = actor.getPet();
-//		
-//		if(servitor == null && actor.getCurrentMp() > 300 && NexusEvents.isInEvent(actor))
-//		{
-//			Skill skill = actor.getKnownSkill(skillId);
-//			if(skill != null)
-//			{
-//				
-//				chooseTaskAndTargets(skill, actor, 0);
-//			}
-//		}
-//	}
-
 	protected void tryCastSkill(int skillId, Creature target)
+	{
+		tryCastSkill(skillId, target, getActor().getDistance(target));
+	}
+
+	protected void tryCastSkill(int skillId, Creature target, double distance)
 	{
 		Player actor = getActor();
 		Skill skill = actor.getKnownSkill(skillId);
+		debug(actor + " try cast skill:"+skillId+" on distance: "+ distance + " on: "+target);
 		if(skill != null && target != null)
 		{
-			chooseTaskAndTargets(skill, target, 0);
+			chooseTaskAndTargets(skill, target, distance);
 		}
 			
 	}
@@ -921,188 +801,6 @@ public class EventFPC extends FPCDefaultAI
 			
 	}
 	
-	public List<Integer> getEventPetBuffList()
-	{
-		List<Integer> buffs = new ArrayList<Integer>();
-		buffs.add(275); 		//Dances - Dance of Fury
-//		buffs.add(309); 		//Dances - Dance of Earth Guard
-//		buffs.add(307); 		//Dances - Dance of Aqua Guard
-//		buffs.add(365); 		//Dances - Siren's Dance
-//		buffs.add(277); 		//Dances - Dance of Light
-//		buffs.add(276); 		//Dances - Dance of concentration
-		buffs.add(310); 		//Dances - Dance of the Vampire
-		buffs.add(274); 		//Dances - Dance of Fire
-//		buffs.add(273); 		//Dances - Dance of the Mystic
-//		buffs.add(272); 		//Dances - Dance of Inspiration
-		buffs.add(271); 		//Dances - Dance of the Warrior
-//		buffs.add(530); 		//Dances - Dance of Alignment
-//		buffs.add(1182); 		//Elder - Resist Aqua
-//		buffs.add(1354); 		//Elder - Arcane Protection
-		buffs.add(1087); 		//Elder - Agility
-//		buffs.add(1353); 		//Elder - Divine Protection
-		buffs.add(1352); 		//Elder - Elemental Protection
-		buffs.add(1259); 		//Elder - Resist Shock
-//		buffs.add(1073); 		//Elder - Kiss of Eva
-//		buffs.add(1304); 		//Elder - Advanced Block
-//		buffs.add(1355); 		//Elder - Prophecy of Water
-//		buffs.add(1460); 		//Elder - Mana Gain
-		buffs.add(1397); 		//Elder - Clarity
-//		buffs.add(1393); 		//Elder - Unholy Resistance
-		buffs.add(1044); 		//Prophet - Regeneration
-		buffs.add(1045); 		//Prophet - Blessed Body
-		buffs.add(1048); 		//Prophet - Blessed Soul
-		buffs.add(1062); 		//Prophet - Berserker Spirit
-		buffs.add(1068); 		//Prophet - Might
-//		buffs.add(1085); 		//Prophet - Acumen
-		buffs.add(1086); 		//Prophet - Haste
-//		buffs.add(1191); 		//Prophet - Resist Fire
-		buffs.add(1204); 		//Prophet - Wind Walk
-//		buffs.add(1043); 		//Prophet - Holy Weapon
-		buffs.add(1040); 		//Prophet - Shield
-		buffs.add(1036); 		//Prophet - Magic Barrier
-//		buffs.add(1356); 		//Prophet - Prophecy of Fire
-		buffs.add(1035); 		//Prophet - Mental Shield
-//		buffs.add(1392); 		//Prophet - Holy Resistance
-		buffs.add(1240); 		//Prophet - Guidance
-//		buffs.add(1243); 		//Prophet - Bless Shield
-//		buffs.add(1033); 		//Prophet - Resist Poison
-//		buffs.add(1032); 		//Prophet - Invigor
-//		buffs.add(1303); 		//ShillenElder - Wild Magic
-		buffs.add(1357); 		//ShillenElder - Prophecy of Wind
-//		buffs.add(1189); 		//ShillenElder - Resist Wind
-		buffs.add(1388); 		//ShillenElder - Greater Might
-		buffs.add(1268); 		//ShillenElder - Vampiric Rage
-//		buffs.add(1389); 		//ShillenElder - Greater Shield
-//		buffs.add(1059); 		//ShillenElder - Empower
-		buffs.add(1077); 		//ShillenElder - Focus
-		buffs.add(1242); 		//ShillenElder - Death Whisper
-//		buffs.add(1078); 		//ShillenElder - Concentration
-		buffs.add(264); 		//Songs - Song of Earth
-//		buffs.add(308); 		//Songs - Song of Storm Guard
-//		buffs.add(306); 		//Songs - Song of Flame Guard
-//		buffs.add(305); 		//Songs - Song of Vengeance
-		buffs.add(304); 		//Songs - Song of Vitality
-//		buffs.add(270); 		//Songs - Song of Invocation
-		buffs.add(269); 		//Songs - Song of Hunter
-		buffs.add(268); 		//Songs - Song of Wind
-		buffs.add(267); 		//Songs - Song of Warding
-		buffs.add(266); 		//Songs - Song of Water
-		buffs.add(349); 		//Songs - Song of Renewal
-//		buffs.add(363); 		//Songs - Song of Meditation
-		buffs.add(364); 		//Songs - Song of Champion
-//		buffs.add(529); 		//Songs - Song of Elemental
-//		buffs.add(4702); 		//Summon - Blessing of Seraphim
-//		buffs.add(4700); 		//Summon - Gift of Queen
-		buffs.add(4699); 		//Summon - Blessing of Queen
-		buffs.add(4703); 		//Summon - Gift of Seraphim
-//		buffs.add(1007); 		//WarCryer - Chant of Battle
-		buffs.add(1413); 		//WarCryer - Magnus Chant
-//		buffs.add(1009); 		//WarCryer - Chant of Shielding
-//		buffs.add(1006); 		//WarCryer - Chant of Fire
-//		buffs.add(1284); 		//WarCryer - Chant of Revenge
-//		buffs.add(1391); 		//WarCryer - Earth Chant
-//		buffs.add(1002); 		//WarCryer - Flame Chant
-		buffs.add(1363); 		//WarCryer - Chant of Victory
-//		buffs.add(1362); 		//WarCryer - Chant of Spirit
-//		buffs.add(1308); 		//WarCryer - Chant of Predator
-//		buffs.add(1309); 		//WarCryer - Chant of Eagle
-//		buffs.add(1310); 		//WarCryer - Chant of Vampire
-//		buffs.add(1390); 		//WarCryer - War Chant
-
-		return buffs;
-	}
-	
-	public List<Integer> getEventBuffList()
-	{
-		List<Integer> buffs = new ArrayList<Integer>();
-//		buffs.add(275); 		//Dances - Dance of Fury
-//		buffs.add(309); 		//Dances - Dance of Earth Guard
-//		buffs.add(307); 		//Dances - Dance of Aqua Guard
-//		buffs.add(365); 		//Dances - Siren's Dance
-//		buffs.add(277); 		//Dances - Dance of Light
-//		buffs.add(276); 		//Dances - Dance of concentration
-//		buffs.add(310); 		//Dances - Dance of the Vampire
-//		buffs.add(274); 		//Dances - Dance of Fire
-//		buffs.add(273); 		//Dances - Dance of the Mystic
-//		buffs.add(272); 		//Dances - Dance of Inspiration
-//		buffs.add(271); 		//Dances - Dance of the Warrior
-//		buffs.add(530); 		//Dances - Dance of Alignment
-//		buffs.add(1182); 		//Elder - Resist Aqua
-//		buffs.add(1354); 		//Elder - Arcane Protection
-//		buffs.add(1087); 		//Elder - Agility
-//		buffs.add(1353); 		//Elder - Divine Protection
-//		buffs.add(1352); 		//Elder - Elemental Protection
-//		buffs.add(1259); 		//Elder - Resist Shock
-//		buffs.add(1073); 		//Elder - Kiss of Eva
-//		buffs.add(1304); 		//Elder - Advanced Block
-//		buffs.add(1355); 		//Elder - Prophecy of Water
-//		buffs.add(1460); 		//Elder - Mana Gain
-//		buffs.add(1397); 		//Elder - Clarity
-//		buffs.add(1393); 		//Elder - Unholy Resistance
-//		buffs.add(1044); 		//Prophet - Regeneration
-//		buffs.add(1045); 		//Prophet - Blessed Body
-//		buffs.add(1048); 		//Prophet - Blessed Soul
-//		buffs.add(1062); 		//Prophet - Berserker Spirit
-//		buffs.add(1068); 		//Prophet - Might
-//		buffs.add(1085); 		//Prophet - Acumen
-//		buffs.add(1086); 		//Prophet - Haste
-//		buffs.add(1191); 		//Prophet - Resist Fire
-//		buffs.add(1204); 		//Prophet - Wind Walk
-//		buffs.add(1043); 		//Prophet - Holy Weapon
-//		buffs.add(1040); 		//Prophet - Shield
-//		buffs.add(1036); 		//Prophet - Magic Barrier
-//		buffs.add(1356); 		//Prophet - Prophecy of Fire
-//		buffs.add(1035); 		//Prophet - Mental Shield
-//		buffs.add(1392); 		//Prophet - Holy Resistance
-//		buffs.add(1240); 		//Prophet - Guidance
-//		buffs.add(1243); 		//Prophet - Bless Shield
-//		buffs.add(1033); 		//Prophet - Resist Poison
-//		buffs.add(1032); 		//Prophet - Invigor
-//		buffs.add(1303); 		//ShillenElder - Wild Magic
-//		buffs.add(1357); 		//ShillenElder - Prophecy of Wind
-//		buffs.add(1189); 		//ShillenElder - Resist Wind
-//		buffs.add(1388); 		//ShillenElder - Greater Might
-//		buffs.add(1268); 		//ShillenElder - Vampiric Rage
-//		buffs.add(1389); 		//ShillenElder - Greater Shield
-//		buffs.add(1059); 		//ShillenElder - Empower
-//		buffs.add(1077); 		//ShillenElder - Focus
-//		buffs.add(1242); 		//ShillenElder - Death Whisper
-//		buffs.add(1078); 		//ShillenElder - Concentration
-//		buffs.add(264); 		//Songs - Song of Earth
-//		buffs.add(308); 		//Songs - Song of Storm Guard
-//		buffs.add(306); 		//Songs - Song of Flame Guard
-//		buffs.add(305); 		//Songs - Song of Vengeance
-//		buffs.add(304); 		//Songs - Song of Vitality
-//		buffs.add(270); 		//Songs - Song of Invocation
-//		buffs.add(269); 		//Songs - Song of Hunter
-//		buffs.add(268); 		//Songs - Song of Wind
-//		buffs.add(267); 		//Songs - Song of Warding
-//		buffs.add(266); 		//Songs - Song of Water
-//		buffs.add(349); 		//Songs - Song of Renewal
-//		buffs.add(363); 		//Songs - Song of Meditation
-//		buffs.add(364); 		//Songs - Song of Champion
-//		buffs.add(529); 		//Songs - Song of Elemental
-//		buffs.add(4702); 		//Summon - Blessing of Seraphim
-//		buffs.add(4700); 		//Summon - Gift of Queen
-//		buffs.add(4699); 		//Summon - Blessing of Queen
-//		buffs.add(4703); 		//Summon - Gift of Seraphim
-//		buffs.add(1007); 		//WarCryer - Chant of Battle
-//		buffs.add(1413); 		//WarCryer - Magnus Chant
-//		buffs.add(1009); 		//WarCryer - Chant of Shielding
-//		buffs.add(1006); 		//WarCryer - Chant of Fire
-//		buffs.add(1284); 		//WarCryer - Chant of Revenge
-//		buffs.add(1391); 		//WarCryer - Earth Chant
-//		buffs.add(1002); 		//WarCryer - Flame Chant
-//		buffs.add(1363); 		//WarCryer - Chant of Victory
-//		buffs.add(1362); 		//WarCryer - Chant of Spirit
-//		buffs.add(1308); 		//WarCryer - Chant of Predator
-//		buffs.add(1309); 		//WarCryer - Chant of Eagle
-//		buffs.add(1310); 		//WarCryer - Chant of Vampire
-//		buffs.add(1390); 		//WarCryer - War Chant
-
-		return buffs;
-	}
-	
 	public Skill getUniqueSkill(int[] skills)
 	{
 		Skill skill = null;
@@ -1113,5 +811,30 @@ public class EventFPC extends FPCDefaultAI
 		
 		return skill;
 	}
+	
+	/*
+	 * Gear UP
+	 */
+	protected long _gearUpTimeStamp = 0;
+	
+	public void gearUp()
+	{
+		gearUp(System.currentTimeMillis());
+	}
+	
+	public void gearUp(Long now)
+	{
+		gearUp(now, 60*5*1000);
+	}
+	
+	public void gearUp(Long now, int limit)
+	{
+		if(now < (_gearUpTimeStamp + limit))
+			return;
+		
+		_gearUpTimeStamp = now;
+		FPReward.getInstance().giveReward(getActor());
+	}
+	
 
 }

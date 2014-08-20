@@ -1,7 +1,18 @@
 package blood;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+
+
+
+
+
 
 //import l2s.gameserver.network.loginservercon.LoginServerCommunication;
 import l2mq.L2MQ;
@@ -9,6 +20,7 @@ import l2s.commons.configuration.ExProperties;
 import l2s.commons.dbutils.DbUtils;
 import l2s.gameserver.Config;
 import l2s.gameserver.GameServer;
+import l2s.gameserver.ThreadPoolManager;
 import l2s.gameserver.database.DatabaseFactory;
 import l2s.gameserver.handler.admincommands.AdminCommandHandler;
 import l2s.gameserver.network.authcomm.AuthServerCommunication;
@@ -16,23 +28,21 @@ import l2s.gameserver.network.authcomm.AuthServerCommunication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import blood.base.FPCItem;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.data.parser.FPItemParser;
 import blood.data.parser.FarmZoneParser;
 import blood.handler.admincommands.AdminFakePlayers;
-import blood.table.FPCNameTable;
 public
 class Blood {
 	
-    private static final String LOAD_OFFLINE_STATUS = "SELECT obj_Id FROM characters LIMIT 50";
+    private static final String LOAD_OFFLINE_STATUS = "SELECT obj_id FROM fpc";
     private static final Logger 		_log = LoggerFactory.getLogger(Blood.class);
     private static Blood 	_instance;
-//    private static long _disconnect_timeout	= 60000L;  //every 10 minutes
+    private static long _disconnect_timeout	= 600000L;  //every 10 minutes
     
     public static int FPC_IDLE = 0;
-    public static int FPC_EVENT = 0;
+    public static int FPC_NEXUS = 0;
     public static int FPC_MARKET = 0;
     public static boolean MQ_ENABLE = false;
     
@@ -51,24 +61,20 @@ class Blood {
     
     private Blood() {
     	_log.info("Initiate BloodFakePlayers.");
-//    	SpawnParser.getInstance().load();
-//    	loadConfig();
-    	//buildContent();
+    	loadConfig();
 //    	FPCItem.getInstance();
-//    	FPCNameTable.getInstance();
 //    	FPCMerchantTable.getInstance();
-//    	storeFakePlayers();
+    	storeFakePlayers();
     	FPItemParser.getInstance().load();
     	FarmZoneParser.getInstance().load();
     	if(MQ_ENABLE)
     		L2MQ.getInstance();
     	
     	// add new comment
-    	// hien add comment
     	
         AdminCommandHandler.getInstance().registerAdminCommandHandler(new AdminFakePlayers());
-//		ThreadPoolManager.getInstance().scheduleAtFixedRate(new ManagerTask(), 30000L, 30000L); //every 30 seconds
-//		ThreadPoolManager.getInstance().scheduleAtFixedRate(new DisconnectTask(), _disconnect_timeout, _disconnect_timeout);
+		ThreadPoolManager.getInstance().scheduleAtFixedRate(new ManagerTask(), 30000L, 30000L); //every 30 seconds
+		ThreadPoolManager.getInstance().scheduleAtFixedRate(new DisconnectTask(), _disconnect_timeout, _disconnect_timeout);
     }
     
     public static void loadConfig()
@@ -78,7 +84,7 @@ class Blood {
     	FENCE_PARENT_ID = bfconfig.getProperty("fenceParentId", 0);
     	
     	FPC_IDLE = bfconfig.getProperty("FPC_IDLE", 10);
-    	FPC_EVENT = bfconfig.getProperty("FPC_EVENT", 0);
+    	FPC_NEXUS = bfconfig.getProperty("FPC_NEXUS", 0);
     	FPC_MARKET = bfconfig.getProperty("FPC_MARKET", 0);
     	MQ_ENABLE = bfconfig.getProperty("MQ_ENABLE", false);
     }
@@ -91,9 +97,7 @@ class Blood {
             PreparedStatement stm = con.prepareStatement(LOAD_OFFLINE_STATUS);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-            	FPCInfo newChar = new FPCInfo(rs.getInt("obj_Id"));
-            	newChar.spawn();
-            	newChar.uyThac();
+            	new FPCInfo(rs.getInt("obj_Id"));
             }
             rs.close();
             stm.close();
@@ -107,11 +111,12 @@ class Blood {
     
     public static void populationControl()
     {
-    	int max_giving_birth = 20;
-    	int max_move_role = 10;
+    	int max_giving_birth = 200;
+    	int max_move_role = 100;
     	int diff, i;
     	// birth
     	diff = FPCSpawnStatus.getDiff(); 
+//    	_log.info("diff birth:"+diff);
     	i = 0;
     	while( i < diff && i < max_giving_birth && diff > 0)
     	{
@@ -123,6 +128,7 @@ class Blood {
     	for (FPCRole role : FPCRole.values()) 
     	{
     		diff = role.getPadding();
+//    		_log.info("diff role:"+diff+" "+role);
         	i = 0;
         	
         	while( i < Math.abs(diff) && i < max_move_role)
@@ -164,8 +170,7 @@ class Blood {
     	for(int i=0;i<disconnectCount;i++)
     	{
     		FPCInfo actor = FPCSpawnStatus.ONLINE.getRandom();
-    		
-    		if(!actor.isInEvent()) actor.kick(); 
+    		actor.kick(); 
     	}
 	
 	}
@@ -224,8 +229,40 @@ class Blood {
 
    	}
     
+    public static String getPID()
+    {
+    	String pidString = ManagementFactory.getRuntimeMXBean().getName();
+		return pidString.split("@")[0];
+    }
+    
+    public static void writePID()
+    {
+    	try {
+    		 
+			String pid = getPID();
+ 
+			File file = new File("l2gs.pid");
+ 
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+ 
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(pid);
+			bw.close();
+ 
+			System.out.println("Write PID:"+pid);
+ 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
     public static void main(String[] args) throws Exception
     {
+    	writePID();
     	Blood.loadConfig();
     	if(Blood.IS_FENCE){
     		_log.info("Fence is active");

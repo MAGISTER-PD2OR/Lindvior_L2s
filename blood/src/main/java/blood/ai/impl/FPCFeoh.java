@@ -3,12 +3,8 @@ package blood.ai.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import l2s.commons.math.random.RndSelector;
-import l2s.commons.util.Rnd;
-import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 
 /**
@@ -46,6 +42,12 @@ public class FPCFeoh extends MysticPC
 	public final int SKILL_WATER_STANCE	= 11008;
 	public final int SKILL_WIND_STANCE 	= 11009;
 	public final int SKILL_EARTH_STANCE	= 11010;
+	public final int SKILL_ARCANE_POWER = 337;
+	
+	protected long _darkcureTS = 0;
+	protected int _darkcureReuse = 30000;
+	
+	// should add auto learn skill
 	
 	public FPCFeoh(Player actor)
 	{
@@ -87,10 +89,11 @@ public class FPCFeoh extends MysticPC
 	@Override
 	protected boolean thinkBuff()
 	{
-//		if(thinkBuff(new int[] {
-//			10757
-//		}))
-//			return true;
+		if(thinkBuff(new int[] {
+			SKILL_ARCANE_POWER,
+			SKILL_EARTH_STANCE
+		}))
+			return true;
 		// ultimate body to mind
 		Player actor = getActor();
 		Skill skill = getActor().getKnownSkill(SKILL_ULTIMATE_BTM);
@@ -109,7 +112,7 @@ public class FPCFeoh extends MysticPC
 		
 		double distance = actor.getDistance(attacker);
 		debug("get acttacked by: "+attacker+" in range:" + distance);
-		if(distance < 100)
+		if(distance < 200)
 		{
 			Skill skillMagicEvasion = actor.getKnownSkill(SKILL_MAGIC_EVASION);
 			Skill skillMagicCharge = actor.getKnownSkill(SKILL_MAGIC_CHARGE);
@@ -125,36 +128,13 @@ public class FPCFeoh extends MysticPC
 		super.onEvtAttacked(attacker, damage);
 	}
 	
-	protected boolean defaultFightTask()
+	protected int _last_target_id = 0;
+	protected boolean _last_target_dark_curse = false;
+	
+	protected boolean feohFightTask(Creature target)
 	{
-		clearTasks();
-		
 		Player actor = getActor();
-		if (actor.isDead() || actor.isAMuted())
-		{
-			return false;
-		}
-		
-		Creature target;
-		if ((target = prepareTarget()) == null)
-		{
-			setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-			return false;
-		}
-		
-		debug("prepare target:" + target);
-		
-		if (actor.getServitors().length > 0){
-			for (Servitor summon: actor.getServitors())
-			{
-				summon.getAI().Attack(target, true, false);
-			}
-		}
-		
-		
 		double distance = actor.getDistance(target);
-		double targetHp = target.getCurrentHpPercents();
-		double actorHp = actor.getCurrentHpPercents();
 		
 		Skill skillDeathCurse = actor.getKnownSkill(SKILL_DEVIL_CURSE);
 		Skill skillElementBurst = actor.getKnownSkill(SKILL_ELEMENT_BURST_DE);
@@ -169,10 +149,17 @@ public class FPCFeoh extends MysticPC
 		if(distance < 400 && canUseSkill(skillDeathFear, target))
 			chooseTaskAndTargets(skillDeathFear, target, distance);
 		
-		// if we are feoh soul taker we should debuf darkcurse first
-		if(canUseSkill(skillDarkCurse, target, distance) && target.getEffectList().getEffectsCount(skillDarkCurse) == 0)
-			return chooseTaskAndTargets(skillDarkCurse, target, distance);
+		if(_last_target_id != target.getObjectId())
+		{
+			_last_target_dark_curse = false;
+		}
 		
+		// if we are feoh soul taker we should debuf darkcurse first
+		if(!_last_target_dark_curse && canUseSkill(skillDarkCurse, target, distance) && target.getEffectList().getEffectsCount(skillDarkCurse) == 0){
+			_last_target_dark_curse = true;
+			return chooseTaskAndTargets(skillDarkCurse, target, distance);
+		}
+			
 		// 1st use death curse
 		if(canUseSkill(skillDeathCurse, target, distance) && target.getEffectList().getEffectsCount(skillDeathCurse) == 0)
 			return chooseTaskAndTargets(skillDeathCurse, target, distance);
@@ -203,69 +190,17 @@ public class FPCFeoh extends MysticPC
 		// use destruction
 		if(canUseSkill(skillElementDestruction, target, distance))
 			return chooseTaskAndTargets(skillElementDestruction, target, distance);
-			
-		Skill[] dam = Rnd.chance(getRateDAM()) ? selectUsableSkills(target, distance, _damSkills) : null;
-		Skill[] dot = Rnd.chance(getRateDOT()) ? selectUsableSkills(target, distance, _dotSkills) : null;
-		Skill[] debuff = targetHp > 10 ? Rnd.chance(getRateDEBUFF()) ? selectUsableSkills(target, distance, _debuffSkills) : null : null;
-		Skill[] stun = Rnd.chance(getRateSTUN()) ? selectUsableSkills(target, distance, _stunSkills) : null;
-		Skill[] heal = actorHp < 50 ? Rnd.chance(getRateHEAL()) ? selectUsableSkills(actor, 0, _healSkills) : null : null;
-		Skill[] buff = Rnd.chance(getRateBUFF()) ? selectUsableSkills(actor, 0, _buffSkills) : null;
 		
-		RndSelector<Skill[]> rnd = new RndSelector<Skill[]>();
-		if (!actor.isAMuted())
-		{
-			rnd.add(null, getRatePHYS());
-		}
-		
-		if(dam != null && dam.length > 0)
-			rnd.add(dam, getRateDAM());
-		
-		if(dot != null && dot.length > 0)
-		rnd.add(dot, getRateDOT());
-		
-		if(debuff != null && debuff.length > 0)
-		rnd.add(debuff, getRateDEBUFF());
-		
-		if(heal != null && heal.length > 0)
-		rnd.add(heal, getRateHEAL());
-		
-		if(buff != null && buff.length > 0)
-		rnd.add(buff, getRateBUFF());
-		
-		if(stun != null && stun.length > 0)
-		rnd.add(stun, getRateSTUN());
-		
-		Skill[] selected = rnd.select();
-		if (selected != null)
-		{
-			if ((selected == dam) || (selected == dot))
-			{
-				return chooseTaskAndTargets(selectTopSkillByDamage(actor, target, distance, selected), target, distance);
-			}
-			
-			if ((selected == debuff) || (selected == stun))
-			{
-				return chooseTaskAndTargets(selectTopSkillByDebuff(actor, target, distance, selected), target, distance);
-			}
-			
-			if (selected == buff)
-			{
-				return chooseTaskAndTargets(selectTopSkillByBuff(actor, selected), actor, distance);
-			}
-			
-			if (selected == heal)
-			{
-				return chooseTaskAndTargets(selectTopSkillByHeal(actor, selected), actor, distance);
-			}
-		}
-		
-		// TODO make treatment and buff friendly targets
-		
-		return chooseTaskAndTargets(null, target, distance);
+		debug("try move to target");
+		tryMoveToTarget(target, 600);
+		return false;
 	}
 	
-	
-	
+	protected boolean fightTaskByClass(Creature target)
+	{
+		feohFightTask(target);
+		return true;
+	}
 	
 }
 

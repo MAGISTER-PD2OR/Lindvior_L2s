@@ -2,31 +2,23 @@ package blood;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.List;
 
 import l2s.commons.dbutils.DbUtils;
+import l2s.commons.math.random.RndSelector;
 import l2s.commons.util.Rnd;
-import l2s.gameserver.Config;
 import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.database.DatabaseFactory;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.SkillLearn;
-import l2s.gameserver.model.actor.instances.player.ShortCut;
 import l2s.gameserver.model.base.AcquireType;
-import l2s.gameserver.model.base.ClassId;
-import l2s.gameserver.model.base.Race;
-import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.tables.SkillTable;
-import l2s.gameserver.templates.item.ItemGrade;
-import l2s.gameserver.templates.item.ItemTemplate;
 import l2s.gameserver.templates.player.PlayerTemplate;
-import l2s.gameserver.utils.ItemFunctions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import blood.base.FPCItem;
-import blood.table.FPCNameTable;
+import blood.dao.FakeNameDAO;
+import blood.utils.NameFunctions;
 
 public class FPCCreator
 {
@@ -34,52 +26,221 @@ public class FPCCreator
 	
 	private static final Logger 		_log = LoggerFactory.getLogger(FPCCreator.class);
 	
-   	@SuppressWarnings("unused")
-	private static int[] _black_ore 	= {926, 864, 864, 895, 895};
-   	private static int[] _majestic_ring = {924, 862, 862, 893, 893};
-   	
+	public static void isHumanName(String name)
+	{
+		name.toLowerCase().contains("human");
+	}
    	
    	public static void createNewChar()
 	{
-		int[] _class_list = {2,3,5,6,8,9,12,13,14,20,21,23,24,27,33,34,36,40,41,46,48,51,52,55,57,127,130,129,128}; // no ES id 28, prophet id 17, no healer id 16, 30, 43
-		createNewChar(_class_list[Rnd.get(_class_list.length)], FPCNameTable.getRandomName(), "_fake_account");
+		int[] _class_list = {
+				0, // human F
+				10, // human M
+				18, // elf F
+				25, // elf M
+				31, // delf F
+				38, // delf M
+				44, // orc F
+				49, // orc M
+				53, // dwarf
+				123, // kamael Male
+				124 // kamael Female
+				};
+		RndSelector<Integer> _randomFactor = new RndSelector<Integer>(); 
+		String name = FakeNameDAO.getInstance().getName();
+		if(NameFunctions.isHumanName(name))
+		{
+			if(!NameFunctions.isMysticName(name))
+				_randomFactor.add(0, 1);
+			if(!NameFunctions.isFighterName(name))
+				_randomFactor.add(10, 1);
+			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
+			{
+				_randomFactor.add(0, 1);
+				_randomFactor.add(10, 1);
+			}
+		}
+		else if(NameFunctions.isElfName(name))
+		{
+			if(!NameFunctions.isMysticName(name))
+				_randomFactor.add(18, 1);
+			if(!NameFunctions.isFighterName(name))
+				_randomFactor.add(25, 1);
+			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
+			{
+				_randomFactor.add(18, 1);
+				_randomFactor.add(25, 1);
+			}
+		}
+		else if(NameFunctions.isDarkElfName(name))
+		{
+			if(!NameFunctions.isMysticName(name))
+				_randomFactor.add(31, 1);
+			if(!NameFunctions.isFighterName(name))
+				_randomFactor.add(38, 1);
+			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
+			{
+				_randomFactor.add(31, 1);
+				_randomFactor.add(38, 1);
+			}
+		}
+		else if(NameFunctions.isOrcName(name))
+		{
+			if(!NameFunctions.isMysticName(name))
+				_randomFactor.add(44, 1);
+			if(!NameFunctions.isFighterName(name))
+				_randomFactor.add(49, 1);
+			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
+			{
+				_randomFactor.add(44, 1);
+				_randomFactor.add(49, 1);
+			}
+		}
+		else if(NameFunctions.isDwarfName(name))
+		{
+			_randomFactor.add(53, 1);
+		}
+		else if(NameFunctions.isKamaelName(name))
+		{
+			if(!NameFunctions.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!NameFunctions.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(NameFunctions.isTankerName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+		}
+		else if(NameFunctions.isWarriorName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+			_randomFactor.add(44, 1);
+			_randomFactor.add(53, 1);
+			if(!NameFunctions.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!NameFunctions.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(NameFunctions.isDaggerName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+			_randomFactor.add(53, 1);
+		}
+		else if(NameFunctions.isRangerName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+			if(!NameFunctions.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(NameFunctions.isFighterName(name))
+		{
+			_randomFactor.add(0, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+			_randomFactor.add(44, 1);
+			_randomFactor.add(53, 1);
+			if(!NameFunctions.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!NameFunctions.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(NameFunctions.isNukerName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+			if(!NameFunctions.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!NameFunctions.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else if(NameFunctions.isSummonerName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+		}
+		else if(NameFunctions.isHealerName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+		}
+		else if(NameFunctions.isBufferName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+			_randomFactor.add(49, 1);
+			_randomFactor.add(18, 1);
+			_randomFactor.add(31, 1);
+		}
+		else if(NameFunctions.isMysticName(name))
+		{
+			_randomFactor.add(10, 1);
+			_randomFactor.add(25, 1);
+			_randomFactor.add(38, 1);
+			_randomFactor.add(49, 1);
+			if(!NameFunctions.isFemaleName(name))
+				_randomFactor.add(123, 1);
+			if(!NameFunctions.isMaleName(name))
+				_randomFactor.add(124, 1);
+		}
+		else // add all
+		{
+			for(int classId: _class_list)
+				_randomFactor.add(classId, 1);
+		}
+		
+		try{
+			int selectedClass = _randomFactor.select();
+			createNewChar(selectedClass, name, "_fake_account");
+		}catch(Exception e){
+			_log.error("create char name:"+name, e);
+		}
 	}
     
-    @SuppressWarnings("unused")
 	public static void createNewChar(int _classId, String _name, String _account)
 	{
 		Connection con = null;
 		PreparedStatement statement = null;
 		
+//		_log.info("createNewChar:"+_name);
+		
 		//int _classId = Integer.parseInt(wordList[1]);
 		int _sex = Rnd.get(0,1);
+		if(_classId == 123 || NameFunctions.isMaleName(_name)){
+			_sex = 0;
+		}
+		
+		if(_classId == 124 || NameFunctions.isFemaleName(_name)){
+			_sex = 1;
+		}
 		int _hairStyle = Rnd.get(0, _sex == 1 ? 6 : 4);
 		int _hairColor = Rnd.get(0,2);
 		int _face = Rnd.get(0,2);
 		
-		if(_classId == 128 || _classId == 127){
-			_sex = 0;
-		}
-		
-		if(_classId == 129 || _classId == 130){
-			_sex = 1;
-		}
-		
 		//String _account = wordList.length == 3 ? wordList[2] : "_mylove1412";
 		
 		Player newChar = Player.create(_classId, _sex, _account, _name, _hairStyle, _hairColor, _face);
-		if(newChar.getRace() == Race.KAMAEL && newChar.getHairStyle() > 3)
-		{
-			newChar.setHairStyle(Rnd.get(2)+1);
-		}
+		
 		if(newChar == null)
 			return;
 		
+		FakeNameDAO.getInstance().useName(_name);
 		
 		try
 		{
 			con = DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("INSERT INTO fake_players(obj_id) VALUES (?)");
+			statement = con.prepareStatement("INSERT INTO fpc(obj_id) VALUES (?)");
 			statement.setInt(1, newChar.getObjectId());
 			statement.execute();
 		}
@@ -92,7 +253,7 @@ public class FPCCreator
 			DbUtils.closeQuietly(con, statement);
 		}
 		
-		_log.info("Create NewChar:"+_name+" in Account: "+_account+" Class: " + newChar.getClassId() + " Sex: " + _sex);
+		_log.info("Create NewChar:"+_name+" in Account: "+_account+" Class: " + _classId + " Sex: " + _sex);
 		
 		int _obj_id = newChar.getObjectId();
 		
@@ -108,102 +269,12 @@ public class FPCCreator
 
 		newChar.getSubClassList().restore();
 
-//		if(Config.STARTING_ADENA > 0)
-//			newChar.addAdena(Config.STARTING_ADENA);
-//		
-//		if(Config.STARTING_LEVEL != 0)
-//			newChar.addExpAndSp(Experience.LEVEL[Config.STARTING_LEVEL] - newChar.getExp(), 0, 0, 0, false, false);
+       	newChar.setLoc(template.getStartLocation());
 
-//        if (Config.SPAWN_CHAR)
-//            newChar.teleToLocation(Config.SPAWN_X + Rnd.get(-750, 750), Config.SPAWN_Y + Rnd.get(-750, 750), Config.SPAWN_Z);
-//           else
-           	newChar.setLoc(template.getStartLocation());
-
-		if(Config.CHAR_TITLE)
-			newChar.setTitle(Config.ADD_CHAR_TITLE);
-		else
-			newChar.setTitle("");
-
-//		if(Config.SERVICES_RATE_TYPE != Bonus.NO_BONUS && Config.SERVICES_RATE_CREATE_PA != 0 && newChar.getBonus() == null)
-//		{
-//			newChar.getBonus().setBonusExpire((int)(System.currentTimeMillis() / 1000L * (60 * 60 * 24 *  Config.SERVICES_RATE_CREATE_PA)));
-//			newChar.stopBonusTask();
-//			newChar.startBonusTask();
-//		}
-		
 		newChar.setHeading(Rnd.get(0, 90000));
 		
-		/*
-		for(CreateItem i : template.getItems())
-		{
-			ItemInstance item = ItemFunctions.createItem(i.getItemId());
-			newChar.getInventory().addItem(item);
-
-			if(i.getShortcut() - 1 > -1) // tutorial book
-				newChar.registerShortCut(new ShortCut(Math.min(i.getShortcut() - 1, 11), 0, ShortCut.TYPE_ITEM, item.getObjectId(), -1, 1));
-
-			if(i.isEquipable() && item.isEquipable() && (newChar.getActiveWeaponItem() == null || item.getTemplate().getType2() != ItemTemplate.TYPE2_WEAPON))
-				newChar.getInventory().equipItem(item);
-		}
-		*/
-		
-		
-
-		ClassId nclassId = newChar.getClassId();
-		
-		// black ore
-		for(int i: _majestic_ring){
-			ItemInstance item = ItemFunctions.createItem(i);
-			newChar.getInventory().addItem(item);
-			if(item.isEquipable() && (newChar.getActiveWeaponInstance() == null || item.getTemplate().getType2() != ItemTemplate.TYPE2_WEAPON))
-				newChar.getInventory().equipItem(item);
-		}
-		
-		// armor and weapon
-		List<Integer> doll_set = FPCItem.getWeaponAndArmorAndRing(nclassId, ItemGrade.B, ItemGrade.B, ItemGrade.A);
-		
-		for(int i: doll_set)
-		{
-			ItemInstance item = ItemFunctions.createItem(i);
-			newChar.getInventory().addItem(item);
-			if(item.isEquipable() && (newChar.getActiveWeaponInstance() == null || item.getTemplate().getType2() != ItemTemplate.TYPE2_WEAPON))
-				newChar.getInventory().equipItem(item);
-		}
-		
-		// bonus item
-		ItemInstance item ;
-		
-		// Adventurer's Scroll of Escape
-		item = ItemFunctions.createItem(10650);
-		item.setCount(5);
-		newChar.getInventory().addItem(item);
-
-		// Scroll of Escape: Kamael Village
-		item = ItemFunctions.createItem(9716);
-		item.setCount(10);
-		newChar.getInventory().addItem(item);
-
 		for(SkillLearn skill : SkillAcquireHolder.getInstance().getAvailableSkills(newChar, AcquireType.NORMAL))
 			newChar.addSkill(SkillTable.getInstance().getInfo(skill.getId(), skill.getLevel()), true);
-
-		if(newChar.getSkillLevel(1001) > 0) // Soul Cry
-			newChar.registerShortCut(new ShortCut(1, 0, ShortCut.TYPE_SKILL, 1001, 1, 1));
-		if(newChar.getSkillLevel(1177) > 0) // Wind Strike
-			newChar.registerShortCut(new ShortCut(1, 0, ShortCut.TYPE_SKILL, 1177, 1, 1));
-		if(newChar.getSkillLevel(1216) > 0) // Self Heal
-			newChar.registerShortCut(new ShortCut(2, 0, ShortCut.TYPE_SKILL, 1216, 1, 1));
-
-		// add attack, take, sit shortcut
-		newChar.registerShortCut(new ShortCut(0, 0, ShortCut.TYPE_ACTION, 2, -1, 1));
-		newChar.registerShortCut(new ShortCut(3, 0, ShortCut.TYPE_ACTION, 5, -1, 1));
-		newChar.registerShortCut(new ShortCut(10, 0, ShortCut.TYPE_ACTION, 0, -1, 1));
-		// понял как на панельке отобразить. нц софт 10-11 панели сделали(by VISTALL)
-		// fly transform
-		newChar.registerShortCut(new ShortCut(0, ShortCut.PAGE_FLY_TRANSFORM, ShortCut.TYPE_SKILL, 911, 1, 1));
-		newChar.registerShortCut(new ShortCut(3, ShortCut.PAGE_FLY_TRANSFORM, ShortCut.TYPE_SKILL, 884, 1, 1));
-		newChar.registerShortCut(new ShortCut(4, ShortCut.PAGE_FLY_TRANSFORM, ShortCut.TYPE_SKILL, 885, 1, 1));
-		// air ship
-		newChar.registerShortCut(new ShortCut(0, ShortCut.PAGE_AIRSHIP, ShortCut.TYPE_ACTION, 70, 0, 1));
 
 		newChar.setCurrentHpMp(newChar.getMaxHp(), newChar.getMaxMp());
 		newChar.setCurrentCp(0); // retail

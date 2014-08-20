@@ -1,11 +1,5 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import l2s.commons.math.random.RndSelector;
-import l2s.commons.util.Rnd;
-import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
@@ -56,23 +50,6 @@ public class FPCWynn extends SummonerPC
 		super(actor);
 	}
 	
-	@Override public List<Integer> getAllowSkill()
-	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
-		// skill 4th
-		SkillList.add(SKILL_SUMMON_KAI);
-		SkillList.add(SKILL_SUMMON_MERROW);
-		SkillList.add(SKILL_SUMMON_NIGHTSHADE);
-		
-		SkillList.add(SKILL_MARK_OF_VOID);
-		SkillList.add(SKILL_MARK_OF_PLAGUE);
-		SkillList.add(SKILL_MARK_OF_TRICK);
-		SkillList.add(SKILL_MARK_OF_WEAKNESS);
-		
-		return SkillList;
-	}
-	
 	@Override
 	protected boolean thinkBuff()
 	{
@@ -83,12 +60,6 @@ public class FPCWynn extends SummonerPC
 		}))
 			return true;
 		
-//		if(thinkBuff(getUniqueSkill(SKILL_SMART_CUBIC)))
-//			return true;
-		
-//		if(thinkBuff(SKILL_AVENGING_CUBIC))
-//			return true;
-
 		Player actor = getActor();
 		Skill skillUniqueBuff = getUniqueSkill(new int[]{
 			SKILL_SERVITOR_GHASTE,
@@ -140,23 +111,15 @@ public class FPCWynn extends SummonerPC
 		return false;
 	}
 	
-	protected boolean defaultFightTask()
+	protected boolean fightTaskByClass(Creature target)
 	{
-		clearTasks();
-		
+		wynnFightTask(target);
+		return true;
+	}
+	
+	protected boolean wynnFightTask(Creature target)
+	{
 		Player actor = getActor();
-		if (actor.isDead() || actor.isAMuted())
-		{
-			return false;
-		}
-		
-		Creature target;
-		if ((target = prepareTarget()) == null)
-		{
-			debug("dont have target, try to think active again");
-			setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-			return false;
-		}
 		
 		boolean doHeal = false;
 		boolean doUD = false;
@@ -181,10 +144,8 @@ public class FPCWynn extends SummonerPC
 		}
 		
 		double distance = actor.getDistance(target);
-		double targetHp = target.getCurrentHpPercents();
-		double actorHp = actor.getCurrentHpPercents();
-		
-		
+//		double targetHp = target.getCurrentHpPercents();
+//		double actorHp = actor.getCurrentHpPercents();
 		
 		Skill skillMarkOfVoid = actor.getKnownSkill(SKILL_MARK_OF_VOID);
 		Skill skillMarkOfWeakness = actor.getKnownSkill(SKILL_MARK_OF_WEAKNESS);
@@ -234,67 +195,7 @@ public class FPCWynn extends SummonerPC
 		if(markCount > 1 && canUseSkill(retriveMarkSkill, target, distance))
 			return chooseTaskAndTargets(retriveMarkSkill, target, distance);
 		
-		if(target.isMonster())
-			return false;
-		
-		Skill[] dam = Rnd.chance(getRateDAM()) ? selectUsableSkills(target, distance, _damSkills) : null;
-		Skill[] dot = Rnd.chance(getRateDOT()) ? selectUsableSkills(target, distance, _dotSkills) : null;
-		Skill[] debuff = targetHp > 10 ? Rnd.chance(getRateDEBUFF()) ? selectUsableSkills(target, distance, _debuffSkills) : null : null;
-		Skill[] stun = Rnd.chance(getRateSTUN()) ? selectUsableSkills(target, distance, _stunSkills) : null;
-		Skill[] heal = actorHp < 50 ? Rnd.chance(getRateHEAL()) ? selectUsableSkills(actor, 0, _healSkills) : null : null;
-		Skill[] buff = Rnd.chance(getRateBUFF()) ? selectUsableSkills(actor, 0, _buffSkills) : null;
-		
-		RndSelector<Skill[]> rnd = new RndSelector<Skill[]>();
-		if (!actor.isAMuted())
-		{
-			rnd.add(null, getRatePHYS());
-		}
-		
-		if(dam != null && dam.length > 0)
-			rnd.add(dam, getRateDAM());
-		
-		if(dot != null && dot.length > 0)
-		rnd.add(dot, getRateDOT());
-		
-		if(debuff != null && debuff.length > 0)
-		rnd.add(debuff, getRateDEBUFF());
-		
-		if(heal != null && heal.length > 0)
-		rnd.add(heal, getRateHEAL());
-		
-		if(buff != null && buff.length > 0)
-		rnd.add(buff, getRateBUFF());
-		
-		if(stun != null && stun.length > 0)
-		rnd.add(stun, getRateSTUN());
-		
-		Skill[] selected = rnd.select();
-		if (selected != null)
-		{
-			if ((selected == dam) || (selected == dot))
-			{
-				return chooseTaskAndTargets(selectTopSkillByDamage(actor, target, distance, selected), target, distance);
-			}
-			
-			if ((selected == debuff) || (selected == stun))
-			{
-				return chooseTaskAndTargets(selectTopSkillByDebuff(actor, target, distance, selected), target, distance);
-			}
-			
-			if (selected == buff)
-			{
-				return chooseTaskAndTargets(selectTopSkillByBuff(actor, selected), actor, distance);
-			}
-			
-			if (selected == heal)
-			{
-				return chooseTaskAndTargets(selectTopSkillByHeal(actor, selected), actor, distance);
-			}
-		}
-		
-		// TODO make treatment and buff friendly targets
-		
-		return chooseTaskAndTargets(null, target, distance);
+		return false;
 	}
 	
 }
