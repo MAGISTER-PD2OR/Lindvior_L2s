@@ -229,11 +229,16 @@ public class FPCInfo
 					nextLoc = FarmZoneHolder.getInstance().getLocation(player);
 					if(nextLoc != null)
 					{
+						
 						for(Player partyMember: party.getPartyMembers())
 						{
 							partyMember.teleToLocation(nextLoc);
 							fullRestore(partyMember);
 						}
+					}
+					else
+					{
+						getAI().debug("not found next zone");
 					}
 				}
 				break;
