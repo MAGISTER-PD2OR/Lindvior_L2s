@@ -135,4 +135,19 @@ public class FPCParty {
 		return result;
 	}
 
+	public void debug() {
+		// TODO Auto-generated method stub
+		System.out.println("=====Party DEBUG=====");
+		System.out.println("leader:"+_leader);
+		System.out.println("tanker:"+_tanker);
+		System.out.println("healer:"+_healer);
+		System.out.println("iss:"+_iss);
+		for(Player dd: _dds)
+		{
+			System.out.println("dd:"+dd);
+		}
+		System.out.println("====================");
+		
+	}
+
 }

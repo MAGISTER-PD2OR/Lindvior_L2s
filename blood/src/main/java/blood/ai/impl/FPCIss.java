@@ -15,6 +15,9 @@ public class FPCIss extends WarriorPC
 	@Override
 	protected boolean thinkBuff()
 	{
+		if(getActor().getLevel() < 91)
+			return false;
+		
 		if(thinkBuff(new int[] {
 			11517, // Horn melody
 			11518, // Drum molody

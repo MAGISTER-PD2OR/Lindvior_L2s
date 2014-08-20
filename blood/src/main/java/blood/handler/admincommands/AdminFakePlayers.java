@@ -19,6 +19,7 @@ import blood.Blood;
 import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
 import blood.base.FPCItem;
+import blood.base.FPCParty;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.data.holder.FarmZoneHolder;
@@ -36,6 +37,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		admin_fp_debug,
 		admin_fp_attack,
 		admin_fp_check,
+		admin_fp_party_check,
 		admin_fp_quota,
 		admin_fp_padding,
 		admin_reload_merchant,
@@ -181,6 +183,18 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		    		report = "Role: " + role + " size: " + role.getSize() + " quota: "+role.getQuota();
 		    		activeChar.sendMessage(report);
 		    	}
+				break;
+			case admin_fp_party_check:
+				GameObject target = activeChar.getTarget();
+				if(!target.isPlayer() || !target.getPlayer().isFakePlayer())
+					return false;
+				
+				FPCParty party = FPCInfo.getInstance(target.getPlayer()).getParty();
+				if(party == null)
+					return false;
+				
+				party.debug():
+				
 				break;
 			
 			case admin_reload_merchant:
