@@ -1322,7 +1322,6 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean createNewTask()
 	{
-
 		return false;
 	}
 	
@@ -1492,26 +1491,10 @@ public class FPCDefaultAI extends PlayerAI
 		
 		Creature target = getAttackTarget();
 		
-		if(target != null && !target.isDead())
+		if(target != null && checkTarget(target, MAX_PURSUE_RANGE))
+		{
 			return target;
-		
-		
-		
-		// "move" bosses sometimes choose a random target
-//		if (Rnd.chance(actor.getParameter("isMadness", 0)))
-//		{
-//			Creature randomHated = _aggroList.getRandomHated();
-//			if (randomHated != null)
-//			{
-//				setAttackTarget(randomHated);
-//				if ((_madnessTask == null) && !actor.isConfused())
-//				{
-//					actor.startConfused();
-//					_madnessTask = ThreadPoolManager.getInstance().schedule(new MadnessTask(), 10000);
-//				}
-//				return randomHated;
-//			}
-//		}
+		}
 		
 		// The new goal based on the aggressiveness
 		List<Creature> hateList = _aggroList.getHateList();
