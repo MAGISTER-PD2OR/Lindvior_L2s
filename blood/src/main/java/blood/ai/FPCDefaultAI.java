@@ -130,7 +130,7 @@ public class FPCDefaultAI extends PlayerAI
 		_tasks.add(task);
 		_def_think = true;
 		
-		_log.info("create new task move size:"+_tasks.size(), new Exception());
+//		_log.info("create new task move size:"+_tasks.size(), new Exception());
 	}
 	
 	public void addTaskTele(Location loc)
@@ -142,7 +142,7 @@ public class FPCDefaultAI extends PlayerAI
 		_tasks.add(task);
 		_def_think = true;
 		
-		_log.info("create new task tele size:"+_tasks.size(), new Exception());
+//		_log.info("create new task tele size:"+_tasks.size(), new Exception());
 	}
 	public void addTaskSleep(int sleepTime)
 	{
@@ -983,6 +983,7 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean maybeNextTask(Task currentTask)
 	{
+		_log.info("removed task", new Exception());
 		// next task
 		_tasks.remove(currentTask);
 		// If there are no more jobs - define new one
@@ -1055,6 +1056,7 @@ public class FPCDefaultAI extends PlayerAI
 				
 				if (actor.isMoving)
 				{
+					debug("isMoving");
 					return false;
 				}
 				
@@ -1895,7 +1897,6 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected void clearTasks()
 	{
-		_log.error("clear task", new Exception());
 		_def_think = false;
 		_tasks.clear();
 	}
