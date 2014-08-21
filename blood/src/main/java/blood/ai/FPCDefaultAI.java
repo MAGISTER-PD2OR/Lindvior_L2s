@@ -1021,7 +1021,11 @@ public class FPCDefaultAI extends PlayerAI
 			return true;
 		}
 		
+		debug("before get task"+_tasks.size());
+		
 		Task currentTask = _tasks.pollFirst();
+		
+		debug("after get task"+_tasks.size());
 		
 		if (currentTask == null)
 		{
