@@ -136,6 +136,7 @@ public class FPCDefaultAI extends PlayerAI
 		Task task = new Task();
 		task.type = TaskType.TELE;
 		task.loc = loc;
+		task.weight = Rnd.get(100);
 		_tasks.add(task);
 		_def_think = true;
 		
@@ -146,6 +147,7 @@ public class FPCDefaultAI extends PlayerAI
 		Task task = new Task();
 		task.type = TaskType.SLEEP;
 		task.sleepTime = sleepTime;
+		task.weight = Rnd.get(100);
 		_tasks.add(task);
 		_def_think = true;
 		
