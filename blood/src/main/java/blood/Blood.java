@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 
 
 
+
 //import l2s.gameserver.network.loginservercon.LoginServerCommunication;
 import l2mq.L2MQ;
 import l2s.commons.configuration.ExProperties;
@@ -35,6 +36,7 @@ import blood.data.parser.FPItemParser;
 import blood.data.parser.FarmZoneParser;
 import blood.data.parser.NpcHelperParser;
 import blood.handler.admincommands.AdminFakePlayers;
+import blood.handler.admincommands.AdminManipulateAI;
 public
 class Blood {
 	
@@ -76,6 +78,7 @@ class Blood {
     	// add new comment
     	
         AdminCommandHandler.getInstance().registerAdminCommandHandler(new AdminFakePlayers());
+        AdminCommandHandler.getInstance().registerAdminCommandHandler(new AdminManipulateAI());
 		ThreadPoolManager.getInstance().scheduleAtFixedRate(new ManagerTask(), 30000L, 30000L); //every 30 seconds
 		ThreadPoolManager.getInstance().scheduleAtFixedRate(new DisconnectTask(), _disconnect_timeout, _disconnect_timeout);
     }

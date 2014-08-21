@@ -49,6 +49,8 @@ public class FPCDefaultAI extends PlayerAI
 	public static enum TaskType
 	{
 		MOVE,
+		TELE,
+		SLEEP,
 		ATTACK,
 		CAST,
 		BUFF
@@ -63,6 +65,7 @@ public class FPCDefaultAI extends PlayerAI
 		public Skill skill;
 		public HardReference<? extends Creature> target;
 		public Location loc;
+		public int sleepTime;
 		public boolean pathfind;
 		public int weight = TaskDefaultWeight;
 	}
@@ -122,6 +125,27 @@ public class FPCDefaultAI extends PlayerAI
 		task.type = TaskType.MOVE;
 		task.loc = loc;
 		task.pathfind = pathfind;
+		_tasks.add(task);
+		_def_think = true;
+		
+//		_log.info("create new task move", new Exception());
+	}
+	
+	public void addTaskTele(Location loc)
+	{
+		Task task = new Task();
+		task.type = TaskType.TELE;
+		task.loc = loc;
+		_tasks.add(task);
+		_def_think = true;
+		
+//		_log.info("create new task move", new Exception());
+	}
+	public void addTaskSleep(int sleepTime)
+	{
+		Task task = new Task();
+		task.type = TaskType.SLEEP;
+		task.sleepTime = sleepTime;
 		_tasks.add(task);
 		_def_think = true;
 		
@@ -973,8 +997,17 @@ public class FPCDefaultAI extends PlayerAI
 		return 0;
 	}
 	
+	protected long _sleepUntilTimestamp = 0L;
+	
 	protected boolean doTask()
 	{
+		long now = System.currentTimeMillis();
+		
+		if(now < _sleepUntilTimestamp)
+		{
+			debug("sleeping..");
+			return false;
+		}
 		
 		Player actor = getActor();
 		
@@ -1002,7 +1035,6 @@ public class FPCDefaultAI extends PlayerAI
 		{
 		// Task "come running at the given coordinates"
 			case MOVE:
-			{
 				if (actor.isMovementDisabled() || !getIsMobile())
 				{
 					return true;
@@ -1027,8 +1059,15 @@ public class FPCDefaultAI extends PlayerAI
 					// ThreadPoolManager.getInstance().scheduleAi(new Teleport(currentTask.loc), 500, false);
 					return maybeNextTask(currentTask);
 				}
-			}
 				break;
+			case TELE:
+				actor.teleToLocation(currentTask.loc);
+				setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+				return maybeNextTask(currentTask);
+			case SLEEP:
+				_sleepUntilTimestamp = now + currentTask.sleepTime;
+				setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+				return maybeNextTask(currentTask);
 			// Task "to run - to strike"
 			case ATTACK:
 			{
@@ -1051,8 +1090,6 @@ public class FPCDefaultAI extends PlayerAI
 					clientStopMoving();
 					_pathfindFails = 0;
 					setAttackTimeout(getMaxAttackTimeout() + System.currentTimeMillis());
-					
-					long now = System.currentTimeMillis();
 					
 					if(attackTime > now) return true;
 					

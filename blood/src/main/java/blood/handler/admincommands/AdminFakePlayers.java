@@ -56,7 +56,6 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		admin_set_level2,
 		admin_fp_class, 
 		admin_tryai,
-		admin_find_buffer
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -256,62 +255,6 @@ public class AdminFakePlayers implements IAdminCommandHandler
 			break;
 			case admin_fp_loc:
 				FPCInfo.getInstance(activeChar).teleToNextFarmZone();
-			break;
-			case admin_find_buffer:
-				Player player = activeChar;
-				
-				Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
-				NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
-				NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
-				
-				_log.info("Where am i?");
-				
-				_log.info("Teleportto restart loc:"+myRestartLocation);
-				if(myRestartLocation.distance(buffer.getLoc()) < 4000)
-					_log.info("Move to next buffer:"+buffer);
-				else
-					_log.info("Can't move to next buffer:"+buffer+" distance:"+myRestartLocation.distance(buffer.getLoc()));
-				
-				_log.info("Move to next GK:"+gk);
-				
-				Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
-				
-				_log.info("Target location:"+targetLocation);
-				if(targetLocation == null)
-					return false;
-				
-				Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
-				NpcInstance middleGK = NpcHelper.getClosestGatekeeper(middleRestartLocation);
-				
-				if(gk.getObjectId() != middleGK.getObjectId())
-				{
-					_log.info("=>Tele to middle GK:"+middleGK);
-					gk = middleGK;
-				}
-				
-				_log.info("find spawn zone");
-				TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
-				double minDistance = Double.MAX_VALUE;
-				Location spawnLocation = null;
-				for(TeleportLocation teleLoc: teleMap.valueCollection())
-				{
-					double distanceFromSpawnLoc = teleLoc.distance(targetLocation);
-					if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, targetLocation.x, targetLocation.y, targetLocation.z, player.getGeoIndex()))
-					{
-						minDistance = distanceFromSpawnLoc;
-						spawnLocation = teleLoc;
-					}
-				}
-				
-				if(spawnLocation != null)
-				{
-					_log.info("Teleport to farm zone entrance:"+spawnLocation);
-					_log.info("Move to farm spot:"+targetLocation);
-				}
-				else
-				{
-					_log.info("Teleporto direct to farm spot:"+targetLocation);
-				}
 			break;
 			default:
 			break;

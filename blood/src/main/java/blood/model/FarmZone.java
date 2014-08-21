@@ -46,7 +46,7 @@ public class FarmZone {
 	}
 	
 	public boolean isValid(Player player){
-		System.out.println(player + " isValid level:"+checkLevel(player.getLevel()) + " class:"+checkClass(player.getClassId().getId())+ " party:"+checkIsParty(player.isInParty()));
+//		System.out.println(player + " isValid level:"+checkLevel(player.getLevel()) + " class:"+checkClass(player.getClassId().getId())+ " party:"+checkIsParty(player.isInParty()));
 		return checkLevel(player.getLevel()) && checkClass(player.getClassId().getId()) && checkIsParty(player.isInParty());
 	}
 
