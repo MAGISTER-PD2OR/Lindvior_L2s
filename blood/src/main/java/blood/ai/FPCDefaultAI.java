@@ -1053,6 +1053,11 @@ public class FPCDefaultAI extends PlayerAI
 		Player actor = getActor();
 		double distance = actor.getDistance(loc);
 		
+		if(distance > 1500)
+		{
+			_log.error("tofar", new Exception());
+		}
+		
 		if(distance < range)
 			return false;
 		

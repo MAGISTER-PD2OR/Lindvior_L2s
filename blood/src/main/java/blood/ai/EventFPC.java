@@ -566,16 +566,16 @@ public class EventFPC extends FPCDefaultAI
 			
 			if(!actor.isInParty() || actor.getParty().isLeader(actor))
 			{
-				if(thinkAggressive(3000, 1000)) return;
+				if(thinkAggressive(2000, 1000)) return;
 				randomWalk();
 			}
 			else
 			{
 				Player leader = actor.getParty().getPartyLeader();
 				
-				if(ClassFunctions.isHealer(actor) || ClassFunctions.isTanker(actor))
+				if(ClassFunctions.isHealer(actor))
 				{
-					tryMoveToLoc(get_fpcParty().getCenterLoc(), 500);
+					tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
 					return;
 				}
 				
@@ -586,7 +586,7 @@ public class EventFPC extends FPCDefaultAI
 					return;
 				}
 				
-				tryMoveToLoc(get_fpcParty().getCenterLoc(), 300);
+				tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
 				
 //				tryMoveToTarget(leader, 300);
 				
