@@ -5,7 +5,6 @@ import l2s.gameserver.ai.PlayerAI;
 import l2s.gameserver.dao.CharacterDAO;
 import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
-import l2s.gameserver.instancemanager.MapRegionManager;
 //import l2s.gameserver.model.Effect;
 import l2s.gameserver.model.GameObject;
 import l2s.gameserver.model.GameObjectsStorage;
@@ -14,7 +13,6 @@ import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.templates.TeleportLocation;
-import l2s.gameserver.templates.mapregion.RestartArea;
 //import l2s.gameserver.tables.PetDataTable;
 //import l2s.gameserver.templates.item.ItemTemplate.Grade;
 import l2s.gameserver.utils.ItemFunctions;
@@ -28,7 +26,6 @@ import blood.Blood;
 import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
 import blood.base.FPCParty;
-import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.data.holder.FarmZoneHolder;
@@ -267,27 +264,19 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				NpcInstance buffer = NpcFunctions.getNearestBuffer(myRestartLocation);
 				NpcInstance gk = NpcFunctions.getNearestGatekeeper(buffer);
 				Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
-				RestartArea myRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, player.getLoc());
-				RestartArea targetRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, targetLocation);
-				
-				
+				Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
+				NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(middleRestartLocation);				
 				
 				_log.info("Where am i?");
 				
-				_log.info("My current area:"+myRestartArea);
-				_log.info("My current restart loc:"+myRestartLocation);
-				_log.info("My target location:"+targetLocation);
-				_log.info("Target area:"+targetRestartArea);
-				_log.info("Tele to nearest village:"+myRestartLocation);
+				_log.info("Teleportto restart loc:"+myRestartLocation);
 				_log.info("Move to next buffer:"+buffer);
 				_log.info("Move to next GK:"+gk);
+				_log.info("Target location:"+targetLocation);
 				
-				if(myRestartArea != targetRestartArea)
+				if(gk.getObjectId() != middleGK.getObjectId())
 				{
-					_log.info("diff area we should change villages");
-					Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
-					NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(middleRestartLocation);
-					_log.info("=>Tele to target GK:"+middleGK);
+					_log.info("=>Tele to middle GK:"+middleGK);
 					gk = middleGK;
 				}
 				
