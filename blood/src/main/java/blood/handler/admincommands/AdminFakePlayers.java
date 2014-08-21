@@ -7,6 +7,7 @@ import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
 import l2s.gameserver.model.GameObject;
 import l2s.gameserver.model.GameObjectsStorage;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.model.items.ItemInstance;
 //import l2s.gameserver.tables.PetDataTable;
 //import l2s.gameserver.templates.item.ItemTemplate.Grade;
@@ -25,6 +26,7 @@ import blood.base.FPCSpawnStatus;
 import blood.model.FPReward;
 import blood.table.FPCMerchantTable;
 import blood.utils.ClassFunctions;
+import blood.utils.NpcFunctions;
 
 public class AdminFakePlayers implements IAdminCommandHandler
 {
@@ -46,7 +48,9 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		admin_fp_equip,
 		admin_fp_loc,
 		admin_set_level2,
-		admin_fp_class, admin_tryai
+		admin_fp_class, 
+		admin_tryai,
+		admin_find_buffer
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -247,7 +251,11 @@ public class AdminFakePlayers implements IAdminCommandHandler
 			case admin_fp_loc:
 				FPCInfo.getInstance(activeChar).teleToNextFarmZone();
 			break;
-		default:
+			case admin_find_buffer:
+				NpcInstance npc = NpcFunctions.getNearestBuffer(activeChar);
+				activeChar.setTarget(npc);
+			break;
+			default:
 			break;
 		}
 		return true;
