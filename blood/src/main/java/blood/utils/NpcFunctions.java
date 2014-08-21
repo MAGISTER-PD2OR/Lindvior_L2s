@@ -99,5 +99,10 @@ public class NpcFunctions {
 	{
 		return getNearestNPCById(loc, NPC_GKs);
 	}
+	
+	public static NpcInstance getNearestGatekeeper(GameObject obj)
+	{
+		return getNearestNPCById(obj.getLoc(), NPC_GKs);
+	}
 
 }

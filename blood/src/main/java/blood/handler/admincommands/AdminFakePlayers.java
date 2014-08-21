@@ -1,17 +1,25 @@
 package blood.handler.admincommands;
 
+import gnu.trove.map.TIntObjectMap;
 import l2s.gameserver.ai.PlayerAI;
 import l2s.gameserver.dao.CharacterDAO;
+import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
+import l2s.gameserver.instancemanager.MapRegionManager;
 //import l2s.gameserver.model.Effect;
 import l2s.gameserver.model.GameObject;
 import l2s.gameserver.model.GameObjectsStorage;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.model.items.ItemInstance;
+import l2s.gameserver.templates.TeleportLocation;
+import l2s.gameserver.templates.mapregion.RestartArea;
 //import l2s.gameserver.tables.PetDataTable;
 //import l2s.gameserver.templates.item.ItemTemplate.Grade;
 import l2s.gameserver.utils.ItemFunctions;
+import l2s.gameserver.utils.Location;
+import l2s.gameserver.utils.TeleportUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +31,7 @@ import blood.base.FPCParty;
 import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
+import blood.data.holder.FarmZoneHolder;
 import blood.model.FPReward;
 import blood.table.FPCMerchantTable;
 import blood.utils.ClassFunctions;
@@ -215,8 +224,8 @@ public class AdminFakePlayers implements IAdminCommandHandler
 			case admin_tryai:
 				FPCInfo newInfo = new FPCInfo(activeChar);
 				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
-				newInfo.setPVEStyle(FPCPveStyle.PARTY);
-				newInfo.setParty();
+//				newInfo.setPVEStyle(FPCPveStyle.PARTY);
+//				newInfo.setParty();
 			break;
 			case admin_add_ai:
 				activeChar.sendMessage("Current Player AI: " + activeChar.getAI());
@@ -252,8 +261,59 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				FPCInfo.getInstance(activeChar).teleToNextFarmZone();
 			break;
 			case admin_find_buffer:
-				NpcInstance npc = NpcFunctions.getNearestBuffer(activeChar);
-				activeChar.setTarget(npc);
+				Player player = activeChar;
+				
+				Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
+				NpcInstance buffer = NpcFunctions.getNearestBuffer(myRestartLocation);
+				NpcInstance gk = NpcFunctions.getNearestGatekeeper(buffer);
+				Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
+				RestartArea myRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, player.getLoc());
+				RestartArea targetRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, targetLocation);
+				
+				
+				
+				_log.info("Where am i?");
+				
+				_log.info("My current area:"+myRestartArea);
+				_log.info("My current restart loc:"+myRestartLocation);
+				_log.info("My target location:"+targetLocation);
+				_log.info("Target area:"+targetRestartArea);
+				_log.info("Tele to nearest village:"+myRestartLocation);
+				_log.info("Move to next buffer:"+buffer);
+				_log.info("Move to next GK:"+gk);
+				
+				if(myRestartArea != targetRestartArea)
+				{
+					_log.info("diff area we should change villages");
+					Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
+					NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(middleRestartLocation);
+					_log.info("=>Tele to target GK:"+middleGK);
+					gk = middleGK;
+				}
+				
+				_log.info("find spawn zone");
+				TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
+				double minDistance = Double.MAX_VALUE;
+				Location spawnLocation = null;
+				for(TeleportLocation teleLoc: teleMap.valueCollection())
+				{
+					double distanceFromSpawnLoc = teleLoc.distance(targetLocation);
+					if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, targetLocation.x, targetLocation.y, targetLocation.z, player.getGeoIndex()))
+					{
+						minDistance = distanceFromSpawnLoc;
+						spawnLocation = teleLoc;
+					}
+				}
+				
+				if(spawnLocation != null)
+				{
+					_log.info("Teleport to farm zone entrance:"+spawnLocation);
+					_log.info("Move to farm spot:"+targetLocation);
+				}
+				else
+				{
+					_log.info("Teleporto direct to farm spot:"+targetLocation);
+				}
 			break;
 			default:
 			break;

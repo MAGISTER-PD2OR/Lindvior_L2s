@@ -1,5 +1,7 @@
 package blood.ai;
 
+import gnu.trove.map.TIntObjectMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import l2s.commons.util.Rnd;
 import l2s.gameserver.ai.CtrlEvent;
 import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.geodata.GeoEngine;
+import l2s.gameserver.instancemanager.MapRegionManager;
 import l2s.gameserver.model.Creature;
 //import l2s.gameserver.model.Effect;
 import l2s.gameserver.model.GameObject;
@@ -16,20 +19,28 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.Skill.SkillType;
 import l2s.gameserver.model.World;
+import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.skills.EffectType;
 import l2s.gameserver.tables.SkillTable;
+import l2s.gameserver.templates.TeleportLocation;
+import l2s.gameserver.templates.mapregion.RestartArea;
+import l2s.gameserver.templates.mapregion.RestartPoint;
 import l2s.gameserver.templates.skill.EffectTemplate;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.utils.Location;
 import l2s.gameserver.utils.PositionUtils;
+import l2s.gameserver.utils.TeleportUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import blood.FPCInfo;
+import blood.base.FPCPveStyle;
+import blood.data.holder.FarmZoneHolder;
 import blood.model.FPReward;
 import blood.utils.ClassFunctions;
+import blood.utils.NpcFunctions;
 
 public class EventFPC extends FPCDefaultAI
 {
@@ -492,6 +503,64 @@ public class EventFPC extends FPCDefaultAI
 		return 100000;
 	}
 	
+	protected boolean defaultMoveTask()
+	{
+		Player player = getActor();
+		
+		Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
+		NpcInstance buffer = NpcFunctions.getNearestBuffer(myRestartLocation);
+		NpcInstance gk = NpcFunctions.getNearestGatekeeper(buffer);
+		Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
+		RestartArea myRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, player.getLoc());
+		RestartArea targetRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, targetLocation);
+		
+		
+		
+		debug("Where am i?");
+		
+		debug("My current area:"+myRestartArea);
+		debug("My current restart loc:"+myRestartLocation);
+		debug("My target location:"+targetLocation);
+		debug("Target area:"+targetRestartArea);
+		debug("Move to next buffer:"+buffer);
+		debug("Move to next GK:"+gk);
+		
+		if(myRestartArea != targetRestartArea)
+		{
+			debug("diff area we should change villages");
+			Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
+			NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(middleRestartLocation);
+			debug("=>Tele to target GK:"+middleGK);
+			gk = middleGK;
+		}
+		
+		debug("find spawn zone");
+		TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
+		double minDistance = Double.MAX_VALUE;
+		Location spawnLocation = null;
+		for(TeleportLocation teleLoc: teleMap.valueCollection())
+		{
+			double distanceFromSpawnLoc = teleLoc.distance(targetLocation);
+			if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, targetLocation.x, targetLocation.y, targetLocation.z, player.getGeoIndex()))
+			{
+				minDistance = distanceFromSpawnLoc;
+				spawnLocation = teleLoc;
+			}
+		}
+		
+		if(spawnLocation != null)
+		{
+			debug("Teleport to farm zone entrance:"+spawnLocation);
+			debug("Move to farm spot:"+targetLocation);
+		}
+		else
+		{
+			debug("Teleporto direct to farm spot:"+targetLocation);
+		}
+		
+		return false;
+	}
+	
 	protected boolean thinkActiveByClass()
 	{
 		return false;
@@ -508,11 +577,7 @@ public class EventFPC extends FPCDefaultAI
 			return;
 		}
 		
-		if(actor.isInPeaceZone())
-		{
-			FPCInfo.getInstance(actor).teleToNextFarmZone();
-			return;
-		}
+		
 		
 		if (_def_think)
 		{
@@ -521,6 +586,14 @@ public class EventFPC extends FPCDefaultAI
 				debug("active: do task on think");
 				clearTasks();
 			}
+			return;
+		}
+		
+		FPCInfo playerInfo = FPCInfo.getInstance(actor);
+		
+		if(actor.isInPeaceZone() && playerInfo.getPveStyle() == FPCPveStyle.SOLO)
+		{
+			defaultMoveTask();
 			return;
 		}
 		

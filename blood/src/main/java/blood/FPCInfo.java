@@ -270,6 +270,11 @@ public class FPCInfo
 		_pveStyle = style;
 	}
 	
+	public FPCPveStyle getPveStyle()
+	{
+		return _pveStyle;
+	}
+	
 	public void spawn()
 	{
 		//_log.info("spawn function");
