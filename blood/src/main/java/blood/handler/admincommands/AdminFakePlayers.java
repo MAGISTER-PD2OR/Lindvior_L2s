@@ -217,12 +217,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				activeChar.getInventory().store();
 				activeChar.sendMessage("Clear Inventory.");
 			break;
-			case admin_tryai:
-				FPCInfo newInfo = new FPCInfo(activeChar);
-				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
-//				newInfo.setPVEStyle(FPCPveStyle.PARTY);
-//				newInfo.setParty();
-			break;
+			
 			case admin_add_ai:
 				activeChar.sendMessage("Current Player AI: " + activeChar.getAI());
 				FPCDefaultAI ai = FPCRole.getAggresiveAI(activeChar, wordList[1]);

@@ -13,6 +13,7 @@ import l2s.gameserver.utils.TeleportUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
 import blood.base.FPCRole;
 import blood.data.holder.FarmZoneHolder;
@@ -27,7 +28,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 	
 	private static enum Commands
 	{
-		admin_find_path
+		admin_find_path, admin_tryai
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -41,9 +42,14 @@ public class AdminManipulateAI implements IAdminCommandHandler
 
 		switch(command)
 		{
+			case admin_tryai:
+				FPCInfo newInfo = new FPCInfo(activeChar);
+				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
+	//			newInfo.setPVEStyle(FPCPveStyle.PARTY);
+	//			newInfo.setParty();
+			break;
 			case admin_find_path:
-				FPCDefaultAI ai = FPCRole.NEXUS_EVENT.getAI(activeChar);
-				activeChar.setAI(ai);
+				FPCDefaultAI ai = FPCInfo.getInstance(activeChar).getAI();
 				Player player = activeChar;
 				
 				ai.toggleDebug();
