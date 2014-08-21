@@ -1285,11 +1285,11 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		Player actor = getActor();
 		
-		debug(" onEvtThink");
+//		debug(" onEvtThink");
 		
 		if(actor.isDead()) /* FIXME */
 		{
-			debug("onEvtThink INFO: I'm dead. " );
+//			debug("onEvtThink INFO: I'm dead. " );
 			if(!actor.isInParty())
 			{
 //				actor.setTarget(null);
@@ -1311,7 +1311,7 @@ public class FPCDefaultAI extends PlayerAI
 		
 		if (_thinking || (actor == null) || actor.isActionsDisabled() || actor.isAfraid())
 		{
-			debug("onEvtThink INFO: I'm disabled. isActionDisable " + actor.isActionsDisabled() + " isAfraid " + actor.isAfraid());
+//			debug("onEvtThink INFO: I'm disabled. isActionDisable " + actor.isActionsDisabled() + " isAfraid " + actor.isAfraid());
 			return;
 		}
 		

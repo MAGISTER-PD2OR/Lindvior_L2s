@@ -567,7 +567,7 @@ public class EventFPC extends FPCDefaultAI
 	@Override
 	protected void thinkActive()
 	{
-		debug("think active");
+//		debug("think active");
 		Player actor = getActor();
 		if (actor.isActionsDisabled())
 		{
@@ -577,7 +577,7 @@ public class EventFPC extends FPCDefaultAI
 		
 		if (_def_think)
 		{
-			debug("active: do task on think");
+			debug("active: do task on thinkactive");
 			if (doTask())
 			{
 				clearTasks();
