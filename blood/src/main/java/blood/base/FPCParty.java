@@ -79,12 +79,12 @@ public class FPCParty {
 	{
 		int minLvl = _averageLevel >= AWAKENED_LEVEL ? Math.min(85, _averageLevel - PARTY_LEVEL_PADDING) : _averageLevel - PARTY_LEVEL_PADDING;
 		int maxLvl = _averageLevel - PARTY_LEVEL_PADDING;
-		return minLvl < level && level < maxLvl; 
+		return minLvl <= level && level <= maxLvl; 
 	}
 	
 	public boolean isTankerAvailable(Player player)
 	{
-		return _tanker != null && ClassFunctions.isTanker(player) && getParty().addPartyMember(player);
+		return _tanker == null && ClassFunctions.isTanker(player) && getParty().addPartyMember(player);
 	}
 	
 	public boolean isHealerAvailable(Player player)
