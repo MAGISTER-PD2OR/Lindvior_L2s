@@ -128,7 +128,7 @@ public class FPCDefaultAI extends PlayerAI
 		_tasks.add(task);
 		_def_think = true;
 		
-//		_log.info("create new task move", new Exception());
+		_log.info("create new task move", new Exception());
 	}
 	
 	public void addTaskTele(Location loc)
@@ -139,7 +139,7 @@ public class FPCDefaultAI extends PlayerAI
 		_tasks.add(task);
 		_def_think = true;
 		
-//		_log.info("create new task move", new Exception());
+		_log.info("create new task tele", new Exception());
 	}
 	public void addTaskSleep(int sleepTime)
 	{
@@ -149,7 +149,7 @@ public class FPCDefaultAI extends PlayerAI
 		_tasks.add(task);
 		_def_think = true;
 		
-//		_log.info("create new task move", new Exception());
+		_log.info("create new task sleep", new Exception());
 	}
 	
 	protected void addTaskMove(int locX, int locY, int locZ, boolean pathfind)
@@ -1317,7 +1317,7 @@ public class FPCDefaultAI extends PlayerAI
 		_thinking = true;
 		try
 		{
-			debug("onEvtThink Default:trying with "+ getIntention());
+//			debug("onEvtThink Default:trying with "+ getIntention());
 			if (getIntention() == CtrlIntention.AI_INTENTION_ACTIVE)
 			{
 				thinkActive();
@@ -1886,6 +1886,7 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected void clearTasks()
 	{
+		_log.error("clear task", new Exception());
 		_def_think = false;
 		_tasks.clear();
 	}
