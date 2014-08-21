@@ -46,7 +46,7 @@ public class FarmZone {
 	
 	public boolean checkIsParty(boolean inParty)
 	{
-		return _is_party && inParty;
+		return _is_party == inParty;
 	}
 	
 	public boolean isValid(Player player){
