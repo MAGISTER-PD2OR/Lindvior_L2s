@@ -1012,6 +1012,7 @@ public class FPCDefaultAI extends PlayerAI
 		
 		if (!_def_think)
 		{
+			debug("dotask return true");
 			return true;
 		}
 		
@@ -1020,6 +1021,7 @@ public class FPCDefaultAI extends PlayerAI
 		if (currentTask == null)
 		{
 			clearTasks();
+			debug("dotask return true 2");
 			return true;
 		}
 		
@@ -1032,11 +1034,13 @@ public class FPCDefaultAI extends PlayerAI
 		
 		switch (currentTask.type)
 		{
-		// Task "come running at the given coordinates"
+			// Task "come running at the given coordinates"
 			case MOVE:
 				if (actor.isMovementDisabled() || !getIsMobile())
 				{
+					debug("dotask return true 3");
 					return true;
+//					return false;
 				}
 				
 				if (actor.isInRange(currentTask.loc, 100))
@@ -1074,6 +1078,7 @@ public class FPCDefaultAI extends PlayerAI
 				
 				if (!checkTarget(target, MAX_PURSUE_RANGE))
 				{
+					debug("dotask return true 2");
 					return true;
 				}
 				
