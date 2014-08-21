@@ -1035,7 +1035,7 @@ public class FPCDefaultAI extends PlayerAI
 			return false;
 		}
 		
-		debug("dotask: "+currentTask+" "+currentTask.type);
+		debug("dotask: "+currentTask+" "+currentTask.type +" pool:"+_tasks.size());
 		
 		switch (currentTask.type)
 		{
@@ -1047,18 +1047,21 @@ public class FPCDefaultAI extends PlayerAI
 					debug("dotask return true 3");
 					return true;
 				}
+				debug("dotask: start move 2");
 				
 				if (actor.isInRange(currentTask.loc, 100))
 				{
 					debug("in range, next task");
 					return maybeNextTask(currentTask);
 				}
+				debug("dotask: start move 3");
 				
 				if (actor.isMoving)
 				{
 					debug("isMoving");
 					return false;
 				}
+				debug("dotask: start move 4");
 				
 				if (!actor.moveToLocation(currentTask.loc, 0, currentTask.pathfind))
 				{
