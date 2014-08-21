@@ -58,6 +58,7 @@ public class FPCDefaultAI extends PlayerAI
 	
 	public static final int TaskDefaultWeight = 10000;
 	public static long attackTime;
+	private int taskCount = 10000;
 	
 	public static class Task
 	{
@@ -125,6 +126,7 @@ public class FPCDefaultAI extends PlayerAI
 		task.type = TaskType.MOVE;
 		task.loc = loc;
 		task.pathfind = pathfind;
+		task.weight = --taskCount; // FIXME
 		_tasks.add(task);
 		_def_think = true;
 		
@@ -136,7 +138,7 @@ public class FPCDefaultAI extends PlayerAI
 		Task task = new Task();
 		task.type = TaskType.TELE;
 		task.loc = loc;
-		task.weight = Rnd.get(100);
+		task.weight = --taskCount;
 		_tasks.add(task);
 		_def_think = true;
 		
@@ -147,7 +149,7 @@ public class FPCDefaultAI extends PlayerAI
 		Task task = new Task();
 		task.type = TaskType.SLEEP;
 		task.sleepTime = sleepTime;
-		task.weight = Rnd.get(100);
+		task.weight = --taskCount;
 		_tasks.add(task);
 		_def_think = true;
 		
@@ -1067,11 +1069,9 @@ public class FPCDefaultAI extends PlayerAI
 				break;
 			case TELE:
 				actor.teleToLocation(currentTask.loc);
-				setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 				return maybeNextTask(currentTask);
 			case SLEEP:
 				_sleepUntilTimestamp = now + currentTask.sleepTime;
-				setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 				return maybeNextTask(currentTask);
 			// Task "to run - to strike"
 			case ATTACK:
