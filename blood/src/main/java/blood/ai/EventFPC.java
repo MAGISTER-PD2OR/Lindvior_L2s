@@ -452,6 +452,40 @@ public class EventFPC extends FPCDefaultAI
 		return false;
 	}
 	
+	protected boolean thinkAggressive(Location loc, int range, int delay)
+	{
+//		debug("thinkAggressive, range:"+range);
+		Player actor = getActor();
+		long now = System.currentTimeMillis();
+//		if ((now - _checkAggroTimestamp) > delay && !actor.isInPeaceZone() && Blood.AI_ATTACK_ALLOW)
+		if ((now - _checkAggroTimestamp) > delay && !actor.isInPeaceZone())
+		{
+			_checkAggroTimestamp = now;
+//			debug("active: check aggro");
+			
+			boolean aggressive = Rnd.chance(100);
+			if (!_aggroList.isEmpty() || aggressive)
+			{
+				List<NpcInstance> chars = World.getAroundNpc(loc, actor.getCurrentRegion(), actor.getReflectionId(), range, 500);
+				CollectionUtils.eqSort(chars, _nearestTargetComparator);
+				debug("around size: "+ chars.size());
+				for (NpcInstance cha : chars)
+				{
+					if (aggressive || (_aggroList.get(cha) != null))
+					{
+						debug("checkAggression: "+cha);
+						if (checkAggression(cha))
+						{
+							debug("checkAggression: OK on "+cha);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public int getMaxAttackTimeout()
 	{
@@ -530,7 +564,7 @@ public class EventFPC extends FPCDefaultAI
 		}
 		else if(actor.getParty().isLeader(actor))
 		{
-			if(thinkAggressive(2000, 1000)) return;
+			if(thinkAggressive(get_fpcParty().getBeginLoc(), 1000, 1000)) return;
 			tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
 		}
 		else
@@ -544,7 +578,7 @@ public class EventFPC extends FPCDefaultAI
 				return;
 			}
 			
-			tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
+			tryMoveToLoc(get_fpcParty().getBeginLoc(), 200);
 		}
 	}
 	

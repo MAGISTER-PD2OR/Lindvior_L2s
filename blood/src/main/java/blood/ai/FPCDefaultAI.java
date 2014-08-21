@@ -1356,10 +1356,11 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		Player actor = getActor();
 		
-		debug(actor.getName() + " onEvtThink");
+		debug(" onEvtThink");
 		
 		if(actor.isDead()) /* FIXME */
 		{
+			debug("onEvtThink INFO: I'm dead. " );
 			if(!actor.isInParty())
 			{
 //				actor.setTarget(null);
@@ -1381,11 +1382,12 @@ public class FPCDefaultAI extends PlayerAI
 		
 		if (_thinking || (actor == null) || actor.isActionsDisabled() || actor.isAfraid())
 		{
-//			debug("INFO: I'm disabled. isActionDisable " + actor.isActionsDisabled() + " isAfraid " + actor.isAfraid());
+			debug("onEvtThink INFO: I'm disabled. isActionDisable " + actor.isActionsDisabled() + " isAfraid " + actor.isAfraid());
 			return;
 		}
 		
-		if(actor.isSitting()) actor.standUp();
+		if(actor.isSitting()) 
+			actor.standUp();
 		
 //		if (_randomAnimationEnd > System.currentTimeMillis())
 //		{
@@ -1395,7 +1397,7 @@ public class FPCDefaultAI extends PlayerAI
 		_thinking = true;
 		try
 		{
-//			debug("Default:trying with "+ getIntention());
+			debug("onEvtThink Default:trying with "+ getIntention());
 			if (getIntention() == CtrlIntention.AI_INTENTION_ACTIVE)
 			{
 				thinkActive();
