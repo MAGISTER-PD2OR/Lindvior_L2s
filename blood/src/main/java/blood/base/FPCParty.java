@@ -84,22 +84,22 @@ public class FPCParty {
 	
 	public boolean isTankerAvailable(Player player)
 	{
-		return _tanker == null && ClassFunctions.isTanker(player) && getParty().addPartyMember(player);
+		return _tanker == null && ClassFunctions.isTanker(player);
 	}
 	
 	public boolean isHealerAvailable(Player player)
 	{
-		return _healer == null && ClassFunctions.isHealer(player) && getParty().addPartyMember(player);
+		return _healer == null && ClassFunctions.isHealer(player) ;
 	}
 	
 	public boolean isSupportAvailable(Player player)
 	{
-		return _iss == null && ClassFunctions.isIss(player) && getParty().addPartyMember(player);
+		return _iss == null && ClassFunctions.isIss(player);
 	}
 	
 	public boolean isDamageDealerAvaialble(Player player)
 	{
-		return _dds.size() < 4 && ClassFunctions.isDamageDealer(player) && getParty().addPartyMember(player);
+		return _dds.size() < 4 && ClassFunctions.isDamageDealer(player);
 	}
 	
 	public boolean addMember(Player player){
@@ -108,18 +108,24 @@ public class FPCParty {
 		
 		// check level
 		if(!isValidLevel(player.getLevel()))
+		{
+			System.out.println("not valid level "+player);
 			return false;
+		}
 		
-		if(isDamageDealerAvaialble(player))
+		if(isDamageDealerAvaialble(player) && getParty().addPartyMember(player))
 			_dds.add(player);
-		else if(isTankerAvailable(player))
+		else if(isTankerAvailable(player) && getParty().addPartyMember(player))
 			_tanker = player;
-		else if(isHealerAvailable(player))
+		else if(isHealerAvailable(player) && getParty().addPartyMember(player))
 			_healer = player;
-		else if(isSupportAvailable(player))
+		else if(isSupportAvailable(player) && getParty().addPartyMember(player))
 			_iss = player;
 		else
+		{
+			System.out.println("not valid class "+player);
 			return false;
+		}
 		
 		// join party in middle of active
 		switch(_intention){
