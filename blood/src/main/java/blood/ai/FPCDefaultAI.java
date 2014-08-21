@@ -979,7 +979,6 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean maybeNextTask(Task currentTask)
 	{
-
 		// next task
 		_tasks.remove(currentTask);
 		// If there are no more jobs - define new one

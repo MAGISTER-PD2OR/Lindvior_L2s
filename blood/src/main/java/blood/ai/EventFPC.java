@@ -571,86 +571,86 @@ public class EventFPC extends FPCDefaultAI
 		Player actor = getActor();
 		if (actor.isActionsDisabled())
 		{
-//			debug("action disabled");
+			debug("action disabled");
 			return;
 		}
 		
-		
-		
 		if (_def_think)
 		{
+			debug("active: do task on think");
 			if (doTask())
 			{
-				debug("active: do task on think");
 				clearTasks();
 			}
 			return;
 		}
 		
-		FPCInfo playerInfo = FPCInfo.getInstance(actor);
+		return; // just test
 		
-		if(actor.isInPeaceZone() && playerInfo.getPveStyle() == FPCPveStyle.SOLO)
-		{
-			defaultMoveTask();
-			return;
-		}
-		
-		if(actor.isSitting())
-		{
-			actor.standUp();
-		}
-		
-		makeNpcBuffs();
-		
-		if(isStuck(10000 + Rnd.get(3000)))
-		{
-			debug("active: stuck -> random walk, but skipped");
-			randomWalk();
-			return;
-		}
-		
-		long now = System.currentTimeMillis();
-		
-		gearUp(now);
-		
-		if(now - _checkSummonTimestamp > 5000)
-		{
-			if(thinkSummon()) return;
-			_checkSummonTimestamp = now;
-		}
-		
-		if(now - _checkBuffTimestamp > 5000)
-		{
-			if(thinkBuff()) return;
-			_checkBuffTimestamp = now;
-		}
-		
-		if(thinkActiveByClass())
-			return;
-		
-		if(!actor.isInParty())
-		{
-			if(thinkAggressive(2000, 1000)) return;
-			randomWalk();
-		}
-		else if(actor.getParty().isLeader(actor))
-		{
-			if(thinkAggressive(get_fpcParty().getBeginLoc(), 1000, 1000)) return;
-			tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
-		}
-		else
-		{
-			Player leader = actor.getParty().getPartyLeader();
-			
-			Creature target = leader.getAI().getAttackTarget();
-			
-			if(target != null && checkAggression(target))
-			{	
-				return;
-			}
-			
-			tryMoveToLoc(get_fpcParty().getBeginLoc(), 200);
-		}
+//		FPCInfo playerInfo = FPCInfo.getInstance(actor);
+//		
+//		if(actor.isInPeaceZone() && playerInfo.getPveStyle() == FPCPveStyle.SOLO)
+//		{
+//			defaultMoveTask();
+//			return;
+//		}
+//		
+//		if(actor.isSitting())
+//		{
+//			actor.standUp();
+//		}
+//		
+//		makeNpcBuffs();
+//		
+//		if(isStuck(10000 + Rnd.get(3000)))
+//		{
+//			debug("active: stuck -> random walk, but skipped");
+//			randomWalk();
+//			return;
+//		}
+//		
+//		long now = System.currentTimeMillis();
+//		
+//		gearUp(now);
+//		
+//		if(now - _checkSummonTimestamp > 5000)
+//		{
+//			if(thinkSummon()) return;
+//			_checkSummonTimestamp = now;
+//		}
+//		
+//		if(now - _checkBuffTimestamp > 5000)
+//		{
+//			if(thinkBuff()) return;
+//			_checkBuffTimestamp = now;
+//		}
+//		
+//		if(thinkActiveByClass())
+//			return;
+//		
+//		if(!actor.isInParty())
+//		{
+//			if(thinkAggressive(2000, 1000)) return;
+//			randomWalk();
+//		}
+//		else if(actor.getParty().isLeader(actor))
+//		{
+//			if(thinkAggressive(get_fpcParty().getBeginLoc(), 1000, 1000)) return;
+//			tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
+//		}
+//		else
+//		{
+//			Player leader = actor.getParty().getPartyLeader();
+//			
+//			Creature target = leader.getAI().getAttackTarget();
+//			
+//			if(target != null && checkAggression(target))
+//			{	
+//				return;
+//			}
+//			
+//			tryMoveToLoc(get_fpcParty().getBeginLoc(), 200);
+//		}
 	}
 	
 	@Override
