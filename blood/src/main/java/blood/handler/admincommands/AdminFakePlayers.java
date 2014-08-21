@@ -264,8 +264,8 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				NpcInstance buffer = NpcFunctions.getNearestBuffer(myRestartLocation);
 				NpcInstance gk = NpcFunctions.getNearestGatekeeper(buffer);
 				Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
-				Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
-				NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(middleRestartLocation);				
+//				Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
+				NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(targetLocation);				
 				
 				_log.info("Where am i?");
 				
