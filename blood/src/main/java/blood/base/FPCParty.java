@@ -230,6 +230,7 @@ public class FPCParty {
 	
 	public void onEvtThing()
 	{
+		System.out.println("party heartbeat:"+_leader);
 		switch (getIntention()) {
 		case IDLE:
 			thinkIdle();
