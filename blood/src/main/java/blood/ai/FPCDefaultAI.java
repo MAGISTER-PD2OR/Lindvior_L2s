@@ -38,6 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import blood.Blood;
+import blood.FPCInfo;
+import blood.base.FPCParty;
 import blood.model.AggroListPC;
 import blood.model.AggroListPC.AggroInfoPC;
 
@@ -2203,6 +2205,26 @@ public class FPCDefaultAI extends PlayerAI
 		return 10000;
 	}
 	
+	protected FPCInfo _fpcInfo = null;
+	protected FPCParty _fpcParty = null;
+	
+	
+	public FPCInfo get_fpcInfo() {
+		return _fpcInfo;
+	}
+
+	public void set_fpcInfo(FPCInfo _fpcInfo) {
+		this._fpcInfo = _fpcInfo;
+	}
+
+	public FPCParty get_fpcParty() {
+		return _fpcParty;
+	}
+
+	public void set_fpcParty(FPCParty _fpcParty) {
+		this._fpcParty = _fpcParty;
+	}
+
 	public void runAwayFromTarget(Creature attacker)
 	{
 		Player actor = getActor();

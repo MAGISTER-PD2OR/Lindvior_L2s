@@ -212,7 +212,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				FPCInfo newInfo = new FPCInfo(activeChar);
 				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
 				newInfo.setPVEStyle(FPCPveStyle.PARTY);
-				newInfo.lookingParty();
+				newInfo.setParty();
 			break;
 			case admin_add_ai:
 				activeChar.sendMessage("Current Player AI: " + activeChar.getAI());

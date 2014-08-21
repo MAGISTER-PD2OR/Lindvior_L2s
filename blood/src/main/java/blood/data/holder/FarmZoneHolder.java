@@ -52,6 +52,25 @@ public final class FarmZoneHolder  extends AbstractHolder{
 		return null;
 	}
 	
+	public Location getPartyLocation(int level) 
+	{
+		// TODO Auto-generated method stub
+		List<FarmZone> tmp = new ArrayList<FarmZone>();
+		for (FarmZone zone: _lists){
+//			_log.info("FarmZone try zone:"+zone);
+			if (zone.checkLevel(level) && zone.isParty())
+			{
+//				_log.info("FarmZone valid zone:"+zone);
+				tmp.add(zone);
+			}
+		}
+		
+		if (tmp.size() > 0)
+			return tmp.get(Rnd.get(tmp.size())).getRndLocation();
+		
+		return null;
+	}
+	
 	public Location getLocation(Player player)
 	{
 		FarmZone validZone = getZones(player);
@@ -78,5 +97,7 @@ public final class FarmZoneHolder  extends AbstractHolder{
 		// TODO Auto-generated method stub
 		_lists.clear();
 	}
+
+	
 
 }

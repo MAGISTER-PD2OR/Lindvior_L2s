@@ -18,19 +18,18 @@ public class FPCPartyManager {
         return _instance;
     }
 	
-	public void getParty(FPCInfo fpc)
+	public FPCParty getParty(FPCInfo fpc)
 	{
 		for(FPCParty party: _openParties)
 		{
 			if(party.addMember(fpc.getActor()))
 			{
-				fpc.setParty(party);
 				if(party.isFull())
 				{
 					_openParties.remove(party);
 					_fullParties.add(party);
 				}
-				return;
+				return party;
 			}
 		}
 		
@@ -39,8 +38,13 @@ public class FPCPartyManager {
 		FPCParty newParty = new FPCParty(fpc.getActor());
 		// add to open list
 		_openParties.add(newParty);
-		// set on fpcinfo
-		fpc.setParty(newParty);
+		return newParty;
+	}
+	
+	public void reopenParty(FPCParty party)
+	{
+		_fullParties.remove(party);
+		_openParties.add(party);
 	}
 	
 	public void debug()

@@ -28,7 +28,6 @@ import l2s.gameserver.utils.PositionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import blood.FPCInfo;
-import blood.base.FPCParty;
 import blood.model.FPReward;
 import blood.utils.ClassFunctions;
 
@@ -513,7 +512,6 @@ public class EventFPC extends FPCDefaultAI
 		
 		if(actor.isInPeaceZone())
 		{
-			debug("tele to next farm zone");
 			FPCInfo.getInstance(actor).teleToNextFarmZone();
 			return;
 		}
@@ -577,7 +575,7 @@ public class EventFPC extends FPCDefaultAI
 				
 				if(ClassFunctions.isHealer(actor) || ClassFunctions.isTanker(actor))
 				{
-					tryMoveToLoc(FPCParty.getPartyCenterLoc(actor.getParty()), 500);
+					tryMoveToLoc(get_fpcParty().getCenterLoc(), 500);
 					return;
 				}
 				
@@ -588,7 +586,7 @@ public class EventFPC extends FPCDefaultAI
 					return;
 				}
 				
-				tryMoveToLoc(FPCParty.getPartyCenterLoc(actor.getParty()), 300);
+				tryMoveToLoc(get_fpcParty().getCenterLoc(), 300);
 				
 //				tryMoveToTarget(leader, 300);
 				

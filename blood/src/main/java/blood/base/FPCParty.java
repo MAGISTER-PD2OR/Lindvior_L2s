@@ -2,88 +2,163 @@ package blood.base;
 
 import java.util.ArrayList;
 
+import l2s.gameserver.ThreadPoolManager;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.utils.Location;
+import blood.FPCInfo;
+import blood.FPCPartyManager;
+import blood.data.holder.FarmZoneHolder;
 import blood.utils.ClassFunctions;
 
 public class FPCParty {
+	
+	public static enum PartyIntention {
+		IDLE,
+		ACTIVE,
+		MOVING,
+		ATTACK
+	}
+	
+	public static int PARTY_LEVEL_PADDING = 5;
+	public static int AWAKENED_LEVEL = 85;
+	protected static long RUNNER_INTERVAL = 3000L;
 	
 	protected Player _leader = null;
 	protected Player _tanker = null;
 	protected Player _iss = null;
 	protected Player _healer = null;
 	protected ArrayList<Player> _dds = new ArrayList<Player>();
+	protected int _averageLevel = 0;
+	protected Party _party = null;
+	protected Location _beginLoc = null;
+	protected Location _centerLoc = null;
+	protected Location _nextLoc = null;
+	protected PartyIntention _intention = null;
+	
 	
 	public FPCParty(Player partyLeader){
 		_leader = partyLeader;
-		_leader.setParty(new Party(_leader, Party.ITEM_ORDER_SPOIL));
-		partyPosition(partyLeader);
+		_averageLevel = _leader.getLevel();
+		setIntention(PartyIntention.IDLE);
+		ThreadPoolManager.getInstance().scheduleAtFixedRate(new HeartBeat(), RUNNER_INTERVAL, RUNNER_INTERVAL);
 	}
 	
-	public int getSize()
+	public void setLeader(Player player)
 	{
-		return _leader.isInParty() ? _leader.getParty().getMemberCount() : 1; 
+		_leader = player;
+		getParty().changePartyLeader(_leader);
+		System.out.println("party is full, change party leader to: "+_leader);
 	}
 	
-	public boolean isFull(){
-		return _leader.isInParty() && _leader.getParty().getMemberCount() == Party.MAX_SIZE;
+	public boolean isFull()
+	{
+		return getParty().getMemberCount() == Party.MAX_SIZE;
 	}
 	
-	public void partyPosition(Player player){
-		if(ClassFunctions.isTanker(player))
-			_tanker = player;
-		else if (ClassFunctions.isIss(player))
-			_iss = player;
-		else if (ClassFunctions.isHealer(player))
-			_healer = player;
-		else if (ClassFunctions.isDamageDealer(player))
-			_dds.add(player);
+	public Party getParty()
+	{
+		if(_party == null)
+		{
+			_party = new Party(_leader, Party.ITEM_ORDER_SPOIL);
+			_leader.setParty(_party);
+			if(ClassFunctions.isTanker(_leader))
+				_tanker = _leader;
+			else if (ClassFunctions.isIss(_leader))
+				_iss = _leader;
+			else if (ClassFunctions.isHealer(_leader))
+				_healer = _leader;
+			else if (ClassFunctions.isDamageDealer(_leader))
+				_dds.add(_leader);
+		}
+		
+		return _party;
+	}
+	
+	public boolean isValidLevel(int level)
+	{
+		int minLvl = _averageLevel >= AWAKENED_LEVEL ? Math.min(85, _averageLevel - PARTY_LEVEL_PADDING) : _averageLevel - PARTY_LEVEL_PADDING;
+		int maxLvl = _averageLevel - PARTY_LEVEL_PADDING;
+		return minLvl < level && level < maxLvl; 
+	}
+	
+	public boolean isTankerAvailable(Player player)
+	{
+		return _tanker != null && ClassFunctions.isTanker(player) && getParty().addPartyMember(player);
+	}
+	
+	public boolean isHealerAvailable(Player player)
+	{
+		return _healer == null && ClassFunctions.isHealer(player) && getParty().addPartyMember(player);
+	}
+	
+	public boolean isSupportAvailable(Player player)
+	{
+		return _iss == null && ClassFunctions.isIss(player) && getParty().addPartyMember(player);
+	}
+	
+	public boolean isDamageDealerAvaialble(Player player)
+	{
+		return _dds.size() < 4 && ClassFunctions.isDamageDealer(player) && getParty().addPartyMember(player);
 	}
 	
 	public boolean addMember(Player player){
 		if(isFull())
 			return false;
 		
-		if(_tanker != null && ClassFunctions.isTanker(player))
+		// check level
+		if(!isValidLevel(player.getLevel()))
 			return false;
 		
-		if(_iss != null && ClassFunctions.isIss(player))
+		if(isDamageDealerAvaialble(player))
+			_dds.add(player);
+		else if(isTankerAvailable(player))
+			_tanker = player;
+		else if(isHealerAvailable(player))
+			_healer = player;
+		else if(isSupportAvailable(player))
+			_iss = player;
+		else
 			return false;
 		
-		if(_healer != null && ClassFunctions.isHealer(player))
-			return false;
-		
-		if(_dds.size() >= 4 && ClassFunctions.isDamageDealer(player))
-			return false;
-		
-		if(player.getLevel() > (_leader.getLevel() +5) || player.getLevel() < (_leader.getLevel() - 5))
-			return false;
-		
-		Party party = _leader.getParty();
-		
-		if(party == null)
-		{
-//			int itemDistribution = _leader.getInteger("itemDistribution");
-			_leader.setParty(party = new Party(_leader, Party.ITEM_ORDER_SPOIL));
+		// join party in middle of active
+		switch(_intention){
+		case ATTACK:
+		case ACTIVE:
+		case MOVING:
+			player.teleToLocation(_leader.getLoc());
+			break;
+		default:
+			break;
 		}
 		
-		boolean result = party.addPartyMember(player);
-		
-		if(result)
-			partyPosition(player);
-		
-		if (isFull())
-		{
-			_leader = _dds.get(0);
-			party.changePartyLeader(_leader);
-			System.out.println("party is full, change party leader to: "+_leader);
-		}
-		
-		return result;
+		return true;
 	}
 	
-	public static Location getPartyCenterLoc(Party party)
+	public PartyIntention getIntention() {
+		return _intention;
+	}
+
+	public void setIntention(PartyIntention intention) {
+		_intention = intention;
+	}
+	
+	public Location getBeginLoc()
+	{
+		return _beginLoc;
+	}
+	
+	public void setBeginLoc()
+	{
+		_beginLoc = FarmZoneHolder.getInstance().getPartyLocation(_averageLevel);
+	}
+	
+	public Location getCenterLoc()
+	{
+		return _centerLoc;
+	}
+	
+	public void updateCenterLoc()
 	{
 		int x = 0;
 		int y = 0;
@@ -92,19 +167,86 @@ public class FPCParty {
 		int size = 0;
 		
 		// TODO should try to use dd only
-		for(Player player: party.getPartyMembers())
+		for(Player player: _dds)
 		{
-			if(ClassFunctions.isHealer(player)
-					|| ClassFunctions.isTanker(player)
-					|| ClassFunctions.isIss(player))
-				continue;
 			x += player.getX();
 			y += player.getY();
 			z += player.getZ();
 			size++;
 		}
 		
-		return new Location(x/size, y/size, z/size);
+		if(size > 0)
+			_centerLoc = new Location(x/size, y/size, z/size);		
+	}
+	
+	public void tryReopen()
+	{
+		if (!isFull())
+			FPCPartyManager.getInstance().reopenParty(this);
+	}
+	
+	public void teleportPartyMember(Location loc)
+	{
+		for(Player player: getParty().getPartyMembers())
+		{
+			player.teleToLocation(loc);
+			FPCInfo.fullRestore(player);
+		}
+	}
+	
+	public void thinkIdle()
+	{
+		if (!isFull())
+			return;
+		
+		setBeginLoc();
+		// TODO should move
+		teleportPartyMember(getBeginLoc());
+		// change leader to dd
+		setLeader(_dds.get(0));
+		// change party intension
+		setIntention(PartyIntention.ACTIVE);
+	}
+	
+	public void thinkActive()
+	{
+		tryReopen();
+	}
+	
+	public void thinkMoving()
+	{
+		tryReopen();
+		if(_nextLoc == null)
+		{
+			setIntention(PartyIntention.ACTIVE);
+		}
+	}
+	
+	public void thinkActtack()
+	{
+		tryReopen();
+		updateCenterLoc();
+	}
+	
+	public void onEvtThing()
+	{
+		switch (getIntention()) {
+		case IDLE:
+			thinkIdle();
+			break;
+			
+		case ACTIVE:
+			thinkActive();
+			break;
+			
+		case MOVING:
+			thinkMoving();
+			break;
+			
+		case ATTACK:
+			thinkActtack();
+			break;
+		}
 	}
 
 	public void debug() {
@@ -120,6 +262,23 @@ public class FPCParty {
 		}
 		System.out.println("====================");
 		
+	}
+	
+	public class HeartBeat implements Runnable
+	{
+		@SuppressWarnings("synthetic-access")
+		@Override
+		public void run()
+		{
+			try
+			{
+				onEvtThing();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

@@ -15,9 +15,10 @@ public class FarmZone {
 	public boolean _is_party = false;
 	public List<Integer> _class_ids = new ArrayList<Integer>();
 	
-	public FarmZone(int min_level, int max_level){
+	public FarmZone(int min_level, int max_level, boolean is_party){
 		_min_level = min_level;
 		_max_level = max_level;
+		_is_party = is_party;
 	}
 	
 	public void addLocation(Location loc){
@@ -43,8 +44,18 @@ public class FarmZone {
 		return _class_ids.size() == 0 || _class_ids.contains(classId);
 	}
 	
+	public boolean checkIsParty(boolean inParty)
+	{
+		return _is_party && inParty;
+	}
+	
 	public boolean isValid(Player player){
-		return checkLevel(player.getLevel()) && checkClass(player.getClassId().getId());
+		return checkLevel(player.getLevel()) && checkClass(player.getClassId().getId()) && checkIsParty(player.isInParty());
+	}
+
+	public boolean isParty() {
+		// TODO Auto-generated method stub
+		return _is_party;
 	}
 
 }

@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import l2s.commons.util.Rnd;
-import l2s.gameserver.ai.PlayerAI;
-import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassId;
 import l2s.gameserver.model.base.Experience;
@@ -53,6 +51,7 @@ public class FPCInfo
 	private int AILoopCount = 0;
 	private FPCPveStyle _pveStyle = FPCPveStyle.PARTY;
 	private FPCParty _party = null;
+	private FPCDefaultAI _ai = null;
 	
 	private static FPCBase _instances = new FPCBase();
 	
@@ -165,7 +164,7 @@ public class FPCInfo
 	            }
 	            else
 	            {
-	            	lookingParty();
+	            	setParty();
 //	            	_log.info(_actor + " going to party, size:" + _party.getSize());
 	            }
 
@@ -189,9 +188,10 @@ public class FPCInfo
 		return _classId;
 	}
 	
-	public void setParty(FPCParty party)
+	public void setParty()
 	{
-		_party = party;
+		_party = FPCPartyManager.getInstance().getParty(this);;
+		_ai.set_fpcParty(_party);
 	}
 	
 	public FPCParty getParty()
@@ -208,57 +208,14 @@ public class FPCInfo
 	
 	public void teleToNextFarmZone()
 	{
+		if(_pveStyle == FPCPveStyle.PARTY)
+			return;
+		
 		Player player = getActor();
 		Location nextLoc;
-		switch(_pveStyle)
-		{
-			case SOLO:
-				nextLoc = FarmZoneHolder.getInstance().getLocation(player);
-				if(nextLoc != null)
-					player.teleToLocation(nextLoc);
-				break;
-			
-			case PARTY:
-				if(getParty() == null)
-				{
-					getAI().debug("fparty is null");
-					return;
-				}
-				if(!getParty().isFull())
-				{
-					getAI().debug("fparty is not full");
-					return;
-				}
-				Party party = player.getParty();
-				if(party == null)
-				{
-					getAI().debug("party is full");
-					return;
-				}
-				if (party.isLeader(player))
-				{
-					nextLoc = FarmZoneHolder.getInstance().getLocation(player);
-					if(nextLoc != null)
-					{
-						getAI().debug("found zone");
-						for(Player partyMember: party.getPartyMembers())
-						{
-							partyMember.teleToLocation(nextLoc);
-							fullRestore(partyMember);
-						}
-					}
-					else
-					{
-						System.out.println(player+" not found next zone");
-					}
-				}
-				else
-				{
-					getAI().debug("not a party leader");
-				}
-				break;
-		}
-		
+		nextLoc = FarmZoneHolder.getInstance().getLocation(player);
+		if(nextLoc != null)
+			player.teleToLocation(nextLoc);
 	}
 	
 	public void setAI(FPCDefaultAI ai)
@@ -267,9 +224,11 @@ public class FPCInfo
 		
 		if(actor == null)
 			return;
+		
+		_ai = ai;
 					
 		//if(ai instanceof MarketFPC) cancelShop();
-		actor.setAI(ai);
+		actor.setAI(_ai);
 	}	
 	
 	@SuppressWarnings("unchecked")
@@ -303,16 +262,7 @@ public class FPCInfo
 	
 	public FPCDefaultAI getAI()
 	{
-		Player actor	= getActor();
-		
-		PlayerAI ai = actor.getAI();
-		
-		return (FPCDefaultAI) ai;
-	}
-	
-	public void lookingParty()
-	{
-		FPCPartyManager.getInstance().getParty(this);
+		return _ai;
 	}
 	
 	public void setPVEStyle(FPCPveStyle style)
