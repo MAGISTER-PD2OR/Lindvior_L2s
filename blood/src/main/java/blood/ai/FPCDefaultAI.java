@@ -1029,17 +1029,18 @@ public class FPCDefaultAI extends PlayerAI
 			return true;
 		}
 		
-		debug("dotask: "+currentTask+" "+currentTask.type);
-		
 		if (actor.isDead() || actor.isAttackingNow() || actor.isCastingNow())
 		{
 			return false;
 		}
 		
+		debug("dotask: "+currentTask+" "+currentTask.type);
+		
 		switch (currentTask.type)
 		{
 			// Task "come running at the given coordinates"
 			case MOVE:
+				debug("dotask: start move");
 				if (actor.isMovementDisabled() || !getIsMobile())
 				{
 					debug("dotask return true 3");
