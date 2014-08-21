@@ -1044,11 +1044,11 @@ public class FPCDefaultAI extends PlayerAI
 				{
 					debug("dotask return true 3");
 					return true;
-//					return false;
 				}
 				
 				if (actor.isInRange(currentTask.loc, 100))
 				{
+					debug("in range, next task");
 					return maybeNextTask(currentTask);
 				}
 				
@@ -1064,6 +1064,7 @@ public class FPCDefaultAI extends PlayerAI
 					actor.teleToLocation(currentTask.loc);
 					// actor.broadcastPacketToOthers(new MagicSkillUse(actor, actor, 2036, 1, 500, 600000));
 					// ThreadPoolManager.getInstance().scheduleAi(new Teleport(currentTask.loc), 500, false);
+					debug("move failed, tele, next task");
 					return maybeNextTask(currentTask);
 				}
 				break;

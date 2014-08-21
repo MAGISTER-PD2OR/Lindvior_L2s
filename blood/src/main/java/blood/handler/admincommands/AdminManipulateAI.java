@@ -53,9 +53,6 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				FPCDefaultAI ai = FPCInfo.getInstance(activeChar).getAI();
 				Player player = activeChar;
 				
-				// sleepy at start
-				ai.addTaskSleep(10*1000);
-				
 				Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
 				NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
 				NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
@@ -63,7 +60,6 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				_log.info("Where am i?");
 				
 				ai.addTaskTele(myRestartLocation);
-				ai.addTaskSleep(10*1000);
 				
 				_log.info("Teleportto restart loc:"+myRestartLocation);
 				if(myRestartLocation.distance(buffer.getLoc()) < 4000)
@@ -88,7 +84,6 @@ public class AdminManipulateAI implements IAdminCommandHandler
 					_log.info("=>Tele to middle GK:"+middleGK);
 					gk = middleGK;
 					ai.addTaskTele(gk.getLoc());
-					ai.addTaskSleep(10*1000);
 				}
 				
 				_log.info("find spawn zone");
@@ -110,14 +105,12 @@ public class AdminManipulateAI implements IAdminCommandHandler
 					_log.info("Teleport to farm zone entrance:"+spawnLocation);
 					_log.info("Move to farm spot:"+targetLocation);
 					ai.addTaskTele(spawnLocation);
-					ai.addTaskSleep(10*1000);
 					ai.addTaskMove(targetLocation, true);
 				}
 				else
 				{
 					_log.info("Teleporto direct to farm spot:"+targetLocation);
 					ai.addTaskTele(targetLocation);
-//					ai.addTaskSleep(10*1000);
 				}
 			break;
 			default:
