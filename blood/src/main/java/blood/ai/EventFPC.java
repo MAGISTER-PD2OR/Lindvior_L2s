@@ -580,6 +580,8 @@ public class EventFPC extends FPCDefaultAI
 			debug("active: do task on think");
 			if (doTask())
 			{
+				addTaskSleep(1*1000);
+				addTaskSleep(1*1000);
 //				clearTasks();
 			}
 			return;

@@ -45,6 +45,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 			case admin_tryai:
 				FPCInfo newInfo = new FPCInfo(activeChar);
 				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
+				newInfo.getAI().toggleDebug();
 	//			newInfo.setPVEStyle(FPCPveStyle.PARTY);
 	//			newInfo.setParty();
 			break;
@@ -52,7 +53,6 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				FPCDefaultAI ai = FPCInfo.getInstance(activeChar).getAI();
 				Player player = activeChar;
 				
-				ai.toggleDebug();
 				// sleepy at start
 				ai.addTaskSleep(10*1000);
 				
@@ -117,7 +117,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				{
 					_log.info("Teleporto direct to farm spot:"+targetLocation);
 					ai.addTaskTele(targetLocation);
-					ai.addTaskSleep(10*1000);
+//					ai.addTaskSleep(10*1000);
 				}
 			break;
 			default:

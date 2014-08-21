@@ -65,7 +65,7 @@ public class FPCDefaultAI extends PlayerAI
 		public Skill skill;
 		public HardReference<? extends Creature> target;
 		public Location loc;
-		public int sleepTime;
+		public int sleepTime = 0;
 		public boolean pathfind;
 		public int weight = TaskDefaultWeight;
 	}
