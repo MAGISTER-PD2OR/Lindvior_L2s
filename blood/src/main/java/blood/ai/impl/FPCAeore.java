@@ -184,7 +184,7 @@ public class FPCAeore extends HealerPC
 				normalRechargeTarget(lowestHpMember);
 		}
 		
-		return false;
+		return true;
 	}
 	
 	@Override

@@ -317,7 +317,6 @@ public class FPCDefaultAI extends PlayerAI
 	@SuppressWarnings("incomplete-switch")
 	public void addSkill(Skill skill)
 	{
-		
 		switch(skill.getSkillType())
 		{
 			case PDAM:
@@ -424,7 +423,6 @@ public class FPCDefaultAI extends PlayerAI
 	@Override
 	public final synchronized void stopAITask()
 	{
-
 		if (_aiTask != null)
 		{
 			_aiTask.cancel(false);
@@ -1050,12 +1048,16 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean tryMoveToLoc(Location loc, int range)
 	{
+		long now = System.currentTimeMillis();
+		if ((now - _checkRandomWalkTimestamp) < 3000 )
+			return false;
+		
 		Player actor = getActor();
 		double distance = actor.getDistance(loc);
 		
 		if(distance > 1500)
 		{
-			_log.error("tofar", new Exception());
+			_log.error("tofar: "+distance, new Exception());
 		}
 		
 		if(distance < range)
@@ -1063,6 +1065,7 @@ public class FPCDefaultAI extends PlayerAI
 		
 		Location nextLoc = Location.findAroundPosition(loc, range, actor.getGeoIndex());
 		addTaskMove(nextLoc, true);
+		_checkRandomWalkTimestamp = now + Rnd.get(3000);
 		return true;
 	}
 	

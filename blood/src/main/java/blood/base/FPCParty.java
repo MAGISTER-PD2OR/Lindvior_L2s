@@ -218,6 +218,7 @@ public class FPCParty {
 	public void thinkActive()
 	{
 		tryReopen();
+		updateCenterLoc();
 	}
 	
 	public void thinkMoving()

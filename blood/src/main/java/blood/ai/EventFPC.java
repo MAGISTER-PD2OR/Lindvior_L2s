@@ -239,42 +239,6 @@ public class EventFPC extends FPCDefaultAI
 	protected ItemInstance 	_last_secondary_weapon;
 	protected long 			_last_weapon_check;
 	
-	public void reArm()
-	{
-		reArm(5000);
-	}
-	
-	public void reArm(int delay)
-	{
-		Player actor = getActor();
-		long now = System.currentTimeMillis();
-		
-		if ((now - _last_weapon_check) > delay)
-		{
-			_last_weapon_check = now;
-			
-			ItemInstance wpn = actor.getSecondaryWeaponInstance();
-			if (wpn != null)
-			{
-				_last_secondary_weapon = wpn;
-			}
-			else if(_last_secondary_weapon != null)
-			{
-				actor.getInventory().equipItem(_last_secondary_weapon);
-			}
-			
-			wpn = actor.getActiveWeaponInstance();
-			if(wpn != null)
-			{
-				_last_active_weapon = wpn;
-			}
-			else if (_last_active_weapon != null)
-			{
-				actor.getInventory().equipItem(_last_active_weapon);
-			}
-		}
-	}
-	
 	protected boolean _thinkActiveCheckCondition()
 	{
 		
@@ -531,90 +495,57 @@ public class EventFPC extends FPCDefaultAI
 			actor.standUp();
 		}
 		
-		reArm();
-		
 		makeNpcBuffs();
 		
-//		if(NexusEvents.isInEvent(actor))
-//		{
-//			debug("active: in event");
-			if(isStuck(10000 + Rnd.get(3000)))
-			{
-				debug("active: stuck -> random walk, but skipped");
-				randomWalk();
+		if(isStuck(10000 + Rnd.get(3000)))
+		{
+			debug("active: stuck -> random walk, but skipped");
+			randomWalk();
+			return;
+		}
+		
+		long now = System.currentTimeMillis();
+		
+		gearUp(now);
+		
+		if(now - _checkSummonTimestamp > 5000)
+		{
+			if(thinkSummon()) return;
+			_checkSummonTimestamp = now;
+		}
+		
+		if(now - _checkBuffTimestamp > 5000)
+		{
+			if(thinkBuff()) return;
+			_checkBuffTimestamp = now;
+		}
+		
+		if(thinkActiveByClass())
+			return;
+		
+		if(!actor.isInParty())
+		{
+			if(thinkAggressive(2000, 1000)) return;
+			randomWalk();
+		}
+		else if(actor.getParty().isLeader(actor))
+		{
+			if(thinkAggressive(2000, 1000)) return;
+			tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
+		}
+		else
+		{
+			Player leader = actor.getParty().getPartyLeader();
+			
+			Creature target = leader.getAI().getAttackTarget();
+			
+			if(target != null && checkAggression(target))
+			{	
 				return;
 			}
 			
-			long now = System.currentTimeMillis();
-			
-			gearUp(now);
-			
-			if(now - _checkSummonTimestamp > 5000)
-			{
-				if(thinkSummon()) return;
-				_checkSummonTimestamp = now;
-			}
-			
-			if(now - _checkBuffTimestamp > 5000)
-			{
-				if(thinkBuff()) return;
-				_checkBuffTimestamp = now;
-			}
-			
-			if(thinkActiveByClass())
-				return;
-			
-			if(!actor.isInParty() || actor.getParty().isLeader(actor))
-			{
-				if(thinkAggressive(2000, 1000)) return;
-				randomWalk();
-			}
-			else
-			{
-				Player leader = actor.getParty().getPartyLeader();
-				
-				if(ClassFunctions.isHealer(actor))
-				{
-					tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
-					return;
-				}
-				
-				Creature target = leader.getAI().getAttackTarget();
-				
-				if(target != null && checkAggression(target))
-				{	
-					return;
-				}
-				
-				tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
-				
-//				tryMoveToTarget(leader, 300);
-				
-			}
-			
-//			if(thinkAggressive(3000)) return;
-			
-//			if(tacticMove()) return;
-//			if(!actor.isInParty())
-//				randomWalk();
-//		}
-//		else 
-//		{
-//			if(Rnd.chance(0.5))
-//			{
-//				actor.standUp();
-//				if(Rnd.chance(20))	randomWalk(1000);
-//				else
-//				{
-//					List<GameObject> chars 	= World.getAroundObjects(actor, 2000, 500);
-//					if(chars.size() == 0) return;
-//					GameObject randomChar		= chars.get(Rnd.get(chars.size()));
-//					if(!randomChar.isDoor())
-//						actor.moveToLocation(randomChar.getLoc(), 50, true);
-//				}
-//			}
-//		}
-			
+			tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
+		}
 	}
 	
 	@Override
@@ -631,8 +562,20 @@ public class EventFPC extends FPCDefaultAI
 			actor.standUp();
 		}
 		
-		reArm();
 		makeNpcBuffs();
+		long now = System.currentTimeMillis();
+		gearUp(now);
+		if(now - _checkSummonTimestamp > 5000)
+		{
+			if(thinkSummon()) return;
+			_checkSummonTimestamp = now;
+		}
+		
+		if(now - _checkBuffTimestamp > 5000)
+		{
+			if(thinkBuff()) return;
+			_checkBuffTimestamp = now;
+		}
 		
 		/*
 		if(isStuck(7000 + Rnd.get(3000)))
