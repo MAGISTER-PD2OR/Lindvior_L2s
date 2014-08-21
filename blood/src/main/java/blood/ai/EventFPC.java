@@ -26,7 +26,6 @@ import l2s.gameserver.skills.EffectType;
 import l2s.gameserver.tables.SkillTable;
 import l2s.gameserver.templates.TeleportLocation;
 import l2s.gameserver.templates.mapregion.RestartArea;
-import l2s.gameserver.templates.mapregion.RestartPoint;
 import l2s.gameserver.templates.skill.EffectTemplate;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.utils.Location;
@@ -38,9 +37,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import blood.FPCInfo;
 import blood.base.FPCPveStyle;
 import blood.data.holder.FarmZoneHolder;
+import blood.data.holder.NpcHelper;
 import blood.model.FPReward;
-import blood.utils.ClassFunctions;
-import blood.utils.NpcFunctions;
 
 public class EventFPC extends FPCDefaultAI
 {
@@ -508,8 +506,8 @@ public class EventFPC extends FPCDefaultAI
 		Player player = getActor();
 		
 		Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
-		NpcInstance buffer = NpcFunctions.getNearestBuffer(myRestartLocation);
-		NpcInstance gk = NpcFunctions.getNearestGatekeeper(buffer);
+		NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
+		NpcInstance gk = NpcHelper.getClosestGatekeeper(buffer);
 		Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
 		RestartArea myRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, player.getLoc());
 		RestartArea targetRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, targetLocation);
@@ -529,7 +527,7 @@ public class EventFPC extends FPCDefaultAI
 		{
 			debug("diff area we should change villages");
 			Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
-			NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(middleRestartLocation);
+			NpcInstance middleGK = NpcHelper.getClosestGatekeeper(middleRestartLocation);
 			debug("=>Tele to target GK:"+middleGK);
 			gk = middleGK;
 		}

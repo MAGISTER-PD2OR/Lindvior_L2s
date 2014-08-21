@@ -29,10 +29,10 @@ import blood.base.FPCParty;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.data.holder.FarmZoneHolder;
+import blood.data.holder.NpcHelper;
 import blood.model.FPReward;
 import blood.table.FPCMerchantTable;
 import blood.utils.ClassFunctions;
-import blood.utils.NpcFunctions;
 
 public class AdminFakePlayers implements IAdminCommandHandler
 {
@@ -261,8 +261,8 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				Player player = activeChar;
 				
 				Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
-				NpcInstance buffer = NpcFunctions.getNearestBuffer(myRestartLocation);
-				NpcInstance gk = NpcFunctions.getNearestGatekeeper(myRestartLocation);
+				NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
+				NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
 				
 				_log.info("Where am i?");
 				
@@ -281,7 +281,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 					return false;
 				
 				Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
-				NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(middleRestartLocation);
+				NpcInstance middleGK = NpcHelper.getClosestGatekeeper(middleRestartLocation);
 				
 				if(gk.getObjectId() != middleGK.getObjectId())
 				{
