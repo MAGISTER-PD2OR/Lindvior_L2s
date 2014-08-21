@@ -262,13 +262,16 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				
 				Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
 				NpcInstance buffer = NpcFunctions.getNearestBuffer(myRestartLocation);
-				NpcInstance gk = NpcFunctions.getNearestGatekeeper(buffer);
-								
+				NpcInstance gk = NpcFunctions.getNearestGatekeeper(myRestartLocation);
 				
 				_log.info("Where am i?");
 				
 				_log.info("Teleportto restart loc:"+myRestartLocation);
-				_log.info("Move to next buffer:"+buffer);
+				if(myRestartLocation.distance(buffer.getLoc()) < 4000)
+					_log.info("Move to next buffer:"+buffer);
+				else
+					_log.info("Can't move to next buffer:"+buffer+" distance:"+myRestartLocation.distance(buffer.getLoc()));
+				
 				_log.info("Move to next GK:"+gk);
 				
 				Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
@@ -277,8 +280,8 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				if(targetLocation == null)
 					return false;
 				
-//				Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
-				NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(targetLocation);
+				Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
+				NpcInstance middleGK = NpcFunctions.getNearestGatekeeper(middleRestartLocation);
 				
 				if(gk.getObjectId() != middleGK.getObjectId())
 				{
