@@ -206,6 +206,7 @@ public class FPCParty {
 			return;
 		
 		setBeginLoc();
+		_centerLoc = getBeginLoc();
 		// TODO should move
 		teleportPartyMember(getBeginLoc());
 		// change leader to dd
