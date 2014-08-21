@@ -38,10 +38,8 @@ public final class FarmZoneHolder  extends AbstractHolder{
 	public FarmZone getZones(Player player){
 		List<FarmZone> tmp = new ArrayList<FarmZone>();
 		for (FarmZone zone: _lists){
-//			_log.info("FarmZone try zone:"+zone);
 			if (zone.isValid(player))
 			{
-//				_log.info("FarmZone valid zone:"+zone);
 				tmp.add(zone);
 			}
 		}

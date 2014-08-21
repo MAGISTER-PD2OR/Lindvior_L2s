@@ -64,7 +64,8 @@ public class NpcFunctions {
 		NpcInstance nearestNpc = null;
 		for(NpcInstance npc: GameObjectsStorage.getAllByNpcId(npcIds, true))
 		{
-			double disatance = npc.getDistance(loc);
+			double disatance = loc.distance(npc.getLoc());
+			System.out.println("getNearestNPCById: "+npc+" distance:"+disatance);
 			if(disatance < minDistance)
 			{
 				minDistance = disatance;
