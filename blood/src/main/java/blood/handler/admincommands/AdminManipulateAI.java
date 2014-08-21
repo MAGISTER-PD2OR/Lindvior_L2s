@@ -60,6 +60,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				_log.info("Where am i?");
 				
 				ai.addTaskTele(myRestartLocation);
+				ai.addTaskSleep(3*1000);
 				
 				_log.info("Teleportto restart loc:"+myRestartLocation);
 				if(myRestartLocation.distance(buffer.getLoc()) < 4000)
@@ -69,6 +70,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				
 				_log.info("Move to next GK:"+gk);
 				ai.addTaskMove(gk.getLoc(), true);
+				ai.addTaskSleep(3*1000);
 				
 				Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
 				
@@ -84,6 +86,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 					_log.info("=>Tele to middle GK:"+middleGK);
 					gk = middleGK;
 					ai.addTaskTele(gk.getLoc());
+					ai.addTaskSleep(3*1000);
 				}
 				
 				_log.info("find spawn zone");
@@ -105,6 +108,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 					_log.info("Teleport to farm zone entrance:"+spawnLocation);
 					_log.info("Move to farm spot:"+targetLocation);
 					ai.addTaskTele(spawnLocation);
+					ai.addTaskSleep(3*1000);
 					ai.addTaskMove(targetLocation, true);
 				}
 				else

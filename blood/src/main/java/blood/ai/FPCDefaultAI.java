@@ -983,7 +983,7 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean maybeNextTask(Task currentTask)
 	{
-		_log.info("removed task", new Exception());
+//		_log.info("removed task", new Exception());
 		// next task
 		_tasks.remove(currentTask);
 		// If there are no more jobs - define new one
@@ -1073,7 +1073,8 @@ public class FPCDefaultAI extends PlayerAI
 					debug("move failed, tele, next task");
 					return maybeNextTask(currentTask);
 				}
-				break;
+				return false;
+//				break;
 			case TELE:
 				actor.teleToLocation(currentTask.loc);
 				return maybeNextTask(currentTask);
