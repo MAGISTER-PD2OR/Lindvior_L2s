@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 
 
 
+
 //import l2s.gameserver.network.loginservercon.LoginServerCommunication;
 import l2mq.L2MQ;
 import l2s.commons.configuration.ExProperties;
@@ -32,6 +33,7 @@ import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.data.parser.FPItemParser;
 import blood.data.parser.FarmZoneParser;
+import blood.data.parser.NpcHelperParser;
 import blood.handler.admincommands.AdminFakePlayers;
 public
 class Blood {
@@ -67,6 +69,7 @@ class Blood {
     	storeFakePlayers();
     	FPItemParser.getInstance().load();
     	FarmZoneParser.getInstance().load();
+    	NpcHelperParser.getInstance().load();
     	if(MQ_ENABLE)
     		L2MQ.getInstance();
     	
