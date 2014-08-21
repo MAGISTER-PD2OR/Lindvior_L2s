@@ -84,13 +84,11 @@ public class FPCAeore extends HealerPC
 			tryCastSkill(SKILL_RESISTANCE_OF_SAHA, target);
 		if(canUseSkill(SKILL_CLARITY_OF_SAHA, target) && !hasEffect(target, SKILL_CLARITY_OF_SAHA))
 			tryCastSkill(SKILL_CLARITY_OF_SAHA, target);
-		if(canUseSkill(SKILL_DIVINE_PRAYER, target) && !hasEffect(target, SKILL_DIVINE_PRAYER))
-			tryCastSkill(SKILL_DIVINE_PRAYER, target);
 	}
 	
 	public void normalHealTarget(Creature target)
 	{
-		if(canUseSkill(SKILL_CRYSTAL_REGENERATION, target) && !hasEffect(target, SKILL_CRYSTAL_REGENERATION))
+		if(canUseSkill(SKILL_SUSTAIN, target) && !hasEffect(target, SKILL_SUSTAIN))
 			tryCastSkill(SKILL_SUSTAIN, target);
 		if(canUseSkill(SKILL_FAIRY_OF_LIFE, target) && !hasEffect(target, SKILL_FAIRY_OF_LIFE))
 			tryCastSkill(SKILL_FAIRY_OF_LIFE, target);
@@ -98,10 +96,12 @@ public class FPCAeore extends HealerPC
 	
 	public void criticalHealTarget(Creature target)
 	{
-		if(canUseSkill(SKILL_CRYSTAL_REGENERATION, target) && !hasEffect(target, SKILL_CRYSTAL_REGENERATION))
+		if(canUseSkill(SKILL_SUSTAIN, target) && !hasEffect(target, SKILL_SUSTAIN))
 			tryCastSkill(SKILL_SUSTAIN, target);
 		if(canUseSkill(SKILL_RADIANT_HEAL, target) && !hasEffect(target, SKILL_RADIANT_HEAL))
 			tryCastSkill(SKILL_RADIANT_HEAL, target);
+		if(canUseSkill(SKILL_PANIC_HEAL, target) && !hasEffect(target, SKILL_PANIC_HEAL))
+			tryCastSkill(SKILL_PANIC_HEAL, target);
 	}
 	
 	public void normalRechargeTarget(Creature target)
@@ -137,6 +137,7 @@ public class FPCAeore extends HealerPC
 		int normalLostMpMember = 0;
 		int criticalLostHpMember = 0;
 		int criticalLostMpMember = 0;
+		int deadlyMpMember = 0;
 		
 		if(party != null)
 		{
@@ -150,6 +151,9 @@ public class FPCAeore extends HealerPC
 				
 				if(currentMemberHpPercent < 80)
 					normalLostHpMember++;
+				
+				if(currentMemberMpPercent < 20)
+					deadlyMpMember++;
 				
 				if(currentMemberMpPercent < 50)
 					criticalLostMpMember++;
@@ -174,7 +178,7 @@ public class FPCAeore extends HealerPC
 				}
 			}
 			
-			if(canUseSkill(SKILL_REBIRTH, actor) && (criticalLostHpMember + criticalLostMpMember) > 5 || (normalLostHpMember + normalLostMpMember) > 10)
+			if(canUseSkill(SKILL_REBIRTH, actor) && (criticalLostHpMember + criticalLostMpMember) > 5 || (normalLostHpMember + normalLostMpMember) > 10 || deadlyMpMember > 0)
 				tryCastSkill(SKILL_REBIRTH, actor);
 			else if(lowestHpMember != null && lowestHpPercent < 50)
 				criticalHealTarget(lowestHpMember);
