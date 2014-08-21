@@ -128,7 +128,7 @@ public class FPCDefaultAI extends PlayerAI
 		_tasks.add(task);
 		_def_think = true;
 		
-		_log.info("create new task move", new Exception());
+		_log.info("create new task move size:"+_tasks.size(), new Exception());
 	}
 	
 	public void addTaskTele(Location loc)
@@ -139,7 +139,7 @@ public class FPCDefaultAI extends PlayerAI
 		_tasks.add(task);
 		_def_think = true;
 		
-		_log.info("create new task tele", new Exception());
+		_log.info("create new task tele size:"+_tasks.size(), new Exception());
 	}
 	public void addTaskSleep(int sleepTime)
 	{
@@ -149,7 +149,7 @@ public class FPCDefaultAI extends PlayerAI
 		_tasks.add(task);
 		_def_think = true;
 		
-		_log.info("create new task sleep", new Exception());
+		_log.info("create new task sleep size:"+_tasks.size(), new Exception());
 	}
 	
 	protected void addTaskMove(int locX, int locY, int locZ, boolean pathfind)
@@ -1004,7 +1004,7 @@ public class FPCDefaultAI extends PlayerAI
 		
 		if(now < _sleepUntilTimestamp)
 		{
-			debug("sleeping..");
+			debug("sleeping.. task pool:"+_tasks.size());
 			return false;
 		}
 		
