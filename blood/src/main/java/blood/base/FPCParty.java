@@ -78,7 +78,7 @@ public class FPCParty {
 	public boolean isValidLevel(int level)
 	{
 		int minLvl = _averageLevel >= AWAKENED_LEVEL ? Math.min(85, _averageLevel - PARTY_LEVEL_PADDING) : _averageLevel - PARTY_LEVEL_PADDING;
-		int maxLvl = _averageLevel - PARTY_LEVEL_PADDING;
+		int maxLvl = _averageLevel + PARTY_LEVEL_PADDING;
 		return minLvl <= level && level <= maxLvl; 
 	}
 	
