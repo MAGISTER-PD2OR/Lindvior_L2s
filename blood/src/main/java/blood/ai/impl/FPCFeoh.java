@@ -49,6 +49,9 @@ public class FPCFeoh extends MysticPC
 	public FPCFeoh(Player actor)
 	{
 		super(actor);
+	}
+	
+	public void prepareSkillsSetup() {
 		_allowSelfBuffSkills.add(SKILL_ARCANE_POWER);
 		_allowSelfBuffSkills.add(SKILL_EARTH_STANCE);
 	}
@@ -106,7 +109,7 @@ public class FPCFeoh extends MysticPC
 		Skill skillDarkCurse = player.getKnownSkill(SKILL_DARK_CURSE);
 		Skill skillUltimateBtm = getActor().getKnownSkill(SKILL_ULTIMATE_BTM);
 		
-		if(canUseSkill(skillUltimateBtm, player, distance) && player.getCurrentHpPercents() > 40)
+		if(canUseSkill(skillUltimateBtm, player, 0) && player.getCurrentHpPercents() > 40)
 			chooseTaskAndTargets(skillUltimateBtm, player, 0);
 		
 		if(distance < 400 && canUseSkill(skillDeathFear, target))

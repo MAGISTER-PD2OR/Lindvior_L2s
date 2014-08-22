@@ -316,6 +316,8 @@ public class FPCDefaultAI extends PlayerAI
 	public FPCDefaultAI(Player actor) {
 		super(actor);
 		
+		prepareSkillsSetup();
+		
 		for (Skill s : actor.getAllSkillsArray())
 		{
 			addSkill(s);
@@ -327,6 +329,10 @@ public class FPCDefaultAI extends PlayerAI
 		
 	}
 	
+	public void prepareSkillsSetup() {
+		// just function use to override
+	}
+
 	protected boolean _is_debug = false;
 	
 	public void debug(String msg)

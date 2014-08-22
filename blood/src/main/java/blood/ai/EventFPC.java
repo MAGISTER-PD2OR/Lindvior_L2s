@@ -65,6 +65,7 @@ public class EventFPC extends FPCDefaultAI
 	@Override
 	public void addSkill(Skill skill)
 	{
+		System.out.println("Add Skill:"+skill);
 		if(_allowSelfBuffSkills != null && _allowSelfBuffSkills.contains(skill.getId()))
 			_selfBuffSkills.add(skill);
 		
