@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import blood.FPCInfo;
 import blood.base.FPCParty;
 import blood.model.AggroListPC;
+import blood.model.FPReward;
 import blood.model.AggroListPC.AggroInfoPC;
 
 public class FPCDefaultAI extends PlayerAI
@@ -743,6 +744,11 @@ public class FPCDefaultAI extends PlayerAI
 		return false;
 	}
 	
+	protected boolean thinkEquip() 
+	{
+		return false;
+	}
+	
 	/**
 	 * @return true if the action is performed, false if not
 	 */
@@ -975,15 +981,13 @@ public class FPCDefaultAI extends PlayerAI
 		Player actor = getActor();
 		double distance = actor.getDistance(loc);
 		
-		if(distance > 1500)
-		{
-			_log.error("tofar: "+distance, new Exception());
-		}
-		
 		if(distance < range)
 			return false;
 		
 		Location nextLoc = Location.findAroundPosition(loc, range, actor.getGeoIndex());
+		
+		debug("New Loc distance:"+actor.getDistance(nextLoc));
+		
 		addTaskMove(nextLoc, true);
 		_checkRandomWalkTimestamp = now + Rnd.get(3000);
 		return true;

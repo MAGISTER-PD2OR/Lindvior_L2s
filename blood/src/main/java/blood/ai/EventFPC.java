@@ -64,7 +64,7 @@ public class EventFPC extends FPCDefaultAI
 		return defaultFightTask();
 	}
 	
-	private boolean thinkEquip() 
+	protected boolean thinkEquip() 
 	{
 		if(_nextEquipRound > System.currentTimeMillis())
 			return false;
@@ -343,6 +343,9 @@ public class EventFPC extends FPCDefaultAI
 	{
 		if(getFPCIntention() != FPCIntention.IDLE)
 			return false;
+		
+		thinkEquip();
+		thinkBuff();
 		
 		clearTasks();
 		
