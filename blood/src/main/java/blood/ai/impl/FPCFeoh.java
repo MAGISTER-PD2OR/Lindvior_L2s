@@ -1,8 +1,5 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
@@ -52,38 +49,6 @@ public class FPCFeoh extends MysticPC
 	public FPCFeoh(Player actor)
 	{
 		super(actor);
-	}
-	
-	@Override 
-	public List<Integer> getAllowSkill()
-	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
-		// skill 4th
-		// stance
-		SkillList.add(SKILL_FIRE_STANCE);
-		SkillList.add(SKILL_WATER_STANCE);
-		SkillList.add(SKILL_WIND_STANCE);
-		SkillList.add(SKILL_EARTH_STANCE);
-		
-		// Buff
-		SkillList.add(SKILL_ULTIMATE_BTM);
-		
-		// damage skills
-		SkillList.add(SKILL_ELEMENT_SPIKE);
-		SkillList.add(SKILL_ELEMENT_CRASH);
-		SkillList.add(SKILL_ELEMENT_DESTRUCTION);
-//		SkillList.add(SKILL_ELEMENT_BURST);
-//		SkillList.add(SKILL_ELEMENT_BLAST);
-//		SkillList.add(SKILL_ELEMENT_STORM);
-		SkillList.add(SKILL_DEVIL_CURSE);
-		
-		// debuff
-//		SkillList.add(SKILL_DEATH_LORE);
-//		SkillList.add(SKILL_MAGIC_EVASION);
-//		SkillList.add(SKILL_MAGIC_CHARGE);
-		
-		return SkillList;
 	}
 
 	@Override

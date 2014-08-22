@@ -24,30 +24,30 @@ public class FPCPhoenixKnight extends TankerPC
 		return super.thinkBuff();
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		SkillList.add(28);	//Aggression
-		SkillList.add(18);	//Aura of Hate
-		//SkillList.add(82);	//Majesty
-		SkillList.add(92);	//Shield Stun
-		//SkillList.add(110);	//Ultimate Defense
-		SkillList.add(403);	//Shackle
-		//SkillList.add(404);	//Mass Shackling
-		SkillList.add(400);	//Tribunal
-		SkillList.add(406);	//Angelic Icon
-		SkillList.add(984);	//Shield Strike
+		_allowSkills.add(28);	//Aggression
+		_allowSkills.add(18);	//Aura of Hate
+		//_allowSkills.add(82);	//Majesty
+		_allowSkills.add(92);	//Shield Stun
+		//_allowSkills.add(110);	//Ultimate Defense
+		_allowSkills.add(403);	//Shackle
+		//_allowSkills.add(404);	//Mass Shackling
+		_allowSkills.add(400);	//Tribunal
+		_allowSkills.add(406);	//Angelic Icon
+		_allowSkills.add(984);	//Shield Strike
 				
 		//skill 3rd
-		SkillList.add(353);	//Shield Slam
-		SkillList.add(368);	//Vengeance
-		SkillList.add(350);	//Physical Mirror
-		SkillList.add(438);	//Soul of the Phoenix
-		SkillList.add(454);	//Symbol of Defense
-		SkillList.add(784);	//Spirit of Phoenix
-		SkillList.add(785);	//Flame Icon
+		_allowSkills.add(353);	//Shield Slam
+		_allowSkills.add(368);	//Vengeance
+		_allowSkills.add(350);	//Physical Mirror
+		_allowSkills.add(438);	//Soul of the Phoenix
+		_allowSkills.add(454);	//Symbol of Defense
+		_allowSkills.add(784);	//Spirit of Phoenix
+		_allowSkills.add(785);	//Flame Icon
 		
 		return SkillList;
 	}
@@ -57,8 +57,8 @@ public class FPCPhoenixKnight extends TankerPC
 	{
 		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
 		
-		SkillList.add(28); //Aggression
-		SkillList.add(403); //Shackle
+		_allowSkills.add(28); //Aggression
+		_allowSkills.add(403); //Shackle
 		
 		return SkillList;
 	}

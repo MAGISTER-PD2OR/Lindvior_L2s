@@ -23,24 +23,24 @@ public class FPCTyr extends WarriorPC
 		return super.thinkBuff();
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		
 		// skill 4th
 		// buff
-		SkillList.add(10757);	// dead eye stance
+		_allowSkills.add(10757);	// dead eye stance
 		// damage skills
-		SkillList.add(10760);	// tornado shot
-		SkillList.add(10761);	// bow strike
-		SkillList.add(10762);	// quick shot
-		SkillList.add(10763);	// pinpoint shot
-		SkillList.add(10769);	// impact shot
-		SkillList.add(10771);	// multiple arrow
-		SkillList.add(10772);	// heavy arrow rain
+		_allowSkills.add(10760);	// tornado shot
+		_allowSkills.add(10761);	// bow strike
+		_allowSkills.add(10762);	// quick shot
+		_allowSkills.add(10763);	// pinpoint shot
+		_allowSkills.add(10769);	// impact shot
+		_allowSkills.add(10771);	// multiple arrow
+		_allowSkills.add(10772);	// heavy arrow rain
 		
-//		SkillList.add(10787);	// summon hawk
+//		_allowSkills.add(10787);	// summon hawk
 		
 		
 		return SkillList;

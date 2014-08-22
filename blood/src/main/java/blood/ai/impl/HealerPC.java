@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.Skill;
 import blood.ai.EventFPC;
 
 public class HealerPC extends EventFPC
@@ -15,15 +16,15 @@ public class HealerPC extends EventFPC
 		
 	}
 	
-	@Override
-	protected void makeNpcBuffs()
+	protected Skill getNpcSuperiorBuff()
 	{
-		npcBuff( 15650, 1 ); // Wizard Harmony
-		basicNpcBuffs();
+//		return getSkill(15648, 1); //tank
+//		return getSkill(15649, 1); //warrior
+		return getSkill(15650, 1); //wizzard
 	}
 
 	@Override
-	protected boolean createNewTask()
+	protected boolean createFightTask()
 	{
 		return defaultFightTask();
 	}

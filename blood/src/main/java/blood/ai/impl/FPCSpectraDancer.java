@@ -30,21 +30,21 @@ public class FPCSpectraDancer extends TankerPC
 		return super.thinkBuff();
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		SkillList.add(2);	//Confusion
-		SkillList.add(105);	//Freezing Strike
-		SkillList.add(122);	//Hex
-		SkillList.add(223);	//Sting
-		SkillList.add(408);	//Demonic Blade Dance
-		SkillList.add(84);	//Poison Blade Dance
+		_allowSkills.add(2);	//Confusion
+		_allowSkills.add(105);	//Freezing Strike
+		_allowSkills.add(122);	//Hex
+		_allowSkills.add(223);	//Sting
+		_allowSkills.add(408);	//Demonic Blade Dance
+		_allowSkills.add(84);	//Poison Blade Dance
 		
 		//skill 3rd
-		SkillList.add(367);	//Dance of Medusa
-		SkillList.add(455);	//Symbol of Noise		
+		_allowSkills.add(367);	//Dance of Medusa
+		_allowSkills.add(455);	//Symbol of Noise		
 		
 		return SkillList;
 	}
@@ -54,8 +54,8 @@ public class FPCSpectraDancer extends TankerPC
 	{
 		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
 		
-		SkillList.add(28); //Aggression
-		SkillList.add(402); //Arrest
+		_allowSkills.add(28); //Aggression
+		_allowSkills.add(402); //Arrest
 		
 		return SkillList;
 	}

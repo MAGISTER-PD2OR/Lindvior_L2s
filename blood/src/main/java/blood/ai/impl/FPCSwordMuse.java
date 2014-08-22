@@ -27,16 +27,16 @@ public class FPCSwordMuse extends TankerPC
 		return super.thinkBuff();
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		SkillList.add(407);	//Psycho Symphony
-		SkillList.add(98);	//Sword Symphony
+		_allowSkills.add(407);	//Psycho Symphony
+		_allowSkills.add(98);	//Sword Symphony
 		
 		//skill 3rd
-		SkillList.add(455);	//Symbol of Noise		
+		_allowSkills.add(455);	//Symbol of Noise		
 		
 		return SkillList;
 	}
@@ -46,8 +46,8 @@ public class FPCSwordMuse extends TankerPC
 	{
 		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
 		
-		SkillList.add(28); //Aggression
-		SkillList.add(402); //Arrest
+		_allowSkills.add(28); //Aggression
+		_allowSkills.add(402); //Arrest
 		
 		return SkillList;
 	}

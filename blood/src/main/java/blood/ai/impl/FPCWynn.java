@@ -78,37 +78,12 @@ public class FPCWynn extends SummonerPC
 		
 		return super.thinkBuff();
 	}
-
-	@Override
-	protected boolean thinkSummon()
-	{
-		Skill bestSummon = getUniqueSkill(new int[]{
-				SKILL_SUMMON_QUEEN,
-				SKILL_SUMMON_MERROW,
-				SKILL_SUMMON_NIGHTSHADE
-		});
-		
-		if(thinkSummon(bestSummon))
-			return true;
-		
-		return false;
-	}
+	
 	
 	@Override
-	protected boolean thinkSummon(Skill skill)
+	protected int getMaxSummon()
 	{
-		if(skill == null || skill.getSkillType() != SkillType.SUMMON)
-			return false;
-		
-		Player actor 	= getActor();
-		
-		if(actor.getServitors().length < 2  && actor.getCurrentMp() > 300) /* FIXME */
-		{
-			chooseTaskAndTargets(skill, actor, 0);
-			return true;
-		}
-		
-		return false;
+		return 2;
 	}
 	
 	protected boolean fightTaskByClass(Creature target)

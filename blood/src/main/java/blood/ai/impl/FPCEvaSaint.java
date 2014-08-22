@@ -15,18 +15,18 @@ public class FPCEvaSaint extends HealerPC
 		
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
-		SkillList.add(1206);	//Wind Shackle
-		SkillList.add(1219);	//Greater Group Heal
-		SkillList.add(1217);	//Greater Heal
-		//SkillList.add(1069);	//Sleep
-		SkillList.add(1018);	//Purify
-		SkillList.add(1401);	//Major Heal
-		SkillList.add(1398);	//Mana Burn
-		SkillList.add(1394);	//Trance
+		_allowSkills.add(1206);	//Wind Shackle
+		_allowSkills.add(1219);	//Greater Group Heal
+		_allowSkills.add(1217);	//Greater Heal
+		//_allowSkills.add(1069);	//Sleep
+		_allowSkills.add(1018);	//Purify
+		_allowSkills.add(1401);	//Major Heal
+		_allowSkills.add(1398);	//Mana Burn
+		_allowSkills.add(1394);	//Trance
 		
 		return SkillList;
 	}
@@ -42,10 +42,10 @@ public class FPCEvaSaint extends HealerPC
 	{
 		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
 		
-		SkillList.add(1218); //greater heal
-		SkillList.add(1219); //Greater Group Heal
-		SkillList.add(1020); //vitalize
-		SkillList.add(1401); //Major Heal
+		_allowSkills.add(1218); //greater heal
+		_allowSkills.add(1219); //Greater Group Heal
+		_allowSkills.add(1020); //vitalize
+		_allowSkills.add(1401); //Major Heal
 		return SkillList;
 	}
 }

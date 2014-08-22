@@ -13,21 +13,8 @@ public class TankerPC extends EventFPC
 	public TankerPC(Player actor)
 	{
 		super(actor);
-	}
-	
-	@Override
-	protected void makeNpcBuffs()
-	{
-		npcBuff( 15648, 1 ); // Tanker Harmony
-		basicNpcBuffs();
-	}
-	
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {82, 112})) // Majesty, Deflect Arrow
-			return true;
-		
-		return super.thinkBuff();
+		_allowSkills.add(82); // Majesty
+		_allowSkills.add(112); // Deflect Arrow
 	}
 
 	@Override
@@ -46,7 +33,7 @@ public class TankerPC extends EventFPC
 		{
 			SkillList = getDrawTargetSkill();
 			if(Rnd.chance(10) && SkillList != null)
-				tryCastSkill(SkillList.get(Rnd.get(SkillList.size())), attacked);
+				tryCastSkill(SkillList.get(Rnd.get(_allowSkills.size())), attacked);
 		}
 	}
 	

@@ -68,29 +68,29 @@ public class FPCTitan extends WarriorPC
 		return super.thinkBuff();
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		SkillList.add(190);	//Fatal Strike
-		//SkillList.add(36);	//Whirlwind
-		SkillList.add(121);	//Battle Roar
-		SkillList.add(260);	//Hammer Crush
-		SkillList.add(287);	//Lionheart
-		SkillList.add(94);	//Rage
-		SkillList.add(315);	//Crush of Doom
-		SkillList.add(320);	//Wrath
-		SkillList.add(994);	//Rush
+		_allowSkills.add(190);	//Fatal Strike
+		//_allowSkills.add(36);	//Whirlwind
+		_allowSkills.add(121);	//Battle Roar
+		_allowSkills.add(260);	//Hammer Crush
+		_allowSkills.add(287);	//Lionheart
+		_allowSkills.add(94);	//Rage
+		_allowSkills.add(315);	//Crush of Doom
+		_allowSkills.add(320);	//Wrath
+		_allowSkills.add(994);	//Rush
 		
 		//skill 3rd
-		SkillList.add(362);	//Armor Crush
-		SkillList.add(347);	//Earthquake
-		SkillList.add(440);	//Brave Heart
-		SkillList.add(356);	//Over the Body
-		SkillList.add(456);	//Symbol of Resistance
-		SkillList.add(917);	//Final Secret
-		SkillList.add(758);	//Fighter Will
+		_allowSkills.add(362);	//Armor Crush
+		_allowSkills.add(347);	//Earthquake
+		_allowSkills.add(440);	//Brave Heart
+		_allowSkills.add(356);	//Over the Body
+		_allowSkills.add(456);	//Symbol of Resistance
+		_allowSkills.add(917);	//Final Secret
+		_allowSkills.add(758);	//Fighter Will
 		
 		
 		return SkillList;

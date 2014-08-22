@@ -52,32 +52,6 @@ public class FPCAeore extends HealerPC
 		return super.thinkBuff();
 	}
 	
-//	@Override
-//	protected boolean thinkSummon()
-//	{
-//		if(thinkSummon(SKILL_SUMMON_LUMI))
-//			return true;
-//		
-//		return false;
-//	}
-	
-//	@Override
-//	protected void makeNpcBuffs()
-//	{
-//		npcBuff( 15649, 1 ); // Warrior Harmony
-//		super.makeNpcBuffs();
-//	}
-	
-	@Override public List<Integer> getAllowSkill()
-	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
-		// skill 4th
-		SkillList.add(SKILL_SUMMON_LUMI);
-		
-		return SkillList;
-	}
-	
 	public void partyBuff(Creature target)
 	{
 		if(canUseSkill(SKILL_RESISTANCE_OF_SAHA, target) && !hasEffect(target, SKILL_RESISTANCE_OF_SAHA))

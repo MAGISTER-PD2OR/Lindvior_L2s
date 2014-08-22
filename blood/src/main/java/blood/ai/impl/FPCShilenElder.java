@@ -15,17 +15,17 @@ public class FPCShilenElder extends HealerPC
 		
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
-		SkillList.add(1539);	//Stigma of Shilen
-		SkillList.add(1531);	//Bless the Blood 
-		//SkillList.add(1201);	//Dryad Root
-		//SkillList.add(1206);	//Wind Shackle
-		SkillList.add(1219);	//Greater Group Heal
-		SkillList.add(1217);	//Greater Heal
-		//SkillList.add(1398);	//Mana Burn
+		_allowSkills.add(1539);	//Stigma of Shilen
+		_allowSkills.add(1531);	//Bless the Blood 
+		//_allowSkills.add(1201);	//Dryad Root
+		//_allowSkills.add(1206);	//Wind Shackle
+		_allowSkills.add(1219);	//Greater Group Heal
+		_allowSkills.add(1217);	//Greater Heal
+		//_allowSkills.add(1398);	//Mana Burn
 		
 		return SkillList;
 	}
@@ -43,10 +43,10 @@ public class FPCShilenElder extends HealerPC
 	{
 		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
 		
-		SkillList.add(1218); //greater heal
-		SkillList.add(1219); //Greater Group Heal
-		SkillList.add(1020); //vitalize
-		SkillList.add(1401); //Major Heal
+		_allowSkills.add(1218); //greater heal
+		_allowSkills.add(1219); //Greater Group Heal
+		_allowSkills.add(1020); //vitalize
+		_allowSkills.add(1401); //Major Heal
 		return SkillList;
 	}
 }

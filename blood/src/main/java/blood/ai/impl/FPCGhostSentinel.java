@@ -25,29 +25,28 @@ public class FPCGhostSentinel extends RangerPC
 		return super.thinkBuff();
 	}
 	
-	@Override 
 	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		SkillList.add(19);	//Double Shot
-		SkillList.add(101);	//Stun Shot
-		//SkillList.add(303);	//Soul of Sagittarius
-		SkillList.add(24);	//Burst Shot
-		//SkillList.add(99);	//Rapid Shot
-		//SkillList.add(415);	//Spirit of Sagittarius
-		SkillList.add(414);	//Dead Eye
-		SkillList.add(314);	//Fatal Counter
-		SkillList.add(111);	//Ultimate Evasion
+		_allowSkills.add(19);	//Double Shot
+		_allowSkills.add(101);	//Stun Shot
+		//_allowSkills.add(303);	//Soul of Sagittarius
+		_allowSkills.add(24);	//Burst Shot
+		//_allowSkills.add(99);	//Rapid Shot
+		//_allowSkills.add(415);	//Spirit of Sagittarius
+		_allowSkills.add(414);	//Dead Eye
+		_allowSkills.add(314);	//Fatal Counter
+		_allowSkills.add(111);	//Ultimate Evasion
 		
 		//skill 3rd
-		SkillList.add(343);	//Lethal Shot
-		SkillList.add(354);	//Hamstring Shot
-		SkillList.add(369);	//Evade Shot
-		SkillList.add(459);	//Symbol of the Sniper
-		SkillList.add(924);	//Seven Arrow
-		SkillList.add(773);	//God Piercing
+		_allowSkills.add(343);	//Lethal Shot
+		_allowSkills.add(354);	//Hamstring Shot
+		_allowSkills.add(369);	//Evade Shot
+		_allowSkills.add(459);	//Symbol of the Sniper
+		_allowSkills.add(924);	//Seven Arrow
+		_allowSkills.add(773);	//God Piercing
 		
 		return SkillList;
 	}

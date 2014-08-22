@@ -24,32 +24,32 @@ public class FPCArchmage extends MysticPC
 		return super.thinkBuff();
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		//SkillList.add(1171);	//Blazing Circle
-		SkillList.add(1169);	//Curse Fear
-		SkillList.add(1230);	//Prominence 
-		SkillList.add(1231);	//Aura Flare
-		//SkillList.add(1069);	//Sleep
-		//SkillList.add(1160);	//Slow
-		SkillList.add(1083);	//Surrender to Fire
-		SkillList.add(1056);	//Cancelation
-		SkillList.add(1417);	//Aura Flash
-		SkillList.add(1296);	//Rain of Fire
-		SkillList.add(1288);	//Aura Symphony
-		SkillList.add(1284);	//Aura Symphon
-		SkillList.add(1232);	//Aura Symphon
-		SkillList.add(1289);	//Inferno
+		//_allowSkills.add(1171);	//Blazing Circle
+		_allowSkills.add(1169);	//Curse Fear
+		_allowSkills.add(1230);	//Prominence 
+		_allowSkills.add(1231);	//Aura Flare
+		//_allowSkills.add(1069);	//Sleep
+		//_allowSkills.add(1160);	//Slow
+		_allowSkills.add(1083);	//Surrender to Fire
+		_allowSkills.add(1056);	//Cancelation
+		_allowSkills.add(1417);	//Aura Flash
+		_allowSkills.add(1296);	//Rain of Fire
+		_allowSkills.add(1288);	//Aura Symphony
+		_allowSkills.add(1284);	//Aura Symphon
+		_allowSkills.add(1232);	//Aura Symphon
+		_allowSkills.add(1289);	//Inferno
 				
 		//skill 3rd
-		SkillList.add(1339);	//Fire Vortex
-		SkillList.add(1452);	//Count of Fire
-		SkillList.add(1451);	//Fire Vortex Burster
-		SkillList.add(1419);	//Vocalno
-		SkillList.add(1467);	//Meteor
+		_allowSkills.add(1339);	//Fire Vortex
+		_allowSkills.add(1452);	//Count of Fire
+		_allowSkills.add(1451);	//Fire Vortex Burster
+		_allowSkills.add(1419);	//Vocalno
+		_allowSkills.add(1467);	//Meteor
 		
 		return SkillList;
 	}

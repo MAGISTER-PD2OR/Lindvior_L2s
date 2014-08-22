@@ -21,25 +21,25 @@ public class FPCTrickster extends RangerPC
 		return super.thinkBuff();
 	}	
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		SkillList.add(490);	//Fast Shot
-		SkillList.add(507);	//Twin Shot
-		SkillList.add(509);	//Bleeding Shot
-		SkillList.add(508);	//Rising Shot
-		SkillList.add(622);	//Ultimate Escape
-		SkillList.add(525);	//Decoy
-		SkillList.add(522);	//Real Target
-		SkillList.add(521);	//Sharp Shooting
-		SkillList.add(510);	//Soul Cleanse
+		_allowSkills.add(490);	//Fast Shot
+		_allowSkills.add(507);	//Twin Shot
+		_allowSkills.add(509);	//Bleeding Shot
+		_allowSkills.add(508);	//Rising Shot
+		_allowSkills.add(622);	//Ultimate Escape
+		_allowSkills.add(525);	//Decoy
+		_allowSkills.add(522);	//Real Target
+		_allowSkills.add(521);	//Sharp Shooting
+		_allowSkills.add(510);	//Soul Cleanse
 		
 		//skill 3rd
-		SkillList.add(792);	//Betrayal Mark
-		SkillList.add(790);	//Wild Shot
-		SkillList.add(358);	//Final Form
+		_allowSkills.add(792);	//Betrayal Mark
+		_allowSkills.add(790);	//Wild Shot
+		_allowSkills.add(358);	//Final Form
 		
 		return SkillList;
 	}

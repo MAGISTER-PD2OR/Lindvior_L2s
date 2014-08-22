@@ -2,10 +2,8 @@ package blood.ai;
 
 import gnu.trove.map.TIntObjectMap;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
-import l2s.commons.collections.CollectionUtils;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.ai.CtrlEvent;
 import l2s.gameserver.ai.CtrlIntention;
@@ -17,11 +15,8 @@ import l2s.gameserver.model.GameObject;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
-import l2s.gameserver.model.Skill.SkillType;
-import l2s.gameserver.model.World;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.NpcInstance;
-import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.skills.EffectType;
 import l2s.gameserver.tables.SkillTable;
 import l2s.gameserver.templates.TeleportLocation;
@@ -31,11 +26,6 @@ import l2s.gameserver.templates.skill.EffectTemplate;
 import l2s.gameserver.utils.Location;
 import l2s.gameserver.utils.PositionUtils;
 import l2s.gameserver.utils.TeleportUtils;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import blood.FPCInfo;
-import blood.base.FPCPveStyle;
 import blood.data.holder.FarmZoneHolder;
 import blood.data.holder.NpcHelper;
 import blood.model.FPReward;
@@ -43,100 +33,203 @@ import blood.model.FPReward;
 public class EventFPC extends FPCDefaultAI
 {
 
-	protected Skill[] _selfSkills = Skill.EMPTY_ARRAY, 
-	_cubicSkills = Skill.EMPTY_ARRAY,
-	_sumSkills = Skill.EMPTY_ARRAY;
+	protected Skill[] _selfSkills = Skill.EMPTY_ARRAY;
+	
+	protected long _nextBuffRound 		= 0;
+	protected long _nextSummonRound 	= 0;
+	protected long _nextSumCubicRound 	= 0;
+	protected long _nextEquipRound 		= 0;
+	
+	protected HashSet<Integer> _allowSkills 	= new HashSet<Integer>();
+	
 	
 	public EventFPC(Player actor)
 	{
 		super(actor);
-		// TODO Auto-generated constructor stub
 		//_is_debug = false;
 	}
 	
-	public List<Integer> getAllowSkill()
+	// block skill as default
+	public boolean isAllowSkill(int skill_id)
 	{
-		List<Integer> result = new ArrayList<Integer>();
-		//result.add();
-		return result;
+		return _allowSkills.contains(skill_id);
 	}
 	
-	//@SuppressWarnings("incomplete-switch")
-	public void addSkill(Skill skill)
+	protected boolean createNewTask()
 	{
-		List<Integer> _list = getAllowSkill();
-		
-//		_log.info("addSkill: " + skill+ " isAllow:"+_list.contains(skill.getId()));
-		if(!_list.contains(skill.getId()))
-			return;
-		
-		switch(skill.getSkillType())
-		{
-			case PDAM:
-			case MANADAM:
-			case MDAM:
-			case DRAIN:
-			case DRAIN_SOUL:
-			{
-				boolean added = false;
-				
-				if(skill.hasEffects())
-					for(EffectTemplate eff : skill.getEffectTemplates())
-						switch(eff.getEffectType())
-						{
-							case Stun:
-								_stunSkills = ArrayUtils.add(_stunSkills, skill);
-								added = true;
-								break;
-							case DamOverTime:
-							case DamOverTimeLethal:
-							case ManaDamOverTime:
-							case LDManaDamOverTime:
-								_dotSkills = ArrayUtils.add(_dotSkills, skill);
-								added = true;
-								break;
-						default:
-							break;
-						}
-
-				if(!added)
-					_damSkills = ArrayUtils.add(_damSkills, skill);
-
-				break;
-			}
-			case DOT:
-			case MDOT:
-			case POISON:
-			case BLEED:
-				_dotSkills = ArrayUtils.add(_dotSkills, skill);
-				break;
-			case DEBUFF:
-			case SLEEP:
-			case ROOT:
-			case PARALYZE:
-			case MUTE:
-			case TELEPORT_NPC:
-			case AGGRESSION:
-				_debuffSkills = ArrayUtils.add(_debuffSkills, skill);
-				break;
-			case BUFF:
-				_buffSkills = ArrayUtils.add(_buffSkills, skill);
-				break;
-			case STUN:
-				_stunSkills = ArrayUtils.add(_stunSkills, skill);
-				break;
-			case HEAL:
-			case HEAL_PERCENT:
-			case HOT:
-				_healSkills = ArrayUtils.add(_healSkills, skill);
-				break;
-			case SUMMON:
-				_sumSkills = ArrayUtils.add(_sumSkills, skill);
-				break;
-			default:
-				break;
-		}
+		return thinkBuff() || thinkCubic() || thinkSummon() || thinkEquip() || createFightTask();
 	}
+	
+	protected boolean createFightTask()
+	{
+		return defaultFightTask();
+	}
+	
+	private boolean thinkEquip() 
+	{
+		if(_nextEquipRound > System.currentTimeMillis())
+			return false;
+		
+		_nextEquipRound = System.currentTimeMillis();
+		FPReward.getInstance().giveReward(getActor());
+		return false;
+	}
+
+	private boolean thinkCubic() 
+	{
+		if(_nextSumCubicRound > System.currentTimeMillis())
+			return false;
+		
+		_nextSumCubicRound = System.currentTimeMillis();
+		
+		if(_cubicSkills == null || _cubicSkills.length == 0)
+			return false;
+		
+		Player player = getActor();
+		
+		// TODO add method to validate max cubic
+//		if(player.getCubics().size() > 1)
+//			return false;
+		
+		Skill skill = _cubicSkills[0];
+		
+		for(EffectTemplate et: skill.getEffectTemplates())
+		{
+			// add cubic
+			if(et.getEffectType() == EffectType.Cubic)
+			{
+				if(player.getCubic(et.getParam().getInteger("cubicId")) == null)
+				{
+					chooseTaskAndTargets(skill, player, 0);
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	protected boolean thinkSummon() 
+	{
+		if(_nextBuffRound > System.currentTimeMillis())
+			return false;
+		
+		_nextEquipRound = System.currentTimeMillis();
+		
+		if(_sumSkills == null || _sumSkills.length == 0)
+			return false;
+		
+		Player player = getActor();
+		
+		Skill[] summonSkills = selectUsableSkills(player, 0, _sumSkills);
+		
+		if(summonSkills.length == 0)
+			return false;
+		
+		Skill summonSkill = summonSkills[Rnd.get(summonSkills.length)];
+		
+		if(player.getServitors().length < getMaxSummon()  && player.getCurrentMp() > 300)
+			addTaskBuff(player, summonSkill);
+		
+		return false;
+	}
+	
+	protected int getMaxSummon()
+	{
+		return 1;
+	}
+
+	protected boolean thinkBuff()
+	{
+		// add interval check for performance
+		if(_nextBuffRound > System.currentTimeMillis())
+			return false;
+		
+		_nextBuffRound = System.currentTimeMillis();
+		
+		doNewbieBuff();
+		
+		if(_buffSkills == null || _buffSkills.length <= 0)
+			return false;
+		
+		Player player = getActor();
+//		
+//		for(Skill skill: _buffSkills)
+//		{
+//			if(thinkBuff(skill))
+//				return true;
+//		}
+		
+		// think self buff
+		debug("I buff my self");
+		
+		// think friend buff
+		if(player.isInParty())
+		{
+			for(Player member: player.getParty().getPartyMembers())
+			{
+				if(member == player)
+					continue;
+				
+				debug("check and add buff task for party member:"+member);
+			}
+		}
+		
+		return false;
+	}
+	
+	/*
+	 * Buff method
+	 */
+	
+	protected void doNewbieBuff()
+	{
+		for(Skill skill: getNewbieBuff())
+			buffFromNoWhere(skill);
+	}
+	
+	protected HashSet<Skill> getNewbieBuff()
+	{
+		HashSet<Skill> skills = new HashSet<Skill>();
+		
+		skills.add(getSkill(15642, 1));
+		skills.add(getSkill(15643, 1));
+		skills.add(getSkill(15644, 1));
+		skills.add(getSkill(15645, 1));
+		skills.add(getSkill(15646, 1));
+		skills.add(getSkill(15647, 1));
+		
+		skills.add(getSkill(15651, 1));
+		skills.add(getSkill(15652, 1));
+		skills.add(getSkill(15653, 1));
+		
+		skills.add(getNpcSuperiorBuff());
+		
+		// TODO add montor exp buff for character < 85
+		
+		return skills;
+	}
+	
+	protected Skill getNpcSuperiorBuff()
+	{
+		return getSkill(15648, 1);
+//		return getSkill(15649, 1); warrior
+//		return getSkill(15650, 1); wizzard
+	}
+	
+	protected boolean buffFromNoWhere(Skill skill)
+	{
+		Player player = getActor();
+		if(player.getEffectList().containsEffects(skill))
+			return false;
+		
+		skill.getEffects(player, player, false);
+		return true;
+	}
+	
+	/*
+	 * Method provide protect party
+	 */
 	
 	protected void notifyFriends(Creature attacker, int damage)
 	{
@@ -153,31 +246,6 @@ public class EventFPC extends FPCDefaultAI
 				}
 			}
 		}
-		
-//		switch(getCurrentEventType())
-//		{
-//			case TvT:
-//			case Domination:
-//				List<Player> chars = World.getAroundPlayers(actor, 500, 500);
-//				//CollectionUtils.eqSort(chars, _nearestTargetComparator);
-//				for (Player cha : chars)
-//				{
-//					if(NexusEvents.getPlayer(actor).getTeamId() == NexusEvents.getPlayer(cha).getTeamId())
-//					{
-//						cha.getAI().notifyEvent(CtrlEvent.EVT_CLAN_ATTACKED, actor, attacker, damage);
-//					}
-//				}
-//				break;
-//				
-//			default:
-//		}
-	}
-	
-	@Override
-	protected void onEvtDead(Creature killer)
-	{
-		super.onEvtDead(killer);
-		setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 	}
 	
 	@Override
@@ -241,24 +309,27 @@ public class EventFPC extends FPCDefaultAI
 		}
 		
 		notifyFriends(attacker, damage);
-		
 	}
 	
-	protected ItemInstance 	_last_active_weapon;
-	protected ItemInstance 	_last_secondary_weapon;
-	protected long 			_last_weapon_check;
+	/*
+	 * About dead
+	 */
 	
-	protected boolean _thinkActiveCheckCondition()
+	@Override
+	protected void onEvtDead(Creature killer)
 	{
-		
-		return true;
+		super.onEvtDead(killer);
+		setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 	}
+	
+	/*
+	 * About force warrior or kamael soul
+	 */
 	
 	protected boolean thinkUseWarriorForce(int skillId)
 	{
 		return thinkUseWarriorForce(skillId, 4);
-	}
-		
+	}	
 	
 	protected boolean thinkUseWarriorForce(int skillId, int forceLevel)
 	{
@@ -290,6 +361,8 @@ public class EventFPC extends FPCDefaultAI
 		
 		return false;
 	}
+	
+	
 	
 	protected boolean thinkBuff(int skillId)
 	{
@@ -324,41 +397,6 @@ public class EventFPC extends FPCDefaultAI
 		return false;
 	}
 	
-	protected void makeNpcBuffs()
-	{
-		basicNpcBuffs();
-	}
-	
-	protected void basicNpcBuffs()
-	{
-		npcBuff( 15642, 1 ); // Путешественник - Поэма Рога
-		npcBuff( 15643, 1 ); // Путешественник - Поэма Барабана
-		npcBuff( 15644, 1 ); // Путешественник - Поэма Органа
-		npcBuff( 15645, 1 ); // Путешественник - Поэма Гитары
-		npcBuff( 15646, 1 ); // Путешественник - Поэма Арфы
-		npcBuff( 15647, 1 );  // Путешественник - Поэма Лютни
-		npcBuff( 15651, 1 );  // Путешественник - Соната Битвы
-		npcBuff( 15652, 1 );  // Путешественник - Соната Движения
-		npcBuff( 15653, 1 );  // Путешественник - Соната Расслабления
-	}
-	
-	protected void npcBuff(int skillId, int skillLevel)
-	{
-		Skill skill = SkillTable.getInstance().getInfo(skillId, skillLevel);
-		if(skill == null)
-			return;	
-		
-		Player actor = getActor();
-		
-		if(actor.getLevel() > 90)
-			return;
-		
-		if(actor.getEffectList().getEffectsCount(skill) > 0)
-			return; 
-		
-		skill.getEffects(actor, actor, false);
-	}
-	
 	protected boolean thinkBuff(int[] skills)
 	{
 		if(skills == null || skills.length <= 0)
@@ -373,127 +411,6 @@ public class EventFPC extends FPCDefaultAI
 		return false;
 	}
 	
-	protected boolean thinkBuff()
-	{
-//		if(_buffSkills == null || _buffSkills.length <= 0)
-//			return false;
-//		
-//		Player actor = getActor();
-//		
-//		for(Skill skill: _buffSkills)
-//		{
-//			if(thinkBuff(skill))
-//				return true;
-//		}
-		debug("thinkBuff");
-		return false;
-	}
-	
-	protected boolean thinkSummon(int skillId)
-	{
-		return thinkSummon(getActor().getKnownSkill(skillId));
-	}
-	
-	protected boolean thinkSummon(Skill skill)
-	{
-		debug("thinkSummon:" + skill);
-		if(skill == null || skill.getSkillType() != SkillType.SUMMON)
-			return false;
-		
-		Player actor 	= getActor();
-		
-		if(actor.getServitors().length == 0  && actor.getCurrentMp() > 300) /* FIXME */
-		{
-			chooseTaskAndTargets(skill, actor, 0);
-			return true;
-		}
-		
-		return false;
-	}
-	
-	protected boolean thinkSummon()
-	{
-//		debug("thinkSummon");
-		return false;
-	}
-	
-	protected boolean thinkAggressive()
-	{
-		return thinkAggressive(2000, 2000);
-	}
-	
-	protected boolean thinkAggressive(int range)
-	{
-		return thinkAggressive(range, 2000);
-	}
-	
-	protected boolean thinkAggressive(int range, int delay)
-	{
-//		debug("thinkAggressive, range:"+range);
-		Player actor = getActor();
-		long now = System.currentTimeMillis();
-//		if ((now - _checkAggroTimestamp) > delay && !actor.isInPeaceZone() && Blood.AI_ATTACK_ALLOW)
-		if ((now - _checkAggroTimestamp) > delay && !actor.isInPeaceZone())
-		{
-			_checkAggroTimestamp = now;
-//			debug("active: check aggro");
-			
-			boolean aggressive = Rnd.chance(100);
-			if (!_aggroList.isEmpty() || aggressive)
-			{
-				List<NpcInstance> chars = World.getAroundNpc(actor, range, 500);
-				CollectionUtils.eqSort(chars, _nearestTargetComparator);
-				debug("around size: "+ chars.size());
-				for (NpcInstance cha : chars)
-				{
-					if (aggressive || (_aggroList.get(cha) != null))
-					{
-						debug("checkAggression: "+cha);
-						if (checkAggression(cha))
-						{
-							debug("checkAggression: OK on "+cha);
-							return true;
-						}
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	protected boolean thinkAggressive(Location loc, int range, int delay)
-	{
-//		debug("thinkAggressive, range:"+range);
-		Player actor = getActor();
-		long now = System.currentTimeMillis();
-//		if ((now - _checkAggroTimestamp) > delay && !actor.isInPeaceZone() && Blood.AI_ATTACK_ALLOW)
-		if ((now - _checkAggroTimestamp) > delay && !actor.isInPeaceZone())
-		{
-			_checkAggroTimestamp = now;
-//			debug("active: check aggro");
-			
-			boolean aggressive = Rnd.chance(100);
-			if (!_aggroList.isEmpty() || aggressive)
-			{
-				List<NpcInstance> chars = World.getAroundNpc(loc, actor.getCurrentRegion(), actor.getReflectionId(), range, 500);
-				CollectionUtils.eqSort(chars, _nearestTargetComparator);
-				debug("around size: "+ chars.size());
-				for (NpcInstance cha : chars)
-				{
-					if (aggressive || (_aggroList.get(cha) != null))
-					{
-						debug("checkAggression: "+cha);
-						if (checkAggression(cha))
-						{
-							debug("checkAggression: OK on "+cha);
-							return true;
-						}
-					}
-				}
-			}
-		}
-		return false;
-	}
 	
 	@Override
 	public int getMaxAttackTimeout()
@@ -511,8 +428,6 @@ public class EventFPC extends FPCDefaultAI
 		Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
 		RestartArea myRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, player.getLoc());
 		RestartArea targetRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, targetLocation);
-		
-		
 		
 		debug("Where am i?");
 		
@@ -564,138 +479,7 @@ public class EventFPC extends FPCDefaultAI
 		return false;
 	}
 	
-	@Override
-	protected void thinkActive()
-	{
-//		debug("think active");
-		Player actor = getActor();
-		if (actor.isActionsDisabled())
-		{
-			debug("action disabled");
-			return;
-		}
-		
-		if (_def_think)
-		{
-			debug("active: do task on thinkactive");
-			if (doTask())
-			{
-				clearTasks();
-			}
-			return;
-		}
-		
-		return; // just test
-		
-//		FPCInfo playerInfo = FPCInfo.getInstance(actor);
-//		
-//		if(actor.isInPeaceZone() && playerInfo.getPveStyle() == FPCPveStyle.SOLO)
-//		{
-//			defaultMoveTask();
-//			return;
-//		}
-//		
-//		if(actor.isSitting())
-//		{
-//			actor.standUp();
-//		}
-//		
-//		makeNpcBuffs();
-//		
-//		if(isStuck(10000 + Rnd.get(3000)))
-//		{
-//			debug("active: stuck -> random walk, but skipped");
-//			randomWalk();
-//			return;
-//		}
-//		
-//		long now = System.currentTimeMillis();
-//		
-//		gearUp(now);
-//		
-//		if(now - _checkSummonTimestamp > 5000)
-//		{
-//			if(thinkSummon()) return;
-//			_checkSummonTimestamp = now;
-//		}
-//		
-//		if(now - _checkBuffTimestamp > 5000)
-//		{
-//			if(thinkBuff()) return;
-//			_checkBuffTimestamp = now;
-//		}
-//		
-//		if(thinkActiveByClass())
-//			return;
-//		
-//		if(!actor.isInParty())
-//		{
-//			if(thinkAggressive(2000, 1000)) return;
-//			randomWalk();
-//		}
-//		else if(actor.getParty().isLeader(actor))
-//		{
-//			if(thinkAggressive(get_fpcParty().getBeginLoc(), 1000, 1000)) return;
-//			tryMoveToLoc(get_fpcParty().getCenterLoc(), 200);
-//		}
-//		else
-//		{
-//			Player leader = actor.getParty().getPartyLeader();
-//			
-//			Creature target = leader.getAI().getAttackTarget();
-//			
-//			if(target != null && checkAggression(target))
-//			{	
-//				return;
-//			}
-//			
-//			tryMoveToLoc(get_fpcParty().getBeginLoc(), 200);
-//		}
-	}
-	
-	@Override
-	protected void thinkAttack()
-	{
-		Player actor = getActor();
-		if (actor.isDead())
-		{
-			return;
-		}
-		
-		if(actor.isSitting())
-		{
-			actor.standUp();
-		}
-		
-		makeNpcBuffs();
-		long now = System.currentTimeMillis();
-		gearUp(now);
-		if(now - _checkSummonTimestamp > 5000)
-		{
-			if(thinkSummon()) return;
-			_checkSummonTimestamp = now;
-		}
-		
-		if(now - _checkBuffTimestamp > 5000)
-		{
-			if(thinkBuff()) return;
-			_checkBuffTimestamp = now;
-		}
-		
-		/*
-		if(isStuck(7000 + Rnd.get(3000)))
-		{
-			clearTasks();
-			randomWalk();
-			return;
-		}
-		*/
-		
-		if (doTask() && !actor.isAttackingNow() && !actor.isCastingNow())
-		{
-			createNewTask();
-		}
-	}
+
 	
 	public static Location findFrontPosition(GameObject obj, int posX, int posY, int radiusmin, int radiusmax)
 	{
@@ -737,88 +521,6 @@ public class EventFPC extends FPCDefaultAI
 		return new Location(obj);
 	}
 	
-	public boolean tacticMove()
-	{
-		return tacticMove(0);
-	}
-	
-	public boolean tacticMove(int min_distance)
-	{
-		debug("tacticMove");
-		return false; /* FIXME */
-//		Player actor = getActor();
-//		
-//		if(actor.isDead())
-//			return false;
-//
-//		if(actor.isMoving)
-//			return false;
-//
-//		if(!NexusEvents.isInEvent(actor))
-//			return false;
-//		
-//		if(getSpawns().size() == 0)
-//			return false;
-//		
-//		EventSpawn tacticSpawn = getSpawns().get(Rnd.get(getSpawns().size()));
-//		
-//		if(tacticSpawn == null)
-//			return false;
-//		
-//		double distance = actor.getDistance(tacticSpawn.getLoc().getX(), tacticSpawn.getLoc().getY());
-//		
-//		if(min_distance > 0 && min_distance > distance)
-//		{
-//			debug("so close, not event move");
-//			return false;
-//		}
-//		
-//		debug("distance: " + distance);
-//		debug("my pos: "+ actor.getX() + " " + actor.getY());
-//		debug("tactic:" + tacticSpawn.getSpawnType()+ " loc:" + tacticSpawn.getLoc().getX() + " "+ tacticSpawn.getLoc().getY());
-//		
-//		/*
-//		if(distance > 100000)
-//		{
-//			debug("so far, cancel task");
-//			return false;
-//		}
-//		*/
-//		
-//		//GeoEngine
-//		
-//		Location new_loc; 
-//		/* FIXME */
-////		if(tacticSpawn.getSpawnType() == SpawnType.Zone)
-////		{
-////			new_loc = Location.findAroundPosition(tacticSpawn.getLoc().getX(), tacticSpawn.getLoc().getY(), tacticSpawn.getLoc().getZ(), 100, 300, actor.getGeoIndex());
-////		}
-////		else
-////		{
-//			new_loc = findFrontPosition(actor, tacticSpawn.getLoc().getX(), tacticSpawn.getLoc().getY(), 1000, (int)distance);
-////		}
-//		
-//		debug("new loc: "+new_loc.getX() + " " + new_loc.getY());
-//		
-//		if(GeoEngine.canMoveToCoord(actor.getX(), actor.getY(), actor.getZ(), new_loc.getX() , new_loc.getY(), new_loc.getZ(), actor.getGeoIndex()))
-//		{
-//			addTaskMove(new_loc, true);
-//			return true;
-//		}
-//		else
-//		{
-//			debug("can not move, so force move");
-//			addTaskMove(new_loc, true);
-//			return true;
-//		}
-		
-		//return false;
-	}
-	
-	/**
-	 * Nexus function
-	 */
-	
 	protected void tryCastSkill(int skillId, Creature target)
 	{
 		tryCastSkill(skillId, target, getActor().getDistance(target));
@@ -858,28 +560,16 @@ public class EventFPC extends FPCDefaultAI
 		return skill;
 	}
 	
-	/*
-	 * Gear UP
+	/**
+	 * utils method to get any skill
+	 * @param id
+	 * @param level
+	 * @return
 	 */
-	protected long _gearUpTimeStamp = 0;
 	
-	public void gearUp()
+	protected Skill getSkill(int id, int level)
 	{
-		gearUp(System.currentTimeMillis());
-	}
-	
-	public void gearUp(Long now)
-	{
-		gearUp(now, 60*5*1000);
-	}
-	
-	public void gearUp(Long now, int limit)
-	{
-		if(now < (_gearUpTimeStamp + limit))
-			return;
-		
-		_gearUpTimeStamp = now;
-		FPReward.getInstance().giveReward(getActor());
+		return SkillTable.getInstance().getInfo(id, level);
 	}
 	
 
