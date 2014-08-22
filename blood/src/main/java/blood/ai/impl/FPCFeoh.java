@@ -106,7 +106,7 @@ public class FPCFeoh extends MysticPC
 		Skill skillDarkCurse = player.getKnownSkill(SKILL_DARK_CURSE);
 		Skill skillUltimateBtm = getActor().getKnownSkill(SKILL_ULTIMATE_BTM);
 		
-		if(canUseSkill(skillDarkCurse, player, distance) && player.getCurrentHpPercents() > 40)
+		if(canUseSkill(skillUltimateBtm, player, distance) && player.getCurrentHpPercents() > 40)
 			chooseTaskAndTargets(skillUltimateBtm, player, 0);
 		
 		if(distance < 400 && canUseSkill(skillDeathFear, target))
