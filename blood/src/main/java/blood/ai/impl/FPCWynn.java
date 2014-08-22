@@ -177,7 +177,7 @@ public class FPCWynn extends SummonerPC
 		if(markCount > 1 && canUseSkill(retriveMarkSkill, target, distance))
 			return chooseTaskAndTargets(retriveMarkSkill, target, distance);
 		
-		addTaskMove(Location.findAroundPosition(target, 600), true);
+		tryMoveToTarget(target, skillMarkOfWeakness.getCastRange());
 		
 		return false;
 	}

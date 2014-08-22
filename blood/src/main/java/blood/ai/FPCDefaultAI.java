@@ -958,55 +958,12 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean tryMoveToTarget(Creature target)
 	{
-		return tryMoveToTarget(target, 0);
+		return tryMoveToTarget(target, 150);
 	}
 	
 	protected boolean tryMoveToTarget(Creature target, int range)
 	{
-
-		Player actor = getActor();
-		
-		if (!actor.followToCharacter(target, actor.getPhysicalAttackRange(), true))
-		{
-			_pathfindFails++;
-		}
-		
-		if ((_pathfindFails >= getMaxPathfindFails()) && (System.currentTimeMillis() > ((getAttackTimeout() - getMaxAttackTimeout()) + getTeleportTimeout())) && actor.isInRange(target, MAX_PURSUE_RANGE))
-		{
-			_pathfindFails = 0;
-			
-//			if (target.isPlayable())
-//			{
-//				AggroInfoPC hate = _aggroList.get(target);
-//				if ((hate == null) || (hate.hate < 100))
-//				{
-//					return false;
-//				}
-//			}
-			double distance = actor.getDistance(target);
-			Location loc;
-			if(distance > range*3)
-			{
-				loc = Location.findAroundPosition(target, range*3);
-			}
-			else if(distance > range*2)
-			{
-				loc = Location.findAroundPosition(target, range*2);
-			}
-			else
-			{
-				loc = Location.findAroundPosition(target, range);
-			}
-			
-			if (!GeoEngine.canMoveToCoord(actor.getX(), actor.getY(), actor.getZ(), loc.x, loc.y, loc.z, actor.getGeoIndex()))
-			{
-				loc = target.getLoc();
-			}
-			
-			actor.teleToLocation(loc);
-		}
-		
-		return true;
+		return tryMoveToLoc(target.getLoc(), range);
 	}
 	
 	protected boolean tryMoveToLoc(Location loc, int range)
