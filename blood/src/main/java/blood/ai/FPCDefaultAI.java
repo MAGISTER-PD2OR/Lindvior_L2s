@@ -2,6 +2,7 @@ package blood.ai;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
@@ -312,6 +313,15 @@ public class FPCDefaultAI extends PlayerAI
 	protected final AggroListPC _aggroList;
 	
 	protected FPCIntention _fpcIntention = FPCIntention.IDLE; 
+	
+	protected HashSet<Integer> 
+		_allowSkills 			= new HashSet<Integer>(),
+		_allowSelfBuffSkills 	= new HashSet<Integer>(),
+		_allowPartyBuffSkills 	= new HashSet<Integer>();
+	
+	protected HashSet<Skill> 
+		_selfBuffSkills 		= new HashSet<Skill>(), 
+		_partyBuffSkills 		= new HashSet<Skill>(); 
 	
 	public FPCDefaultAI(Player actor) {
 		super(actor);

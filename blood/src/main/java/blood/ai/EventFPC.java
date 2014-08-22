@@ -41,14 +41,7 @@ public class EventFPC extends FPCDefaultAI
 			_nextSumCubicRound 	= 0, 
 			_nextEquipRound 	= 0;
 	
-	protected HashSet<Integer> 
-			_allowSkills 			= new HashSet<Integer>(),
-			_allowSelfBuffSkills 	= new HashSet<Integer>(),
-			_allowPartyBuffSkills 	= new HashSet<Integer>();
 	
-	protected HashSet<Skill> 
-			_selfBuffSkills 		= new HashSet<Skill>(), 
-			_partyBuffSkills 		= new HashSet<Skill>(); 
 	
 	public EventFPC(Player actor)
 	{
