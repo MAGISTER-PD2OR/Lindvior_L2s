@@ -4,7 +4,7 @@ import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
-import l2s.gameserver.model.Skill.SkillType;
+import l2s.gameserver.utils.Location;
 
 public class FPCWynn extends SummonerPC
 {
@@ -51,34 +51,45 @@ public class FPCWynn extends SummonerPC
 	}
 	
 	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			SKILL_ULTIMATE_SHARE,
-			SKILL_AVENGING_CUBIC,
-			SKILL_TPAIN
-		}))
-			return true;
+	public void prepareSkillsSetup() {
+		_allowSkills.add(SKILL_AVENGING_CUBIC);
+		_allowSelfBuffSkills.add(SKILL_ULTIMATE_SHARE);
+		_allowSelfBuffSkills.add(SKILL_TPAIN);
 		
-		Player actor = getActor();
-		Skill skillUniqueBuff = getUniqueSkill(new int[]{
-			SKILL_SERVITOR_GHASTE,
-			SKILL_SERVITOR_GDW,
-			SKILL_SERVITOR_GMIGHT
-		});
-		
-		for(Servitor servitor: actor.getServitors())
-		{
-			if(servitor.getEffectList().getEffectsCount(skillUniqueBuff) == 0 
-					&& chooseTaskAndTargets(skillUniqueBuff, servitor, 0))
-			{
-				return true;
-			}
-		}
-		
-		return super.thinkBuff();
+		_allowSelfBuffSkills.add(SKILL_SERVITOR_GHASTE);
+		_allowSelfBuffSkills.add(SKILL_SERVITOR_GDW);
+		_allowSelfBuffSkills.add(SKILL_SERVITOR_GMIGHT);
 	}
 	
+//	@Override
+//	protected boolean thinkBuff()
+//	{
+//		if(thinkBuff(new int[] {
+//			SKILL_ULTIMATE_SHARE,
+//			SKILL_AVENGING_CUBIC,
+//			SKILL_TPAIN
+//		}))
+//			return true;
+//		
+//		Player actor = getActor();
+//		Skill skillUniqueBuff = getUniqueSkill(new int[]{
+//			SKILL_SERVITOR_GHASTE,
+//			SKILL_SERVITOR_GDW,
+//			SKILL_SERVITOR_GMIGHT
+//		});
+//		
+//		for(Servitor servitor: actor.getServitors())
+//		{
+//			if(servitor.getEffectList().getEffectsCount(skillUniqueBuff) == 0 
+//					&& chooseTaskAndTargets(skillUniqueBuff, servitor, 0))
+//			{
+//				return true;
+//			}
+//		}
+//		
+//		return super.thinkBuff();
+//	}
+//	
 	
 	@Override
 	protected int getMaxSummon()
@@ -94,42 +105,40 @@ public class FPCWynn extends SummonerPC
 	
 	protected boolean wynnFightTask(Creature target)
 	{
-		Player actor = getActor();
+		Player player = getActor();
 		
 		boolean doHeal = false;
 		boolean doUD = false;
 		
 		// TODO force servitor use skill
-		if (actor.getServitors().length > 0){
-			for (Servitor summon: actor.getServitors())
+		if (player.getServitors().length > 0){
+			for (Servitor summon: player.getServitors())
 			{
 				summon.getAI().Attack(target, true, false);
 				if(summon.getCurrentHpPercents() < 80){
-					debug("doHeal please");
 					doHeal = true;
 					tryCastSkill(SKILL_SERVITOR_HEAL, summon);
 				}
 					
 				if(summon.getCurrentHpPercents() < 40){
-					debug("doUD please");
 					doUD = true;
 				}
 					
 			}
 		}
 		
-		double distance = actor.getDistance(target);
+		double distance = player.getDistance(target);
 //		double targetHp = target.getCurrentHpPercents();
 //		double actorHp = actor.getCurrentHpPercents();
 		
-		Skill skillMarkOfVoid = actor.getKnownSkill(SKILL_MARK_OF_VOID);
-		Skill skillMarkOfWeakness = actor.getKnownSkill(SKILL_MARK_OF_WEAKNESS);
-		Skill markOfTrickSkill = actor.getKnownSkill(SKILL_MARK_OF_TRICK);
-		Skill markOfPlagueSkill = actor.getKnownSkill(SKILL_MARK_OF_PLAGUE);
-		Skill retriveMarkSkill = actor.getKnownSkill(SKILL_RETRIVE_MARK);
-		Skill skillUD = actor.getKnownSkill(SKILL_SERVITOR_UD);
-		Skill healSkill = actor.getKnownSkill(SKILL_SERVITOR_MASS_HEAL);
-		Skill exileSkill = actor.getKnownSkill(SKILL_EXILE);
+		Skill skillMarkOfVoid = player.getKnownSkill(SKILL_MARK_OF_VOID);
+		Skill skillMarkOfWeakness = player.getKnownSkill(SKILL_MARK_OF_WEAKNESS);
+		Skill markOfTrickSkill = player.getKnownSkill(SKILL_MARK_OF_TRICK);
+		Skill markOfPlagueSkill = player.getKnownSkill(SKILL_MARK_OF_PLAGUE);
+		Skill retriveMarkSkill = player.getKnownSkill(SKILL_RETRIVE_MARK);
+		Skill skillUD = player.getKnownSkill(SKILL_SERVITOR_UD);
+		Skill healSkill = player.getKnownSkill(SKILL_SERVITOR_MASS_HEAL);
+		Skill exileSkill = player.getKnownSkill(SKILL_EXILE);
 		
 		int markCount = 0;
 		
@@ -142,9 +151,9 @@ public class FPCWynn extends SummonerPC
 		if(doHeal && canUseSkill(healSkill, target))
 			return chooseTaskAndTargets(healSkill, target, distance);
 		
-		if(distance > 1200 && tryMoveToTarget(target, 1000))
+		if(distance > 600)
 		{
-			debug("so far, should move:"+distance);
+			addTaskMove(Location.findAroundPosition(target, 600), true);
 			return false;
 		}
 		

@@ -3,6 +3,7 @@ package blood.ai.impl;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
+import l2s.gameserver.utils.Location;
 
 /**
  * 
@@ -45,6 +46,7 @@ public class FPCFeoh extends MysticPC
 	protected int _darkcureReuse = 30000;
 	
 	// should add auto learn skill
+	// TODO add AOE logic
 	
 	public FPCFeoh(Player actor)
 	{
@@ -55,17 +57,6 @@ public class FPCFeoh extends MysticPC
 		_allowSelfBuffSkills.add(SKILL_ARCANE_POWER);
 		_allowSelfBuffSkills.add(SKILL_EARTH_STANCE);
 	}
-
-//	@Override
-//	protected boolean thinkBuff()
-//	{
-//		if(thinkBuff(new int[] {
-//			SKILL_ARCANE_POWER,
-//			SKILL_EARTH_STANCE
-//		}))
-//			return true;
-//		return super.thinkBuff();
-//	}
 	
 	@Override
 	protected void onEvtAttacked(Creature attacker, int damage)
@@ -157,8 +148,7 @@ public class FPCFeoh extends MysticPC
 		if(canUseSkill(skillElementDestruction, target, distance))
 			return chooseTaskAndTargets(skillElementDestruction, target, distance);
 		
-		debug("try move to target");
-		tryMoveToTarget(target, 600);
+		addTaskMove(Location.findAroundPosition(target, 600), true);
 		return false;
 	}
 	

@@ -315,12 +315,14 @@ public class FPCDefaultAI extends PlayerAI
 	protected FPCIntention _fpcIntention = FPCIntention.IDLE; 
 	
 	protected HashSet<Integer> 
-		_allowSkills 			= new HashSet<Integer>(),
-		_allowSelfBuffSkills 	= new HashSet<Integer>(),
-		_allowPartyBuffSkills 	= new HashSet<Integer>();
+		_allowSkills 				= new HashSet<Integer>(),
+		_allowSelfBuffSkills 		= new HashSet<Integer>(),
+		_allowPartyBuffSkills 		= new HashSet<Integer>(),
+		_allowServitorBuffSkills 	= new HashSet<Integer>();
 	
 	protected HashSet<Skill> 
-		_selfBuffSkills 		= new HashSet<Skill>(), 
+		_selfBuffSkills 		= new HashSet<Skill>(),
+		_servitorBuffSkills		= new HashSet<Skill>(),
 		_partyBuffSkills 		= new HashSet<Skill>(); 
 	
 	public FPCDefaultAI(Player actor) {
@@ -974,21 +976,17 @@ public class FPCDefaultAI extends PlayerAI
 //			}
 			double distance = actor.getDistance(target);
 			Location loc;
-			if(distance > 1500)
+			if(distance > range*3)
 			{
-				loc = Location.findAroundPosition(target, 1500);
+				loc = Location.findAroundPosition(target, range*3);
 			}
-			else if(distance > 1000)
+			else if(distance > range*2)
 			{
-				loc = Location.findAroundPosition(target, 1000);
-			}
-			else if(distance > 500)
-			{
-				loc = Location.findAroundPosition(target, 500);
+				loc = Location.findAroundPosition(target, range*2);
 			}
 			else
 			{
-				loc = GeoEngine.moveCheckForAI(target.getLoc(), actor.getLoc(), actor.getGeoIndex());
+				loc = Location.findAroundPosition(target, range);
 			}
 			
 			if (!GeoEngine.canMoveToCoord(actor.getX(), actor.getY(), actor.getZ(), loc.x, loc.y, loc.z, actor.getGeoIndex()))

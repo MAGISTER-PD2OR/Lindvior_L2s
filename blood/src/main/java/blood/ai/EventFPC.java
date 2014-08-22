@@ -14,6 +14,7 @@ import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.GameObject;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.NpcInstance;
@@ -125,9 +126,7 @@ public class EventFPC extends FPCDefaultAI
 	protected boolean thinkSummon() 
 	{
 		if(_nextBuffRound > System.currentTimeMillis())
-			return false;
-		
-		_nextEquipRound = System.currentTimeMillis();
+			return false;		
 		
 		if(_sumSkills == null || _sumSkills.length == 0)
 			return false;
@@ -142,7 +141,12 @@ public class EventFPC extends FPCDefaultAI
 		Skill summonSkill = summonSkills[Rnd.get(summonSkills.length)];
 		
 		if(player.getServitors().length < getMaxSummon()  && player.getCurrentMp() > 300)
+		{
 			addTaskBuff(player, summonSkill);
+			return true;
+		}
+		
+		_nextEquipRound = System.currentTimeMillis() + 5000;
 		
 		return false;
 	}
@@ -171,12 +175,27 @@ public class EventFPC extends FPCDefaultAI
 			}
 		}
 		
+		// think servitor buff
+		if(_servitorBuffSkills != null && _servitorBuffSkills.size() > 0 && player.getServitorsCount() > 0)
+		{
+			for(Servitor servitor: player.getServitors())
+			{
+				double distance = player.getDistance(servitor);
+				
+				for(Skill skill: _servitorBuffSkills)
+				{
+					if(canUseSkill(skill, servitor, distance) && !servitor.getEffectList().containsEffects(skill))
+						return chooseTaskAndTargets(skill, servitor, distance);
+				}
+			}
+		}
+		
 		// think friend buff
 		if(_partyBuffSkills != null && _partyBuffSkills.size() > 0 && player.isInParty())
 		{
 			for(Player member: player.getParty().getPartyMembers())
 			{
-				if(member == player)
+				if(member.equals(player))
 					continue;
 				
 				double distance = player.getDistance(member);
@@ -184,13 +203,13 @@ public class EventFPC extends FPCDefaultAI
 				for(Skill skill: _selfBuffSkills)
 				{
 					if(canUseSkill(skill, member, distance) && !member.getEffectList().containsEffects(skill))
-						return chooseTaskAndTargets(skill, member, player.getDistance(member));
+						return chooseTaskAndTargets(skill, member, distance);
 				}
 				
 			}
 		}
 		
-		_nextBuffRound = System.currentTimeMillis();
+		_nextBuffRound = System.currentTimeMillis() + 5000;
 		
 		return false;
 	}
