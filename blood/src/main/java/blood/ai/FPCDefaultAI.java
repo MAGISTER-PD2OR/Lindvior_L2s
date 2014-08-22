@@ -67,6 +67,7 @@ public class FPCDefaultAI extends PlayerAI
 		public HardReference<? extends Creature> target;
 		public Location loc;
 		public int sleepTime = 0;
+		public boolean forceMove = false;
 		public boolean pathfind;
 		public int weight = TaskDefaultWeight;
 	}
@@ -120,17 +121,23 @@ public class FPCDefaultAI extends PlayerAI
 //		_log.info("create new task atk skill:" + skill, new Exception());
 	}
 	
-	public void addTaskMove(Location loc, boolean pathfind)
+	
+	
+	public void addTaskMove(Location loc, boolean pathfind, boolean force)
 	{
 		Task task = new Task();
 		task.type = TaskType.MOVE;
 		task.loc = loc;
 		task.pathfind = pathfind;
+		task.forceMove = force;
 		task.weight = --taskCount; // FIXME
 		_tasks.add(task);
 		_def_think = true;
-		
-//		_log.info("create new task move size:"+_tasks.size(), new Exception());
+	}
+	
+	public void addTaskMove(Location loc, boolean pathfind)
+	{
+		addTaskMove(loc, pathfind, false);
 	}
 	
 	public void addTaskTele(Location loc)
@@ -140,10 +147,10 @@ public class FPCDefaultAI extends PlayerAI
 		task.loc = loc;
 		task.weight = --taskCount;
 		_tasks.add(task);
-		_def_think = true;
-		
+		_def_think = true;	
 //		_log.info("create new task tele size:"+_tasks.size(), new Exception());
 	}
+	
 	public void addTaskSleep(int sleepTime)
 	{
 		Task task = new Task();
@@ -152,8 +159,7 @@ public class FPCDefaultAI extends PlayerAI
 		task.weight = --taskCount;
 		_tasks.add(task);
 		_def_think = true;
-		
-		_log.info("create new task sleep size:"+_tasks.size(), new Exception());
+//		_log.info("create new task sleep size:"+_tasks.size(), new Exception());
 	}
 	
 	protected void addTaskMove(int locX, int locY, int locZ, boolean pathfind)
@@ -1008,29 +1014,18 @@ public class FPCDefaultAI extends PlayerAI
 		long now = System.currentTimeMillis();
 		
 		if(now < _sleepUntilTimestamp)
-		{
-			debug("sleeping.. task pool:"+_tasks.size());
 			return false;
-		}
 		
 		Player actor = getActor();
 		
 		if (!_def_think)
-		{
-			debug("dotask return true");
 			return true;
-		}
-		
-		debug("before get task"+_tasks.size());
 		
 		Task currentTask = _tasks.pollFirst();
-		
-		debug("after get task"+_tasks.size());
 		
 		if (currentTask == null)
 		{
 			clearTasks();
-			debug("dotask return true 2");
 			return true;
 		}
 		
@@ -1039,21 +1034,15 @@ public class FPCDefaultAI extends PlayerAI
 			return false;
 		}
 		
-		debug("dotask: "+currentTask+" "+currentTask.type +" pool:"+_tasks.size());
-		
 		switch (currentTask.type)
 		{
 			// Task "come running at the given coordinates"
 			case MOVE:
 				if (actor.isMovementDisabled() || !getIsMobile())
-				{
 					return true;
-				}
 				
 				if (actor.isInRange(currentTask.loc, 100))
-				{
 					return maybeNextTask(currentTask);
-				}
 				
 				if (actor.isMoving)
 				{
@@ -1084,17 +1073,12 @@ public class FPCDefaultAI extends PlayerAI
 				Creature target = currentTask.target.get();
 				
 				if (!checkTarget(target, MAX_PURSUE_RANGE))
-				{
-					debug("dotask return true 2");
 					return true;
-				}
 				
 				setAttackTarget(target);
 				
 				if (actor.isMoving)
-				{
 					return Rnd.chance(25);
-				}
 				
 				if ((actor.getRealDistance3D(target) <= (actor.getPhysicalAttackRange() + 40)) && GeoEngine.canSeeTarget(actor, target, false))
 				{
@@ -1123,9 +1107,7 @@ public class FPCDefaultAI extends PlayerAI
 				}
 				
 				if (actor.isMovementDisabled() || !getIsMobile())
-				{
 					return true;
-				}
 				
 				tryMoveToTarget(target);
 			}
@@ -1140,18 +1122,13 @@ public class FPCDefaultAI extends PlayerAI
 					actor.setTarget(target);
 				
 				if (actor.isMuted(currentTask.skill) || actor.isSkillDisabled(currentTask.skill) || actor.isUnActiveSkill(currentTask.skill.getId()))
-				{
 					return true;
-				}
 				
 				boolean isAoE = currentTask.skill.getTargetType() == Skill.SkillTargetType.TARGET_AURA;
 				int castRange = currentTask.skill.getAOECastRange();
 				
 				if (!checkTarget(target, MAX_PURSUE_RANGE + castRange))
-				{
-					debug("so far");
 					return true;
-				}
 				
 				setAttackTarget(target);
 				
@@ -1404,9 +1381,7 @@ public class FPCDefaultAI extends PlayerAI
 		// Usually 1 hate added summon the owner to death summon mob attacked the host.
 		if ((aggro > 0) && (attacker.isServitor() || attacker.isPet()))
 		{
-//			_aggroList.addDamageHate(attacker.getPlayer(), 0, actor.getParameter("searchingMaster", false) ? aggro : 1);
 			_aggroList.addDamageHate(attacker.getPlayer(), 0, aggro);
-
 		}
 		
 		if (getIntention() != CtrlIntention.AI_INTENTION_ATTACK)
@@ -1422,17 +1397,9 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected Creature prepareTarget()
 	{
-//		if(!Blood.AI_ATTACK_ALLOW){
-//			return null;
-//		}
-		
+
 //		Player actor = getActor();
-		
-//		if (actor.isConfused())
-//		{
-//			return getAttackTarget();
-//		}
-		
+				
 		Creature target = getAttackTarget();
 		
 		if(target != null && checkTarget(target, MAX_PURSUE_RANGE))
@@ -1755,23 +1722,6 @@ public class FPCDefaultAI extends PlayerAI
 		}
 	}
 	
-	protected void addDesiredBuff(Map<Skill, Integer> skillMap, Skill[] skills)
-	{
-
-		if ((skills == null) || (skills.length == 0))
-		{
-			return;
-		}
-		Player actor = getActor();
-		for (Skill sk : skills)
-		{
-			if (canUseSkill(sk, actor))
-			{
-				skillMap.put(sk, 1000000);
-			}
-		}
-	}
-	
 	protected Skill selectTopSkill(Map<Skill, Integer> skillMap)
 	{
 
@@ -1905,7 +1855,6 @@ public class FPCDefaultAI extends PlayerAI
 	/** переход в режим бега через определенный интервал времени */
 	protected void startRunningTask(long interval)
 	{
-
 		Player actor = getActor();
 		if ((actor != null) && (_runningTask == null) && !actor.isRunning())
 		{
@@ -1937,7 +1886,6 @@ public class FPCDefaultAI extends PlayerAI
 		return defaultThinkBuff(rateSelf, 0);
 	}
 	
-	
 	protected boolean defaultThinkBuff(int rateSelf, int rateFriends)
 	{
 		Player actor = getActor();
@@ -1962,23 +1910,23 @@ public class FPCDefaultAI extends PlayerAI
 			return true;
 		}
 		
-//		if (Rnd.chance(rateFriends))
-//		{
-//			for (NpcInstance npc : activeFactionTargets())
-//			{
-//				double targetHp = npc.getCurrentHpPercents();
-//				
-//				Skill[] skills = targetHp < 50 ? selectUsableSkills(actor, 0, _healSkills) : selectUsableSkills(actor, 0, _buffSkills);
-//				if ((skills == null) || (skills.length == 0))
-//				{
-//					continue;
-//				}
-//				
-//				Skill skill = skills[Rnd.get(skills.length)];
-//				addTaskBuff(actor, skill);
-//				return true;
-//			}
-//		}
+		if (Rnd.chance(rateFriends))
+		{
+			for (Player member : actor.getParty().getPartyMembers())
+			{
+				double targetHp = member.getCurrentHpPercents();
+				
+				Skill[] skills = targetHp < 50 ? selectUsableSkills(actor, 0, _healSkills) : selectUsableSkills(actor, 0, _buffSkills);
+				if ((skills == null) || (skills.length == 0))
+				{
+					continue;
+				}
+				
+				Skill skill = skills[Rnd.get(skills.length)];
+				addTaskBuff(actor, skill);
+				return true;
+			}
+		}
 		
 		return false;
 	}
@@ -2016,9 +1964,6 @@ public class FPCDefaultAI extends PlayerAI
 				summon.getAI().Attack(target, true, false);
 			}
 		}
-		
-		
-		
 		
 		double distance = actor.getDistance(target);
 		double targetHp = target.getCurrentHpPercents();

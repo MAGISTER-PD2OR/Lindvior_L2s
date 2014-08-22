@@ -57,24 +57,20 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
 				NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
 				
-				_log.info("Where am i?");
 				
 				ai.addTaskTele(myRestartLocation);
 				ai.addTaskSleep(3*1000);
 				
-				_log.info("Teleportto restart loc:"+myRestartLocation);
 				if(myRestartLocation.distance(buffer.getLoc()) < 4000)
-					_log.info("Move to next buffer:"+buffer);
-				else
-					_log.info("Can't move to next buffer:"+buffer+" distance:"+myRestartLocation.distance(buffer.getLoc()));
+				{
+					ai.addTaskMove(Location.findAroundPosition(gk, 150), true, true);
+					ai.addTaskSleep(5*1000);
+				}
 				
-				_log.info("Move to next GK:"+gk);
-				ai.addTaskMove(gk.getLoc(), true);
-				ai.addTaskSleep(3*1000);
+				ai.addTaskMove(Location.findAroundPosition(gk, 150), true, true);
 				
 				Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
 				
-				_log.info("Target location:"+targetLocation);
 				if(targetLocation == null)
 					return false;
 				
@@ -83,13 +79,11 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				
 				if(gk.getObjectId() != middleGK.getObjectId())
 				{
-					_log.info("=>Tele to middle GK:"+middleGK);
 					gk = middleGK;
-					ai.addTaskTele(gk.getLoc());
-					ai.addTaskSleep(3*1000);
+					ai.addTaskMove(Location.findAroundPosition(gk, 150), true, true);
+					ai.addTaskSleep(5*1000);
 				}
 				
-				_log.info("find spawn zone");
 				TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
 				double minDistance = Double.MAX_VALUE;
 				Location spawnLocation = null;
@@ -105,19 +99,14 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				
 				if(spawnLocation != null)
 				{
-					_log.info("Teleport to farm zone entrance:"+spawnLocation);
-					_log.info("Move to farm spot:"+targetLocation);
 					ai.addTaskTele(spawnLocation);
 					ai.addTaskSleep(3*1000);
 					ai.addTaskMove(targetLocation, true);
 				}
 				else
 				{
-					_log.info("Teleporto direct to farm spot:"+targetLocation);
 					ai.addTaskTele(targetLocation);
 				}
-			break;
-			default:
 			break;
 		}
 		return true;
