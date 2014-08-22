@@ -1,32 +1,19 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import l2s.gameserver.model.Player;
 
 public class FPCDuelist extends WarriorPC
 {
+	public static final int SKILL_MAJESTY = 78;
+	public static final int SKILL_DEFKECT_ARROW = 287;
+	
 	public FPCDuelist(Player actor)
 	{
 		super(actor);
 	}
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkUseWarriorForce(8))
-			return true;
-		
-		if(thinkBuff(new int[] {78, 287})) // Majesty, Deflect Arrow
-			return true;
-		
-		return super.thinkBuff();
-	}
 	
-	public List<Integer> getAllowSkill()
+	public void prepareSkillsSetup()
 	{
-		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
 		_allowSkills.add(190);	//Fatal Strike
@@ -56,7 +43,7 @@ public class FPCDuelist extends WarriorPC
 		_allowSkills.add(758);	//Fighter Will
 		_allowSkills.add(919);	//Maximum Sonic Focus
 		
-		return SkillList;
+		super.prepareSkillsSetup();
 	}
 	
 }

@@ -8,7 +8,6 @@ import l2s.commons.util.Rnd;
 import l2s.gameserver.ai.CtrlEvent;
 import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.geodata.GeoEngine;
-import l2s.gameserver.instancemanager.MapRegionManager;
 import l2s.gameserver.model.Creature;
 //import l2s.gameserver.model.Effect;
 import l2s.gameserver.model.GameObject;
@@ -21,7 +20,6 @@ import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.skills.EffectType;
 import l2s.gameserver.tables.SkillTable;
 import l2s.gameserver.templates.TeleportLocation;
-import l2s.gameserver.templates.mapregion.RestartArea;
 import l2s.gameserver.templates.skill.EffectTemplate;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.utils.Location;
@@ -432,13 +430,13 @@ public class EventFPC extends FPCDefaultAI
 	
 	protected boolean thinkUseWarriorForce(int skillId, int forceLevel)
 	{
-		Player actor = getActor();
+		Player player = getActor();
 		
-		if(actor.getCurrentMp() > 300 && actor.getCurrentHp() > 300)
+		if(player.getCurrentMp() > 300 && player.getCurrentHp() > 300)
 		{
-			if(actor.getIncreasedForce() < forceLevel)
+			if(player.getIncreasedForce() < forceLevel && canUseSkill(skillId, player))
 			{
-				selfBuff(skillId);
+				addTaskBuff(player, player.getKnownSkill(skillId));
 				return true;
 			}
 		}
@@ -448,137 +446,24 @@ public class EventFPC extends FPCDefaultAI
 	
 	protected boolean thinkUseKamaelSoul(int skillId, int soulLevel)
 	{
-		Player actor = getActor();
-		if(actor.getCurrentMp() > 300 && actor.getCurrentHp() > 300)
+		Player player = getActor();
+		if(player.getCurrentMp() > 300 && player.getCurrentHp() > 300)
 		{
-			if(actor.getConsumedSouls() < soulLevel)
+			if(player.getConsumedSouls() < soulLevel && canUseSkill(skillId, player))
 			{
-				selfBuff(skillId);
+				addTaskBuff(player, player.getKnownSkill(skillId));
 				return true;
 			}
 		}
 		
 		return false;
 	}
-	
-	
-	
-	protected boolean tryBuff(int skillId)
-	{
-		return tryBuff(getActor().getKnownSkill(skillId));
-	}
-	
-	protected boolean tryBuff(Skill skill)
-	{
-		if(skill == null)
-			return false;
-		
-		Player actor = getActor();
-		for(EffectTemplate et: skill.getEffectTemplates())
-		{
-			// add cubic
-			if(et.getEffectType() == EffectType.Cubic)
-			{
-				if(actor.getCubic(et.getParam().getInteger("cubicId")) == null)
-				{
-					chooseTaskAndTargets(skill, actor, 0);
-					return true;
-				}
-			}
-			// real buff
-			else if(actor.getEffectList().getEffectsCount(skill) == 0)
-			{
-				chooseTaskAndTargets(skill, actor, 0);
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	protected boolean thinkBuff(int[] skills)
-	{
-		if(skills == null || skills.length <= 0)
-			return false;
-		
-		for(int skillId: skills)
-		{
-			if(tryBuff(skillId))
-				return true;
-		}
-		
-		return false;
-	}
-	
 	
 	@Override
 	public int getMaxAttackTimeout()
 	{
 		return 100000;
 	}
-	
-	protected boolean defaultMoveTask()
-	{
-		Player player = getActor();
-		
-		Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
-		NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
-		NpcInstance gk = NpcHelper.getClosestGatekeeper(buffer);
-		Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
-		RestartArea myRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, player.getLoc());
-		RestartArea targetRestartArea = MapRegionManager.getInstance().getRegionData(RestartArea.class, targetLocation);
-		
-		debug("Where am i?");
-		
-		debug("My current area:"+myRestartArea);
-		debug("My current restart loc:"+myRestartLocation);
-		debug("My target location:"+targetLocation);
-		debug("Target area:"+targetRestartArea);
-		debug("Move to next buffer:"+buffer);
-		debug("Move to next GK:"+gk);
-		
-		if(myRestartArea != targetRestartArea)
-		{
-			debug("diff area we should change villages");
-			Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
-			NpcInstance middleGK = NpcHelper.getClosestGatekeeper(middleRestartLocation);
-			debug("=>Tele to target GK:"+middleGK);
-			gk = middleGK;
-		}
-		
-		debug("find spawn zone");
-		TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
-		double minDistance = Double.MAX_VALUE;
-		Location spawnLocation = null;
-		for(TeleportLocation teleLoc: teleMap.valueCollection())
-		{
-			double distanceFromSpawnLoc = teleLoc.distance(targetLocation);
-			if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, targetLocation.x, targetLocation.y, targetLocation.z, player.getGeoIndex()))
-			{
-				minDistance = distanceFromSpawnLoc;
-				spawnLocation = teleLoc;
-			}
-		}
-		
-		if(spawnLocation != null)
-		{
-			debug("Teleport to farm zone entrance:"+spawnLocation);
-			debug("Move to farm spot:"+targetLocation);
-		}
-		else
-		{
-			debug("Teleporto direct to farm spot:"+targetLocation);
-		}
-		
-		return false;
-	}
-	
-	protected boolean thinkActiveByClass()
-	{
-		return false;
-	}
-	
-
 	
 	public static Location findFrontPosition(GameObject obj, int posX, int posY, int radiusmin, int radiusmax)
 	{
@@ -629,34 +514,11 @@ public class EventFPC extends FPCDefaultAI
 	{
 		Player actor = getActor();
 		Skill skill = actor.getKnownSkill(skillId);
-		debug(actor + " try cast skill:"+skillId+" on distance: "+ distance + " on: "+target);
 		if(skill != null && target != null)
 		{
 			chooseTaskAndTargets(skill, target, distance);
 		}
 			
-	}
-	
-	protected void selfBuff(int skillId)
-	{
-		Player actor = getActor();
-		Skill skill = actor.getKnownSkill(skillId);
-		if(skill != null)
-		{
-			chooseTaskAndTargets(skill, actor, 0);
-		}
-			
-	}
-	
-	public Skill getUniqueSkill(int[] skills)
-	{
-		Skill skill = null;
-		Player actor = getActor();
-		for(int skill_id: skills){
-			if(skill == null) skill = actor.getKnownSkill(skill_id);
-		}
-		
-		return skill;
 	}
 	
 	/**

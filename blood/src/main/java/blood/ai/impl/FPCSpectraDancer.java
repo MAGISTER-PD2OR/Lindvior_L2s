@@ -1,7 +1,6 @@
 package blood.ai.impl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import l2s.gameserver.model.Player;
 
@@ -13,27 +12,9 @@ public class FPCSpectraDancer extends TankerPC
 		
 	}
 	
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			//428, // Inner Rhythm
-			271, //	Dance of Warrior
-			//310, // Dance of the Vampire
-			275, // Dance of Fury
-			//274, // Dance of Fire
-			//272, // Dance of Inspiration
-			273, // Dance of the Mystic
-			276  // Dance of Contrentration
-		}))
-			return true;
-		
-		return super.thinkBuff();
-	}
 	
-	public List<Integer> getAllowSkill()
-	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
+	public void prepareSkillsSetup()
+	{		
 		//skill 2nd
 		_allowSkills.add(2);	//Confusion
 		_allowSkills.add(105);	//Freezing Strike
@@ -46,7 +27,7 @@ public class FPCSpectraDancer extends TankerPC
 		_allowSkills.add(367);	//Dance of Medusa
 		_allowSkills.add(455);	//Symbol of Noise		
 		
-		return SkillList;
+		super.prepareSkillsSetup();
 	}
 	
 	@Override

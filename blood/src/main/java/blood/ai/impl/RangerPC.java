@@ -36,7 +36,7 @@ public class RangerPC extends EventFPC
 			try
 			{
 				//cast Ultimate Evasion
-				selfBuff(111);
+				tryCastSkill(111, actor);
 			}
 			catch(Exception e){}
 		}

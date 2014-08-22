@@ -38,26 +38,13 @@ public class FPCAeore extends HealerPC
 	{
 		super(actor);
 	}
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			SKILL_RESISTANCE_OF_SAHA,
-			SKILL_CLARITY_OF_SAHA,
-			SKILL_DIVINE_PRAYER
-		}))
-			return true;
-		
-		return super.thinkBuff();
-	}
 	
-	public void partyBuff(Creature target)
-	{
-		if(canUseSkill(SKILL_RESISTANCE_OF_SAHA, target) && !hasEffect(target, SKILL_RESISTANCE_OF_SAHA))
-			tryCastSkill(SKILL_RESISTANCE_OF_SAHA, target);
-		if(canUseSkill(SKILL_CLARITY_OF_SAHA, target) && !hasEffect(target, SKILL_CLARITY_OF_SAHA))
-			tryCastSkill(SKILL_CLARITY_OF_SAHA, target);
+	public void prepareSkillsSetup() {
+		_allowSelfBuffSkills.add(SKILL_RESISTANCE_OF_SAHA);
+		_allowSelfBuffSkills.add(SKILL_CLARITY_OF_SAHA);
+		
+		_allowPartyBuffSkills.add(SKILL_RESISTANCE_OF_SAHA);
+		_allowPartyBuffSkills.add(SKILL_CLARITY_OF_SAHA);
 	}
 	
 	public void normalHealTarget(Creature target)
@@ -94,8 +81,13 @@ public class FPCAeore extends HealerPC
 		}
 	}
 	
-	@Override
-	public boolean thinkActiveByClass()
+	protected boolean defaultSubFightTask(Creature target)
+	{
+		myFightTask(target);
+		return true;
+	}
+	
+	public boolean myFightTask(Creature target)
 	{
 		Player actor = getActor();
 		
@@ -138,7 +130,6 @@ public class FPCAeore extends HealerPC
 				if(member == actor)
 					continue;
 				
-				partyBuff(member);
 				if(currentMemberHpPercent < lowestHpPercent)
 				{
 					lowestHpPercent = currentMemberHpPercent;

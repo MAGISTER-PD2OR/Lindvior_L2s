@@ -11,6 +11,12 @@ public class WarriorPC extends EventFPC
 		super(actor);
 	}
 	
+	public void prepareSkillsSetup() {
+		_allowSelfBuffSkills.add(FPCDreadnought.SKILL_WARCRY);
+		_allowSelfBuffSkills.add(FPCDuelist.SKILL_DEFKECT_ARROW);
+		_allowSelfBuffSkills.add(FPCDuelist.SKILL_MAJESTY);
+	}
+	
 	protected Skill getNpcSuperiorBuff()
 	{
 //		return getSkill(15648, 1); //tank

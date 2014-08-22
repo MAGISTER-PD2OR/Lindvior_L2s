@@ -12,6 +12,11 @@ public class MysticPC extends EventFPC
 		
 	}
 	
+	public void prepareSkillsSetup() {
+		_allowSelfBuffSkills.add(FPCArchmage.SKILL_BLAZING_SKIN);
+		_allowSelfBuffSkills.add(FPCArchmage.SKILL_SEED_OF_FIRE);
+	}
+	
 	protected Skill getNpcSuperiorBuff()
 	{
 //		return getSkill(15648, 1); //tank

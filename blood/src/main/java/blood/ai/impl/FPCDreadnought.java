@@ -1,24 +1,15 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 
 public class FPCDreadnought extends WarriorPC
 {
+	public static final int SKILL_WARCRY = 78;
+	
 	public FPCDreadnought(Player actor)
 	{
 		super(actor);
-	}
-
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {78})) // Warcry
-			return true;
-		
-		return super.thinkBuff();
 	}
 	
 	@Override
@@ -36,22 +27,20 @@ public class FPCDreadnought extends WarriorPC
 		
 		if(hpLevel < 70)
 			//cast Battle Roar
-			selfBuff(121);
+			tryCastSkill(121, actor);
 		
 		if(hpLevel < 30)
 			//Final Fenzy
-			selfBuff(290); 
+			tryCastSkill(290, actor); 
 		
 		if(hpLevel < 10)
 			//cast Revival
-			selfBuff(181);
+			tryCastSkill(181, actor);
 		
 	}
 	
-	public List<Integer> getAllowSkill()
+	public void prepareSkillsSetup()
 	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
 		//skill 2nd
 		_allowSkills.add(920);	//Power Crush
 		_allowSkills.add(36);	//Whirlwind
@@ -74,8 +63,7 @@ public class FPCDreadnought extends WarriorPC
 		_allowSkills.add(457);	//Symbol of Honor
 		_allowSkills.add(774);	//Dread Pool
 		
-		
-		return SkillList;
+		super.prepareSkillsSetup();
 	}
 	
 

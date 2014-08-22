@@ -1,7 +1,6 @@
 package blood.ai.impl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import l2s.gameserver.model.Player;
 
@@ -13,19 +12,8 @@ public class FPCEvaTemplar extends TankerPC
 		
 	}
 
-	@Override
-	protected boolean thinkBuff()
+	public void prepareSkillsSetup()
 	{
-		if(thinkBuff(new int[] {10, 67, 449})) // summon cubic
-			return true;
-		
-		return super.thinkBuff();
-	}
-	
-	public List<Integer> getAllowSkill()
-	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
 		//skill 2nd
 		_allowSkills.add(28);	//Aggression
 		_allowSkills.add(18);	//Aura of Hate
@@ -45,7 +33,7 @@ public class FPCEvaTemplar extends TankerPC
 		_allowSkills.add(779);	//Summon Smart Cubic
 		_allowSkills.add(454);	//Symbol of Defense
 		
-		return SkillList;
+		super.prepareSkillsSetup();
 	}
 	
 	@Override

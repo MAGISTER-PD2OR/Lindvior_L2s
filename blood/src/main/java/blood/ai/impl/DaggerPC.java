@@ -86,7 +86,7 @@ public class DaggerPC extends EventFPC
 			try
 			{
 				//cast Ultimate Evasion
-				tryBuff(111);
+				tryCastSkill(111, actor);
 				
 				//cast Switch
 				tryCastSkill(12, attacker);

@@ -1,7 +1,6 @@
 package blood.ai.impl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import l2s.gameserver.model.Player;
 
@@ -11,23 +10,9 @@ public class FPCPhoenixKnight extends TankerPC
 	{
 		super(actor);
 	}
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			82, 		//Majesty
-			982			//Combat Aura
-		}))
-			return true;
-		
-		return super.thinkBuff();
-	}
 	
-	public List<Integer> getAllowSkill()
+	public void prepareSkillsSetup()
 	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
 		//skill 2nd
 		_allowSkills.add(28);	//Aggression
 		_allowSkills.add(18);	//Aura of Hate
@@ -49,7 +34,7 @@ public class FPCPhoenixKnight extends TankerPC
 		_allowSkills.add(784);	//Spirit of Phoenix
 		_allowSkills.add(785);	//Flame Icon
 		
-		return SkillList;
+		super.prepareSkillsSetup();
 	}
 	
 	@Override

@@ -1,8 +1,5 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import l2s.gameserver.model.Player;
 
 public class FPCMoonlightSentinel extends RangerPC
@@ -12,23 +9,8 @@ public class FPCMoonlightSentinel extends RangerPC
 		super(actor);
 	}
 
-	@Override
-	protected boolean thinkBuff()
+	public void prepareSkillsSetup()
 	{
-		if(thinkBuff(new int[] {
-			99, //	Rapid Shot
-			//303, // Soul of Sagittarius
-			415, // Spirit of Sagittarius
-			416 // Blessing of Sagittarius
-		}))
-			return true;
-		
-		return super.thinkBuff();
-	}
-	
-	public List<Integer> getAllowSkill()
-	{
-		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
 		_allowSkills.add(19);	//Double Shot
@@ -49,7 +31,8 @@ public class FPCMoonlightSentinel extends RangerPC
 		_allowSkills.add(924);	//Seven Arrow
 		_allowSkills.add(772);	//Arrow Rain
 		
-		return SkillList;
+		super.prepareSkillsSetup();
+		
 	}
 	
 }

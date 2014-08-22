@@ -38,17 +38,10 @@ public class FPCYul extends RangerPC
 	{
 		super(actor);
 	}
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			SKILL_DEAD_EYE_STANCE,
-			SKILL_SNIPING
-		}))
-			return true;
-		
-		return super.thinkBuff();
+	
+	public void prepareSkillsSetup() {
+		_allowSelfBuffSkills.add(SKILL_DEAD_EYE_STANCE);
+		_allowSelfBuffSkills.add(SKILL_SNIPING);
 	}
 	
 	protected boolean defaultSubFightTask(Creature target)

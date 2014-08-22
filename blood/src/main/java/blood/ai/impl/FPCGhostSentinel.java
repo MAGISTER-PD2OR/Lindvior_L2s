@@ -12,20 +12,7 @@ public class FPCGhostSentinel extends RangerPC
 		super(actor);
 	}
 
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			99, //	Rapid Shot
-			//303, // Soul of Sagittarius
-			415, // Spirit of Sagittarius
-		}))
-			return true;
-		
-		return super.thinkBuff();
-	}
-	
-	public List<Integer> getAllowSkill()
+	public void prepareSkillsSetup()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
@@ -48,7 +35,7 @@ public class FPCGhostSentinel extends RangerPC
 		_allowSkills.add(924);	//Seven Arrow
 		_allowSkills.add(773);	//God Piercing
 		
-		return SkillList;
+		super.prepareSkillsSetup();
 	}
 	
 }

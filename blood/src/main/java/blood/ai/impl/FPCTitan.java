@@ -49,7 +49,7 @@ public class FPCTitan extends WarriorPC
 				try
 				{
 					//cast Battle Roar
-					selfBuff(121);
+					tryCastSkill(121, actor);
 				}
 				catch(Exception e){}
 			}
@@ -57,21 +57,8 @@ public class FPCTitan extends WarriorPC
 		
 	}
 	
-	@Override
-	protected boolean thinkBuff()
+	public void prepareSkillsSetup()
 	{
-		if(thinkBuff(new int[] {
-			423 //Dark Form
-		}))
-			return true;
-		
-		return super.thinkBuff();
-	}
-	
-	public List<Integer> getAllowSkill()
-	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
 		//skill 2nd
 		_allowSkills.add(190);	//Fatal Strike
 		//_allowSkills.add(36);	//Whirlwind
@@ -93,7 +80,7 @@ public class FPCTitan extends WarriorPC
 		_allowSkills.add(758);	//Fighter Will
 		
 		
-		return SkillList;
+		super.prepareSkillsSetup();
 	}
 	
 

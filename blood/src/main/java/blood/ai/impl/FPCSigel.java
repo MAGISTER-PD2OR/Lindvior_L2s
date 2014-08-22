@@ -38,21 +38,13 @@ public class FPCSigel extends TankerPC
 	{
 		super(actor);
 	}
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			SKILL_SUMMON_KNIGHT_CUBIC,
-			SKILL_IRON_AURA,
-			SKILL_FOCUS_SHIELD
-			
-		}))
-			return true;
-		
-		return super.thinkBuff();
-	}
 	
+	public void prepareSkillsSetup() {
+		_allowSkills.add(SKILL_SUMMON_KNIGHT_CUBIC);
+		_allowSelfBuffSkills.add(SKILL_IRON_AURA);
+		_allowSelfBuffSkills.add(SKILL_FOCUS_SHIELD);
+	}
+
 	protected void criticalFight(Creature target)
 	{
 		double distance = getActor().getDistance(target);

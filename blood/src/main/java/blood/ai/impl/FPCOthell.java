@@ -41,16 +41,9 @@ public class FPCOthell extends WarriorPC
 	{
 		super(actor);
 	}
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			SKILL_MORTAL_STRIKE
-		}))
-			return true;
-		
-		return super.thinkBuff();
+	
+	public void prepareSkillsSetup() {
+		_allowSelfBuffSkills.add(SKILL_MORTAL_STRIKE);
 	}
 	
 	protected boolean defaultSubFightTask(Creature target)

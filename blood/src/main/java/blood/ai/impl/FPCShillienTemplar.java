@@ -13,19 +13,8 @@ public class FPCShillienTemplar extends TankerPC
 		
 	}
 	
-	@Override
-	protected boolean thinkBuff()
+	public void prepareSkillsSetup()
 	{
-		if(thinkBuff(new int[] {33, 22, 278})) // summon cubic
-			return true;
-		
-		return super.thinkBuff();
-	}
-
-	public List<Integer> getAllowSkill()
-	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
 		//skill 2nd
 		_allowSkills.add(28);	//Aggression
 		_allowSkills.add(18);	//Aura of Hate
@@ -50,7 +39,7 @@ public class FPCShillienTemplar extends TankerPC
 		_allowSkills.add(454);	//Symbol of Defense
 		_allowSkills.add(789);	//Spirit of Shilen
 		
-		return SkillList;
+		super.prepareSkillsSetup();
 	}
 	
 

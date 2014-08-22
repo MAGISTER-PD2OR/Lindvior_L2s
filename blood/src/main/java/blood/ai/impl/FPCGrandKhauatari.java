@@ -12,16 +12,6 @@ public class FPCGrandKhauatari extends WarriorPC
 	{
 		super(actor);
 	}
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkUseWarriorForce(50, 4))
-			return true;
-		
-		return super.thinkBuff();
-	}
-	
 	
 	@Override
 	protected void onEvtAttacked(Creature attacker, int damage)
@@ -40,7 +30,7 @@ public class FPCGrandKhauatari extends WarriorPC
 		{
 
 			//cast Zealot
-			selfBuff(420);
+			tryCastSkill(420, actor);
 		}
 		
 	}

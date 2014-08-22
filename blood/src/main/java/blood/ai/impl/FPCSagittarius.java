@@ -1,8 +1,5 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import l2s.gameserver.model.Player;
 
 public class FPCSagittarius extends RangerPC
@@ -12,26 +9,9 @@ public class FPCSagittarius extends RangerPC
 		super(actor);
 	}
 
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			99, //	Rapid Shot
-			//303, // Soul of Sagittarius
-			131, // Hawkeye
-			416, // Blessing of Sagittarius
-			415, // Spirit of Sagittarius
-		}))
-			return true;
-		
-		return super.thinkBuff();
-	}
 	
-	public List<Integer> getAllowSkill()
+	public void prepareSkillsSetup()
 	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
 		//skill 2nd
 		_allowSkills.add(19);	//Double Shot
 		_allowSkills.add(101);	//Stun Shot
@@ -51,7 +31,7 @@ public class FPCSagittarius extends RangerPC
 		_allowSkills.add(924);	//Seven Arrow
 		_allowSkills.add(771);	//Flame Hawk
 		
-		return SkillList;
+		super.prepareSkillsSetup();
 	}
 	
 }

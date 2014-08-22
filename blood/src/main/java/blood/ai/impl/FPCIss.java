@@ -50,26 +50,18 @@ public class FPCIss extends WarriorPC
 	public final int SKILL_SHADOW_BLADE				= 11510; // Lv.1 	debuff 	50 	0 	10000 	40 	- 	Attacks the target with 9133 Power added to P. Atk. For 20 seconds, P. Atk. and M. Atk. - 40%. Requires a sword, dualsword or dual blunt to be equipped. Over-hit. Critical.
 	public final int SKILL_GIANT_ROOT				= 11561; // Lv.1 	debuff 	126 	0 	10000 	900 	- 	Inflicts Hold on the enemy for 15 seconds.
 	public final int SKILL_TRANSFORM				= 11537; // Lv.1 	debuff 	126 	0 	10000 	900 	- 	Transforms the target into a harmless creature and decrease its Speed by 20% for 15 seconds. The effect is canceled if the transformed target is attacked.
-
-
 	
 	public FPCIss(Player actor)
 	{
 		super(actor);
 	}
 	
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(getActor().getLevel() < 91)
-			return false;
+	public void prepareSkillsSetup() {
+//		_allowSelfBuffSkills.add(SKILL_RESISTANCE_OF_SAHA);
+//		_allowSelfBuffSkills.add(SKILL_CLARITY_OF_SAHA);
 		
-		if(thinkBuff(new int[] {
-			SKILL_HORN_MELODY
-		}))
-			return true;
-		
-		return super.thinkBuff();
+//		_allowPartyBuffSkills.add(SKILL_RESISTANCE_OF_SAHA);
+//		_allowPartyBuffSkills.add(SKILL_CLARITY_OF_SAHA);
 	}
 	
 	protected boolean defaultSubFightTask(Creature target)

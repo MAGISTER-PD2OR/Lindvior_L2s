@@ -1,33 +1,20 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import l2s.gameserver.model.Player;
 
 public class FPCArchmage extends MysticPC
 {
+	public static final int SKILL_BLAZING_SKIN = 1232;
+	public static final int SKILL_SEED_OF_FIRE = 1285;
+	
 	public FPCArchmage(Player actor)
 	{
 		super(actor);
 	}
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			1232, //Blazing Skin
-			1285 //Seed of Fire
-		}))
-			return true;
-		
-		return super.thinkBuff();
-	}
 	
-	public List<Integer> getAllowSkill()
+	@Override
+	public void prepareSkillsSetup()
 	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
 		//skill 2nd
 		//_allowSkills.add(1171);	//Blazing Circle
 		_allowSkills.add(1169);	//Curse Fear
@@ -50,8 +37,6 @@ public class FPCArchmage extends MysticPC
 		_allowSkills.add(1451);	//Fire Vortex Burster
 		_allowSkills.add(1419);	//Vocalno
 		_allowSkills.add(1467);	//Meteor
-		
-		return SkillList;
 	}
 	
 }
