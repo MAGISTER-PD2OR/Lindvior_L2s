@@ -51,7 +51,7 @@ public class FPCYul extends RangerPC
 		return super.thinkBuff();
 	}
 	
-	protected boolean fightTaskByClass(Creature target)
+	protected boolean defaultSubFightTask(Creature target)
 	{
 		yulFightTask(target);
 		return true;

@@ -26,7 +26,6 @@ import l2s.gameserver.templates.skill.EffectTemplate;
 import l2s.gameserver.utils.Location;
 import l2s.gameserver.utils.PositionUtils;
 import l2s.gameserver.utils.TeleportUtils;
-import blood.ai.FPCDefaultAI.FPCIntention;
 import blood.data.holder.FarmZoneHolder;
 import blood.data.holder.NpcHelper;
 import blood.model.FPReward;
@@ -36,12 +35,20 @@ public class EventFPC extends FPCDefaultAI
 
 	protected Skill[] _selfSkills = Skill.EMPTY_ARRAY;
 	
-	protected long _nextBuffRound 		= 0;
-	protected long _nextSummonRound 	= 0;
-	protected long _nextSumCubicRound 	= 0;
-	protected long _nextEquipRound 		= 0;
+	protected long 
+			_nextBuffRound 		= 0, 
+			_nextSummonRound 	= 0, 
+			_nextSumCubicRound 	= 0, 
+			_nextEquipRound 	= 0;
 	
-	protected HashSet<Integer> _allowSkills 	= new HashSet<Integer>();
+	protected HashSet<Integer> 
+			_allowSkills 			= new HashSet<Integer>(),
+			_allowSelfBuffSkills 	= new HashSet<Integer>(),
+			_allowPartyBuffSkills 	= new HashSet<Integer>();
+	
+	protected HashSet<Skill> 
+			_selfBuffSkills 		= new HashSet<Skill>(), 
+			_partyBuffSkills 		= new HashSet<Skill>(); 
 	
 	public EventFPC(Player actor)
 	{
@@ -53,6 +60,18 @@ public class EventFPC extends FPCDefaultAI
 	public boolean isAllowSkill(int skill_id)
 	{
 		return _allowSkills != null && _allowSkills.contains(skill_id);
+	}
+	
+	@Override
+	public void addSkill(Skill skill)
+	{
+		if(_allowSelfBuffSkills != null && _allowSelfBuffSkills.contains(skill.getId()))
+			_selfBuffSkills.add(skill);
+		
+		if(_allowPartyBuffSkills != null && _allowPartyBuffSkills.contains(skill.getId()))
+			_partyBuffSkills.add(skill);
+		
+		super.addSkill(skill);
 	}
 	
 	protected boolean createNewTask()
@@ -145,35 +164,39 @@ public class EventFPC extends FPCDefaultAI
 		if(_nextBuffRound > System.currentTimeMillis())
 			return false;
 		
-		_nextBuffRound = System.currentTimeMillis();
-		
 		doNewbieBuff();
 		
-		if(_buffSkills == null || _buffSkills.length <= 0)
-			return false;
-		
 		Player player = getActor();
-//		
-//		for(Skill skill: _buffSkills)
-//		{
-//			if(thinkBuff(skill))
-//				return true;
-//		}
 		
-		// think self buff
-		debug("I buff my self");
+		if(_selfBuffSkills != null && _selfBuffSkills.size() > 0)
+		{
+			for(Skill skill: _selfBuffSkills)
+			{
+				if(canUseSkill(skill, player) && !player.getEffectList().containsEffects(skill))
+					return chooseTaskAndTargets(skill, player, 0);
+			}
+		}
 		
 		// think friend buff
-		if(player.isInParty())
+		if(_partyBuffSkills != null && _partyBuffSkills.size() > 0 && player.isInParty())
 		{
 			for(Player member: player.getParty().getPartyMembers())
 			{
 				if(member == player)
 					continue;
 				
-				debug("check and add buff task for party member:"+member);
+				double distance = player.getDistance(member);
+				
+				for(Skill skill: _selfBuffSkills)
+				{
+					if(canUseSkill(skill, member, distance) && !member.getEffectList().containsEffects(skill))
+						return chooseTaskAndTargets(skill, member, player.getDistance(member));
+				}
+				
 			}
 		}
+		
+		_nextBuffRound = System.currentTimeMillis();
 		
 		return false;
 	}
@@ -443,12 +466,12 @@ public class EventFPC extends FPCDefaultAI
 	
 	
 	
-	protected boolean thinkBuff(int skillId)
+	protected boolean tryBuff(int skillId)
 	{
-		return thinkBuff(getActor().getKnownSkill(skillId));
+		return tryBuff(getActor().getKnownSkill(skillId));
 	}
 	
-	protected boolean thinkBuff(Skill skill)
+	protected boolean tryBuff(Skill skill)
 	{
 		if(skill == null)
 			return false;
@@ -483,7 +506,7 @@ public class EventFPC extends FPCDefaultAI
 		
 		for(int skillId: skills)
 		{
-			if(thinkBuff(skillId))
+			if(tryBuff(skillId))
 				return true;
 		}
 		

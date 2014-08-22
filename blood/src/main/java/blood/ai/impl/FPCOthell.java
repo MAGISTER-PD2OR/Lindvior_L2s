@@ -53,7 +53,7 @@ public class FPCOthell extends WarriorPC
 		return super.thinkBuff();
 	}
 	
-	protected boolean fightTaskByClass(Creature target)
+	protected boolean defaultSubFightTask(Creature target)
 	{
 		othellFightTask(target);
 		return true;

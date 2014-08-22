@@ -86,7 +86,7 @@ public class FPCWynn extends SummonerPC
 		return 2;
 	}
 	
-	protected boolean fightTaskByClass(Creature target)
+	protected boolean defaultSubFightTask(Creature target)
 	{
 		wynnFightTask(target);
 		return true;

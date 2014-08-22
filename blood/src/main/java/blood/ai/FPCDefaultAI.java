@@ -363,7 +363,6 @@ public class FPCDefaultAI extends PlayerAI
 		return true;
 	}
 	
-	@SuppressWarnings("incomplete-switch")
 	public void addSkill(Skill skill)
 	{
 		if(!isAllowSkill(skill.getId()))
@@ -394,6 +393,7 @@ public class FPCDefaultAI extends PlayerAI
 								_dotSkills = ArrayUtils.add(_dotSkills, skill);
 								added = true;
 								break;
+							default:
 						}
 
 				if(!added)
@@ -1941,7 +1941,7 @@ public class FPCDefaultAI extends PlayerAI
 		return false;
 	}
 	
-	protected boolean fightTaskByClass(Creature target)
+	protected boolean defaultSubFightTask(Creature target)
 	{
 		return false;
 	}
@@ -1963,9 +1963,7 @@ public class FPCDefaultAI extends PlayerAI
 			return false;
 		}
 		
-		debug("prepare target:" + target);
-		
-		if(fightTaskByClass(target))
+		if(defaultSubFightTask(target))
 			return true;
 		
 		if (actor.getServitors().length > 0){

@@ -72,7 +72,7 @@ public class FPCIss extends WarriorPC
 		return super.thinkBuff();
 	}
 	
-	protected boolean fightTaskByClass(Creature target)
+	protected boolean defaultSubFightTask(Creature target)
 	{
 		issFightTask(target);
 		return true;

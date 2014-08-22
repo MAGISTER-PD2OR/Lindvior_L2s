@@ -49,26 +49,20 @@ public class FPCFeoh extends MysticPC
 	public FPCFeoh(Player actor)
 	{
 		super(actor);
+		_allowSelfBuffSkills.add(SKILL_ARCANE_POWER);
+		_allowSelfBuffSkills.add(SKILL_EARTH_STANCE);
 	}
 
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkBuff(new int[] {
-			SKILL_ARCANE_POWER,
-			SKILL_EARTH_STANCE
-		}))
-			return true;
-		// ultimate body to mind
-		Player actor = getActor();
-		Skill skill = getActor().getKnownSkill(SKILL_ULTIMATE_BTM);
-		if(skill != null && actor.getCurrentHpPercents() > 40 && chooseTaskAndTargets(skill, actor, 0))
-		{
-			return true;
-		}
-		
-		return super.thinkBuff();
-	}
+//	@Override
+//	protected boolean thinkBuff()
+//	{
+//		if(thinkBuff(new int[] {
+//			SKILL_ARCANE_POWER,
+//			SKILL_EARTH_STANCE
+//		}))
+//			return true;
+//		return super.thinkBuff();
+//	}
 	
 	@Override
 	protected void onEvtAttacked(Creature attacker, int damage)
@@ -98,18 +92,22 @@ public class FPCFeoh extends MysticPC
 	
 	protected boolean feohFightTask(Creature target)
 	{
-		Player actor = getActor();
-		double distance = actor.getDistance(target);
+		Player player = getActor();
+		double distance = player.getDistance(target);
 		
-		Skill skillDeathCurse = actor.getKnownSkill(SKILL_DEVIL_CURSE);
-		Skill skillElementBurst = actor.getKnownSkill(SKILL_ELEMENT_BURST_DE);
-		if (skillElementBurst == null) skillElementBurst = actor.getKnownSkill(SKILL_ELEMENT_BURST_EL);
-		if (skillElementBurst == null) skillElementBurst = actor.getKnownSkill(SKILL_ELEMENT_BURST_HU);
-		Skill skillElementDestruction = actor.getKnownSkill(SKILL_ELEMENT_DESTRUCTION);
-		Skill skillElementSpike = actor.getKnownSkill(SKILL_ELEMENT_SPIKE);
-		Skill skillElementCrash = actor.getKnownSkill(SKILL_ELEMENT_CRASH);
-		Skill skillDeathFear = actor.getKnownSkill(SKILL_DEATH_FEAR);
-		Skill skillDarkCurse = actor.getKnownSkill(SKILL_DARK_CURSE);
+		Skill skillDeathCurse = player.getKnownSkill(SKILL_DEVIL_CURSE);
+		Skill skillElementBurst = player.getKnownSkill(SKILL_ELEMENT_BURST_DE);
+		if (skillElementBurst == null) skillElementBurst = player.getKnownSkill(SKILL_ELEMENT_BURST_EL);
+		if (skillElementBurst == null) skillElementBurst = player.getKnownSkill(SKILL_ELEMENT_BURST_HU);
+		Skill skillElementDestruction = player.getKnownSkill(SKILL_ELEMENT_DESTRUCTION);
+		Skill skillElementSpike = player.getKnownSkill(SKILL_ELEMENT_SPIKE);
+		Skill skillElementCrash = player.getKnownSkill(SKILL_ELEMENT_CRASH);
+		Skill skillDeathFear = player.getKnownSkill(SKILL_DEATH_FEAR);
+		Skill skillDarkCurse = player.getKnownSkill(SKILL_DARK_CURSE);
+		Skill skillUltimateBtm = getActor().getKnownSkill(SKILL_ULTIMATE_BTM);
+		
+		if(canUseSkill(skillDarkCurse, player, distance) && player.getCurrentHpPercents() > 40)
+			chooseTaskAndTargets(skillUltimateBtm, player, 0);
 		
 		if(distance < 400 && canUseSkill(skillDeathFear, target))
 			chooseTaskAndTargets(skillDeathFear, target, distance);
@@ -129,7 +127,7 @@ public class FPCFeoh extends MysticPC
 		if(canUseSkill(skillDeathCurse, target, distance) && target.getEffectList().getEffectsCount(skillDeathCurse) == 0)
 			return chooseTaskAndTargets(skillDeathCurse, target, distance);
 		
-		if(actor.getCurrentHpPercents() < 50)
+		if(player.getCurrentHpPercents() < 50)
 		{
 			// 1st if we success on destruction
 			if(skillElementBurst != null && canUseSkill(skillElementBurst, target, distance))
@@ -161,7 +159,7 @@ public class FPCFeoh extends MysticPC
 		return false;
 	}
 	
-	protected boolean fightTaskByClass(Creature target)
+	protected boolean defaultSubFightTask(Creature target)
 	{
 		feohFightTask(target);
 		return true;
