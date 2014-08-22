@@ -1045,27 +1045,21 @@ public class FPCDefaultAI extends PlayerAI
 		{
 			// Task "come running at the given coordinates"
 			case MOVE:
-				debug("dotask: start move");
 				if (actor.isMovementDisabled() || !getIsMobile())
 				{
-					debug("dotask return true 3");
 					return true;
 				}
-				debug("dotask: start move 2");
 				
 				if (actor.isInRange(currentTask.loc, 100))
 				{
-					debug("in range, next task");
 					return maybeNextTask(currentTask);
 				}
-				debug("dotask: start move 3");
 				
 				if (actor.isMoving)
 				{
-					debug("isMoving");
+					_tasks.add(currentTask);
 					return false;
 				}
-				debug("dotask: start move 4");
 				
 				if (!actor.moveToLocation(currentTask.loc, 0, currentTask.pathfind))
 				{
@@ -1074,11 +1068,10 @@ public class FPCDefaultAI extends PlayerAI
 					actor.teleToLocation(currentTask.loc);
 					// actor.broadcastPacketToOthers(new MagicSkillUse(actor, actor, 2036, 1, 500, 600000));
 					// ThreadPoolManager.getInstance().scheduleAi(new Teleport(currentTask.loc), 500, false);
-					debug("move failed, tele, next task");
 					return maybeNextTask(currentTask);
 				}
-				return false;
-//				break;
+				_tasks.add(currentTask);
+				break;
 			case TELE:
 				actor.teleToLocation(currentTask.loc);
 				return maybeNextTask(currentTask);
