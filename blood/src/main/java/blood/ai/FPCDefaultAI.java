@@ -810,6 +810,46 @@ public class FPCDefaultAI extends PlayerAI
 		return false;
 	}
 	
+	protected boolean thinkAggro()
+	{
+		Player player = getActor();
+		// Finish aggro list
+		if (!_aggroList.isEmpty())
+		{
+			List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
+			CollectionUtils.eqSort(chars, _nearestTargetComparator);
+			for (Creature cha : chars)
+			{
+				if (_aggroList.get(cha) != null)
+					if (checkAggression(cha))
+						return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	protected boolean thinkMadness()
+	{
+		Player player = getActor();
+		// New madness
+		long now = System.currentTimeMillis();
+		if ((now - _checkAggroTimestamp) > Config.AGGRO_CHECK_INTERVAL && !player.isInPeaceZone() && getFPCIntention() == FPCIntention.FARMING)
+		{
+			_checkAggroTimestamp = now;
+			
+			List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
+			CollectionUtils.eqSort(chars, _nearestTargetComparator);
+			for (Creature cha : chars)
+			{
+				if (checkAggression(cha))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * @return true if the action is performed, false if not
 	 */
@@ -831,23 +871,15 @@ public class FPCDefaultAI extends PlayerAI
 		
 		if(getFPCIntention() == FPCIntention.IDLE && !player.isInParty() && !player.isInPeaceZone())
 		{
-			// TODO should change to find zone task
+			// TODO should change to find zone 
 			setFPCIntention(FPCIntention.FARMING);
 		}
 		
-		long now = System.currentTimeMillis();
-		if ((now - _checkAggroTimestamp) > Config.AGGRO_CHECK_INTERVAL && !player.isInPeaceZone() && getFPCIntention() == FPCIntention.FARMING)
-		{
-			_checkAggroTimestamp = now;
-			// TODO prepare this actor should choose task or just follow leader/dds
-			List<Playable> chars = World.getAroundPlayables(player, MAX_PURSUE_RANGE, 500);
-			CollectionUtils.eqSort(chars, _nearestTargetComparator);
-			for (Playable cha : chars)
-			{
-				if (checkAggression(cha))
-					return;
-			}
-		}
+		if(thinkAggro())
+			return;
+		
+		if(thinkMadness())
+			return;
 		
 		if(player.isInParty())
 		{
