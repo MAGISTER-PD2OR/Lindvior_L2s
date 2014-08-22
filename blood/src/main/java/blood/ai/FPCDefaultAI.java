@@ -679,6 +679,8 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected Location getBaseLocation()
 	{
+		if(_baseLocation == null)
+			return getActor().getLoc();
 		return _baseLocation;
 	}
 	
