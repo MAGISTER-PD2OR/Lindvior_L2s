@@ -70,6 +70,7 @@ public class FPCDefaultAI extends PlayerAI
 		public boolean forceMove = false;
 		public boolean pathfind;
 		public int weight = TaskDefaultWeight;
+		public long createTime = System.currentTimeMillis();
 	}
 	
 	public void addTaskCast(Creature target, Skill skill)
@@ -1055,6 +1056,8 @@ public class FPCDefaultAI extends PlayerAI
 			return false;
 		}
 		
+		debug("execute task:"+currentTask+" type:"+currentTask.type +" size:"+_tasks.size());
+		
 		switch (currentTask.type)
 		{
 			// Task "come running at the given coordinates"
@@ -1071,7 +1074,7 @@ public class FPCDefaultAI extends PlayerAI
 					return false;
 				}
 				
-				if (!actor.moveToLocation(currentTask.loc, 0, currentTask.pathfind))
+				if (!actor.moveToLocation(currentTask.loc, 0, currentTask.pathfind) || currentTask.createTime + 30*1000 < System.currentTimeMillis())
 				{
 					clientStopMoving();
 					_pathfindFails = 0;
@@ -1080,7 +1083,8 @@ public class FPCDefaultAI extends PlayerAI
 					// ThreadPoolManager.getInstance().scheduleAi(new Teleport(currentTask.loc), 500, false);
 					return maybeNextTask(currentTask);
 				}
-				_tasks.add(currentTask);
+				if(currentTask.forceMove)
+					_tasks.add(currentTask);
 				break;
 			case TELE:
 				actor.teleToLocation(currentTask.loc);
