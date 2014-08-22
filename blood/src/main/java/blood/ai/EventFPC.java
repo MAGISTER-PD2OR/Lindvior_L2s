@@ -42,7 +42,6 @@ public class EventFPC extends FPCDefaultAI
 	
 	protected HashSet<Integer> _allowSkills 	= new HashSet<Integer>();
 	
-	
 	public EventFPC(Player actor)
 	{
 		super(actor);
@@ -52,7 +51,7 @@ public class EventFPC extends FPCDefaultAI
 	// block skill as default
 	public boolean isAllowSkill(int skill_id)
 	{
-		return _allowSkills.contains(skill_id);
+		return _allowSkills != null && _allowSkills.contains(skill_id);
 	}
 	
 	protected boolean createNewTask()
