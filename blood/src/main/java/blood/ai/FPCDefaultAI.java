@@ -383,6 +383,15 @@ public class FPCDefaultAI extends PlayerAI
 	
 	public void addSkill(Skill skill)
 	{
+		if(_allowSelfBuffSkills != null && _allowSelfBuffSkills.contains(skill.getId()))
+			_selfBuffSkills.add(skill);
+		
+		if(_allowPartyBuffSkills != null && _allowPartyBuffSkills.contains(skill.getId()))
+			_partyBuffSkills.add(skill);
+		
+		if(_allowServitorBuffSkills != null && _allowServitorBuffSkills.contains(skill.getId()))
+			_servitorBuffSkills.add(skill);
+		
 		if(!isAllowSkill(skill.getId()))
 			return;
 		

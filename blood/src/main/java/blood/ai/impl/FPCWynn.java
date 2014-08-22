@@ -60,9 +60,9 @@ public class FPCWynn extends SummonerPC
 		_allowSelfBuffSkills.add(SKILL_ULTIMATE_SHARE);
 		_allowSelfBuffSkills.add(SKILL_TPAIN);
 		
-		_allowSelfBuffSkills.add(SKILL_SERVITOR_GHASTE);
-		_allowSelfBuffSkills.add(SKILL_SERVITOR_GDW);
-		_allowSelfBuffSkills.add(SKILL_SERVITOR_GMIGHT);
+		_allowServitorBuffSkills.add(SKILL_SERVITOR_GHASTE);
+		_allowServitorBuffSkills.add(SKILL_SERVITOR_GDW);
+		_allowServitorBuffSkills.add(SKILL_SERVITOR_GMIGHT);
 	}
 	
 //	@Override

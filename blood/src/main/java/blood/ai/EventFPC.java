@@ -56,22 +56,9 @@ public class EventFPC extends FPCDefaultAI
 		return _allowSkills != null && _allowSkills.contains(skill_id);
 	}
 	
-	@Override
-	public void addSkill(Skill skill)
-	{
-		System.out.println("Add Skill:"+skill);
-		if(_allowSelfBuffSkills != null && _allowSelfBuffSkills.contains(skill.getId()))
-			_selfBuffSkills.add(skill);
-		
-		if(_allowPartyBuffSkills != null && _allowPartyBuffSkills.contains(skill.getId()))
-			_partyBuffSkills.add(skill);
-		
-		super.addSkill(skill);
-	}
-	
 	protected boolean createNewTask()
 	{
-		return thinkBuff() || thinkCubic() || thinkSummon() || thinkEquip() || createFightTask();
+		return thinkEquip() || thinkSummon() || thinkBuff() || thinkCubic() || createFightTask();
 	}
 	
 	protected boolean createFightTask()
@@ -93,8 +80,6 @@ public class EventFPC extends FPCDefaultAI
 	{
 		if(_nextSumCubicRound > System.currentTimeMillis())
 			return false;
-		
-		_nextSumCubicRound = System.currentTimeMillis();
 		
 		if(_cubicSkills == null || _cubicSkills.length == 0)
 			return false;
@@ -120,12 +105,14 @@ public class EventFPC extends FPCDefaultAI
 			}
 		}
 		
+		_nextSumCubicRound = System.currentTimeMillis() + 5000;
+		
 		return false;
 	}
 
 	protected boolean thinkSummon() 
 	{
-		if(_nextBuffRound > System.currentTimeMillis())
+		if(_nextSummonRound > System.currentTimeMillis())
 			return false;		
 		
 		if(_sumSkills == null || _sumSkills.length == 0)
@@ -133,20 +120,16 @@ public class EventFPC extends FPCDefaultAI
 		
 		Player player = getActor();
 		
-		Skill[] summonSkills = selectUsableSkills(player, 0, _sumSkills);
-		
-		if(summonSkills.length == 0)
-			return false;
-		
-		Skill summonSkill = summonSkills[Rnd.get(summonSkills.length)];
-		
 		if(player.getServitors().length < getMaxSummon()  && player.getCurrentMp() > 300)
 		{
-			addTaskBuff(player, summonSkill);
-			return true;
+			for(Skill skill: _sumSkills)
+			{
+				if(canUseSkill(skill, player, 0))
+					return chooseTaskAndTargets(skill, player, 0);
+			}
 		}
 		
-		_nextEquipRound = System.currentTimeMillis() + 5000;
+		_nextSummonRound = System.currentTimeMillis() + 5000;
 		
 		return false;
 	}
