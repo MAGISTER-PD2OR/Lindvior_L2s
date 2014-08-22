@@ -975,7 +975,7 @@ public class FPCDefaultAI extends PlayerAI
 	protected boolean tryMoveToLoc(Location loc, int range)
 	{
 		long now = System.currentTimeMillis();
-		if ((now - _checkRandomWalkTimestamp) < 3000 )
+		if ((now - _checkRandomWalkTimestamp) < 10000 )
 			return false;
 		
 		Player actor = getActor();
@@ -988,7 +988,7 @@ public class FPCDefaultAI extends PlayerAI
 		
 		debug("New Loc distance:"+actor.getDistance(nextLoc));
 		
-		addTaskMove(nextLoc, true);
+		addTaskMove(nextLoc, true, true);
 		_checkRandomWalkTimestamp = now + Rnd.get(3000);
 		return true;
 	}
