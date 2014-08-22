@@ -57,14 +57,15 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
 				NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
 				
+				int weight = 100;
 				
-				ai.addTaskTele(myRestartLocation);
-				ai.addTaskSleep(3*1000);
+				ai.addTaskTele(myRestartLocation, weight--);
+				ai.addTaskSleep(3*1000, weight--);
 				
 				if(myRestartLocation.distance(buffer.getLoc()) < 4000)
 				{
 					ai.addTaskMove(Location.findAroundPosition(gk, 150), true, true);
-					ai.addTaskSleep(5*1000);
+					ai.addTaskSleep(5*1000, weight--);
 				}
 				
 				ai.addTaskMove(Location.findAroundPosition(gk, 150), true, true);
@@ -81,7 +82,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				{
 					gk = middleGK;
 					ai.addTaskMove(Location.findAroundPosition(gk, 150), true, true);
-					ai.addTaskSleep(5*1000);
+					ai.addTaskSleep(5*1000, weight--);
 				}
 				
 				TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
@@ -99,13 +100,13 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				
 				if(spawnLocation != null)
 				{
-					ai.addTaskTele(spawnLocation);
-					ai.addTaskSleep(3*1000);
+					ai.addTaskTele(spawnLocation, weight--);
+					ai.addTaskSleep(3*1000, weight--);
 					ai.addTaskMove(targetLocation, true);
 				}
 				else
 				{
-					ai.addTaskTele(targetLocation);
+					ai.addTaskTele(targetLocation, weight--);
 				}
 			break;
 		}

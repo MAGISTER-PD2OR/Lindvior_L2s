@@ -26,6 +26,7 @@ import l2s.gameserver.templates.skill.EffectTemplate;
 import l2s.gameserver.utils.Location;
 import l2s.gameserver.utils.PositionUtils;
 import l2s.gameserver.utils.TeleportUtils;
+import blood.ai.FPCDefaultAI.FPCIntention;
 import blood.data.holder.FarmZoneHolder;
 import blood.data.holder.NpcHelper;
 import blood.model.FPReward;
@@ -319,6 +320,85 @@ public class EventFPC extends FPCDefaultAI
 	{
 		super.onEvtDead(killer);
 		setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+	}
+	
+	protected boolean thinkFPCIdle() 
+	{
+		if(getFPCIntention() != FPCIntention.IDLE)
+			return false;
+		
+		clearTasks();
+		
+		Location farmLocation = FarmZoneHolder.getInstance().getLocation(getActor());
+		
+		if(tryMoveLongAwayToLocation(farmLocation))
+		{
+			setFPCIntention(FPCIntention.FARMING);
+		}
+		
+		return true;
+	}
+	
+	protected boolean tryMoveLongAwayToLocation(Location loc)
+	{
+		if(loc == null)
+			return false;
+		
+		Player player = getActor();
+		
+		Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
+		NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
+		NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
+		
+		int weight = 100;
+		
+		addTaskTele(myRestartLocation, weight--);
+		addTaskSleep(3*1000, weight--);
+		
+		if(myRestartLocation.distance(buffer.getLoc()) < 4000)
+		{
+			addTaskMove(Location.findAroundPosition(gk, 150), true, true, weight--);
+			addTaskSleep(5*1000, weight--);
+		}
+		
+		addTaskMove(Location.findAroundPosition(gk, 150), true, true, weight--);
+		addTaskSleep(5*1000, weight--);
+		
+		Location middleRestartLocation = TeleportUtils.getRestartLocation(player, loc, RestartType.TO_VILLAGE);
+		NpcInstance middleGK = NpcHelper.getClosestGatekeeper(middleRestartLocation);
+		
+		if(gk.getObjectId() != middleGK.getObjectId())
+		{
+			gk = middleGK;
+			addTaskMove(Location.findAroundPosition(gk, 150), true, true, weight--);
+			addTaskSleep(5*1000, weight--);
+		}
+		
+		TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
+		double minDistance = Double.MAX_VALUE;
+		Location spawnLocation = null;
+		for(TeleportLocation teleLoc: teleMap.valueCollection())
+		{
+			double distanceFromSpawnLoc = teleLoc.distance(loc);
+			if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, loc.x, loc.y, loc.z, player.getGeoIndex()))
+			{
+				minDistance = distanceFromSpawnLoc;
+				spawnLocation = teleLoc;
+			}
+		}
+		
+		if(spawnLocation != null)
+		{
+			addTaskTele(spawnLocation, weight--);
+			addTaskSleep(3*1000, weight--);
+			addTaskMove(loc, true, true, weight--);
+		}
+		else
+		{
+			addTaskTele(loc, weight--);
+		}
+		
+		return true;
 	}
 	
 	/*

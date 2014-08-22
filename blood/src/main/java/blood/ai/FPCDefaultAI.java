@@ -26,7 +26,6 @@ import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.World;
 import l2s.gameserver.model.instances.ChestInstance;
-import l2s.gameserver.model.instances.DecoyInstance;
 import l2s.gameserver.network.l2.s2c.MagicSkillUse;
 import l2s.gameserver.skills.EffectType;
 //import l2s.gameserver.skills.effects.EffectTemplate;
@@ -40,7 +39,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import blood.Blood;
 import blood.FPCInfo;
 import blood.base.FPCParty;
 import blood.model.AggroListPC;
@@ -61,7 +59,6 @@ public class FPCDefaultAI extends PlayerAI
 	
 	public static final int TaskDefaultWeight = 10000;
 	public static long attackTime;
-	private int taskCount = 10000;
 	
 	public static class Task
 	{
@@ -84,8 +81,6 @@ public class FPCDefaultAI extends PlayerAI
 		task.skill = skill;
 		_tasks.add(task);
 		_def_think = true;
-		
-//		_log.info("create new task cast skill:" + skill, new Exception());
 	}
 	
 	public void addTaskBuff(Creature target, Skill skill)
@@ -96,8 +91,6 @@ public class FPCDefaultAI extends PlayerAI
 		task.skill = skill;
 		_tasks.add(task);
 		_def_think = true;
-		
-//		_log.info("create new task buff skill:" + skill, new Exception());
 	}
 	
 	public void addTaskAttack(Creature target)
@@ -107,8 +100,6 @@ public class FPCDefaultAI extends PlayerAI
 		task.target = target.getRef();
 		_tasks.add(task);
 		_def_think = true;
-		
-//		_log.info("create new task atk no skill", new Exception());
 	}
 	
 	public void addTaskAttack(Creature target, Skill skill, int weight)
@@ -120,20 +111,23 @@ public class FPCDefaultAI extends PlayerAI
 		task.weight = weight;
 		_tasks.add(task);
 		_def_think = true;
-		
-//		_log.info("create new task atk skill:" + skill, new Exception());
 	}
 	
-	public void addTaskMove(Location loc, boolean pathfind, boolean force)
+	public void addTaskMove(Location loc, boolean pathfind, boolean force, int weight)
 	{
 		Task task = new Task();
 		task.type = TaskType.MOVE;
 		task.loc = loc;
 		task.pathfind = pathfind;
 		task.forceMove = force;
-		task.weight = --taskCount; // FIXME
+		task.weight = weight;
 		_tasks.add(task);
 		_def_think = true;
+	}
+	
+	public void addTaskMove(Location loc, boolean pathfind, boolean force)
+	{
+		addTaskMove(loc, pathfind, force, TaskDefaultWeight);
 	}
 	
 	public void addTaskMove(Location loc, boolean pathfind)
@@ -141,26 +135,24 @@ public class FPCDefaultAI extends PlayerAI
 		addTaskMove(loc, pathfind, false);
 	}
 	
-	public void addTaskTele(Location loc)
+	public void addTaskTele(Location loc, int weight)
 	{
 		Task task = new Task();
 		task.type = TaskType.TELE;
 		task.loc = loc;
-		task.weight = --taskCount;
+		task.weight = weight;
 		_tasks.add(task);
 		_def_think = true;	
-//		_log.info("create new task tele size:"+_tasks.size(), new Exception());
 	}
 	
-	public void addTaskSleep(int sleepTime)
+	public void addTaskSleep(int sleepTime, int weight)
 	{
 		Task task = new Task();
 		task.type = TaskType.SLEEP;
 		task.sleepTime = sleepTime;
-		task.weight = --taskCount;
+		task.weight = weight;
 		_tasks.add(task);
 		_def_think = true;
-//		_log.info("create new task sleep size:"+_tasks.size(), new Exception());
 	}
 	
 	protected void addTaskMove(int locX, int locY, int locZ, boolean pathfind)
@@ -328,7 +320,7 @@ public class FPCDefaultAI extends PlayerAI
 			addSkill(s);
 		}
 		
-		MAX_PURSUE_RANGE = 4000;
+		MAX_PURSUE_RANGE = 2000;
 		_nearestTargetComparator = new NearestTargetComparator(actor);
 		_aggroList = new AggroListPC(actor);
 		
@@ -353,12 +345,6 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		_is_debug = !_is_debug;
 		_log.info(getActor() + " new debug status: " + _is_debug);
-	}
-	
-	
-	public void onKick()
-	{
-		// TODO - remove from intention
 	}
 	
 	public void setFPCIntention(FPCIntention newIntention)
@@ -525,139 +511,43 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean checkAggression(Creature target)
 	{
-//		debug("AI checkAggression");
-		
-		Player actor = getActor();
+		Player player = getActor();
+
 		if ((getIntention() != CtrlIntention.AI_INTENTION_ACTIVE) || !isGlobalAggro())
-		{
-			debug("AI checkAggression 1");
 			return false;
-		}
 		
 		if (target.isAlikeDead())
-		{
-			debug("AI checkAggression 2");
 			return false;
-		}
 		
 		if(target.isBoss())
-		{
-			debug("dont attack boss");
 			return false;
-		}
 		
 		if (target.isNpc() && target.isInvul())
-		{
-			debug("AI checkAggression 3");
 			return false;
-		}
 		
 		if(target.isNpc() && target instanceof ChestInstance)
-		{
-			debug("dont attack chest");
 			return false;
-		}
 		
-		if (!target.isMonster()) // FIXME, i should attack people also
-		{
-			debug("AI checkAggression 4");
+		if (!target.isMonster())
 			return false;
-		}
 		
 		if (target.isPlayable())
 		{
-//			if(!NexusEvents.canAttack(actor, target))
-//			{
-//				return false;
-//			}
-			
-			//if(NexusEvents.getPlayer(actor).getTeamId() == NexusEvents.getPlayer((Player) target).getTeamId())
-				//return false;
-			
-//			if(!GeoEngine.canSeeTarget(actor, target, false))
-//			{
-//				return false;
-//			}
-			
 			if (!canSeeInSilentMove((Playable) target))
-			{
-				debug("AI checkAggression 5");
 				return false;
-			}
+
 			if (!canSeeInHide((Playable) target))
-			{
-				debug("AI checkAggression 6");
 				return false;
-			}
 			
-			/*
-			 * if(target.isFollow && !target.isPlayer() && target.getFollowTarget() != null && target.getFollowTarget().isPlayer()) return;
-			 */
 			if (target.isPlayer() && ((Player) target).isGM() && target.isInvisible())
-			{
-				debug("AI checkAggression 7");
 				return false;
-			}
-//			if (((Playable) target).getNonAggroTime() > System.currentTimeMillis())
-//			{
-//				return false;
-//			}
-//			if (target.isPlayer() && !target.getPlayer().isActive())
-//			{
-//				return false;
-//			}
-//			if (actor.isMonster() && target.isInZonePeace())
-//			{
-//				return false;
-//			}
-			// only attack player
-			if(!target.isPlayer())
-			{
-				debug("AI checkAggression 8");
-				return false;
-			}
-			// dont attack same side of faction
-//			if(target.isPlayer() && ((Player) target).getVar("faction_side") != null && ((Player) target).getVar("faction_side").equals(actor.getVar("faction_side")))
-//			{
-//				return false;
-//			}
-			
-			if(target.isPet())
-			{
-//				if(!NexusEvents.canAttack(actor, target.getPlayer()))
-				/* FIXME */
-				debug("AI checkAggression 9");
-				return false;
-			}
 		}
 		
-		AggroInfoPC ai = _aggroList.get(target);
-		if ((ai != null) && (ai.hate > 0))
-		{
-//			if (!target.isInRangeZ(actor.getSpawnedLoc(), MAX_PURSUE_RANGE))
-//			{
-//				return false;
-//			}
-		}
-//		else if (!actor.isAggressive() || !target.isInRangeZ(actor.getSpawnedLoc(), actor.getAggroRange()))
-//		{
-//			return false;
-//		}
-		
-//		if (!canAttackCharacter(target))
-//		{
-//			debug("AI checkAggression 10");
-//			return false;
-//		}
-		
-		if (!GeoEngine.canSeeTarget(actor, target, false))
-		{
-			debug("AI checkAggression 11");
+		if (!GeoEngine.canSeeTarget(player, target, false))
 			return false;
-		}
 		
 		_aggroList.addDamageHate(target, 0, 2);
-		actor.setTarget(target); // target monster before attack
+		player.setTarget(target); // target monster before attack
 		
 		if ((target.isServitor() || target.isPet()))
 		{
@@ -778,38 +668,11 @@ public class FPCDefaultAI extends PlayerAI
 		if(actor.isMoving)
 			return false;
 		
-		debug("random walk, range:"+range);
-		
 		Location loc = Location.findAroundPosition(actor, 100, range);
 		addTaskMove(loc, true);
 		_checkRandomWalkTimestamp = now;
 		
 		return !actor.isMoving;
-	}
-	
-	protected boolean isStuck(int interval)
-	{
-		Player actor = getActor();
-		long now = System.currentTimeMillis();
-		
-//		if(!NexusEvents.isInEvent(actor))
-//			return false;
-		
-		/* FIXME */
-		
-		if((now - _checkStuckTimestamp) > interval)
-		{
-			_checkStuckTimestamp = now;
-			
-			if(_stuckLocation != null && actor.isInRange(_stuckLocation, 100))
-			{
-				return true;
-			}
-			
-			_stuckLocation = actor.getLoc();
-		}
-		
-		return false;
 	}
 	
 	protected boolean thinkAggro()
@@ -871,10 +734,9 @@ public class FPCDefaultAI extends PlayerAI
 			return;
 		}
 		
-		if(getFPCIntention() == FPCIntention.IDLE && !player.isInParty() && !player.isInPeaceZone())
+		if(thinkFPCIdle())
 		{
-			// TODO should change to find zone 
-			setFPCIntention(FPCIntention.FARMING);
+			return;
 		}
 		
 		if(thinkAggro())
@@ -904,6 +766,11 @@ public class FPCDefaultAI extends PlayerAI
 		
 	}
 	
+	protected boolean thinkFPCIdle() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	@Override
 	protected void onIntentionIdle()
 	{
@@ -1419,14 +1286,10 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		Player actor = getActor();
 		
-//		debug(" onEvtThink");
-		
 		if(actor.isDead()) /* FIXME */
 		{
-//			debug("onEvtThink INFO: I'm dead. " );
 			if(!actor.isInParty())
 			{
-//				actor.setTarget(null);
 				setAttackTarget(null);
 				actor.teleToClosestTown();
 				actor.doRevive(100);
@@ -1444,23 +1307,14 @@ public class FPCDefaultAI extends PlayerAI
 		}
 		
 		if (_thinking || (actor == null) || actor.isActionsDisabled() || actor.isAfraid())
-		{
-//			debug("onEvtThink INFO: I'm disabled. isActionDisable " + actor.isActionsDisabled() + " isAfraid " + actor.isAfraid());
 			return;
-		}
 		
 		if(actor.isSitting()) 
 			actor.standUp();
 		
-//		if (_randomAnimationEnd > System.currentTimeMillis())
-//		{
-//			return;
-//		}
-		
 		_thinking = true;
 		try
 		{
-//			debug("onEvtThink Default:trying with "+ getIntention());
 			if (getIntention() == CtrlIntention.AI_INTENTION_ACTIVE)
 			{
 				thinkActive();
@@ -1474,8 +1328,6 @@ public class FPCDefaultAI extends PlayerAI
 		{
 			_thinking = false;
 		}
-		
-		//super.onEvtThink();
 	}
 	
 	
@@ -2250,19 +2102,19 @@ public class FPCDefaultAI extends PlayerAI
 	protected FPCParty _fpcParty = null;
 	
 	
-	public FPCInfo get_fpcInfo() {
+	public FPCInfo getFPCInfo() {
 		return _fpcInfo;
 	}
 
-	public void set_fpcInfo(FPCInfo _fpcInfo) {
+	public void setFPCInfo(FPCInfo _fpcInfo) {
 		this._fpcInfo = _fpcInfo;
 	}
 
-	public FPCParty get_fpcParty() {
+	public FPCParty getFPCParty() {
 		return _fpcParty;
 	}
 
-	public void set_fpcParty(FPCParty _fpcParty) {
+	public void setFPCParty(FPCParty _fpcParty) {
 		this._fpcParty = _fpcParty;
 	}
 
@@ -2302,11 +2154,6 @@ public class FPCDefaultAI extends PlayerAI
 			addTaskMove(posX, posY, posZ, false);
 			addTaskAttack(attacker);
 		}
-	}
-	
-	protected List<Integer> getPetSkillList()
-	{
-		return null;
 	}
 	
 	public void clearAggroList()
