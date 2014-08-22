@@ -53,6 +53,10 @@ public class FPCWynn extends SummonerPC
 	@Override
 	public void prepareSkillsSetup() {
 		_allowSkills.add(SKILL_AVENGING_CUBIC);
+		_allowSkills.add(SKILL_SUMMON_QUEEN);
+		_allowSkills.add(SKILL_SUMMON_MERROW);
+		_allowSkills.add(SKILL_SUMMON_NIGHTSHADE);
+		
 		_allowSelfBuffSkills.add(SKILL_ULTIMATE_SHARE);
 		_allowSelfBuffSkills.add(SKILL_TPAIN);
 		
