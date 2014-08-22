@@ -829,6 +829,12 @@ public class FPCDefaultAI extends PlayerAI
 			return;
 		}
 		
+		if(getFPCIntention() == FPCIntention.IDLE && !player.isInParty() && !player.isInPeaceZone())
+		{
+			// TODO should change to find zone task
+			setFPCIntention(FPCIntention.FARMING);
+		}
+		
 		long now = System.currentTimeMillis();
 		if ((now - _checkAggroTimestamp) > Config.AGGRO_CHECK_INTERVAL && !player.isInPeaceZone() && getFPCIntention() == FPCIntention.FARMING)
 		{
