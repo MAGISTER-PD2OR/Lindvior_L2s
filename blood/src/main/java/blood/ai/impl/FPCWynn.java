@@ -155,12 +155,6 @@ public class FPCWynn extends SummonerPC
 		if(doHeal && canUseSkill(healSkill, target))
 			return chooseTaskAndTargets(healSkill, target, distance);
 		
-		if(distance > 600)
-		{
-			addTaskMove(Location.findAroundPosition(target, 600), true);
-			return false;
-		}
-		
 		if(canUseSkill(skillMarkOfVoid, target, distance) && target.getEffectList().getEffectsCount(skillMarkOfVoid) == 0)
 			return chooseTaskAndTargets(skillMarkOfVoid, target, distance);
 		
@@ -182,6 +176,8 @@ public class FPCWynn extends SummonerPC
 		
 		if(markCount > 1 && canUseSkill(retriveMarkSkill, target, distance))
 			return chooseTaskAndTargets(retriveMarkSkill, target, distance);
+		
+		addTaskMove(Location.findAroundPosition(target, 600), true);
 		
 		return false;
 	}

@@ -349,6 +349,7 @@ public class EventFPC extends FPCDefaultAI
 		clearTasks();
 		
 		Location farmLocation = FarmZoneHolder.getInstance().getLocation(getActor());
+		setBaseLocation(farmLocation);
 		
 		if(tryMoveLongAwayToLocation(farmLocation))
 		{
@@ -376,7 +377,7 @@ public class EventFPC extends FPCDefaultAI
 		
 		if(myRestartLocation.distance(buffer.getLoc()) < 4000)
 		{
-			addTaskMove(Location.findAroundPosition(gk, 150), true, true, weight--);
+			addTaskMove(Location.findAroundPosition(buffer, 150), true, true, weight--);
 			addTaskSleep(5*1000, weight--);
 		}
 		
@@ -389,7 +390,7 @@ public class EventFPC extends FPCDefaultAI
 		if(gk.getObjectId() != middleGK.getObjectId())
 		{
 			gk = middleGK;
-			addTaskMove(Location.findAroundPosition(gk, 150), true, true, weight--);
+			addTaskTele(Location.findAroundPosition(gk, 150), weight--);
 			addTaskSleep(5*1000, weight--);
 		}
 		

@@ -1079,7 +1079,7 @@ public class FPCDefaultAI extends PlayerAI
 			return false;
 		}
 		
-		debug("execute task:"+currentTask+" type:"+currentTask.type +" size:"+_tasks.size());
+		debug("execute task type:"+currentTask.type +" size:"+_tasks.size());
 		
 		switch (currentTask.type)
 		{
