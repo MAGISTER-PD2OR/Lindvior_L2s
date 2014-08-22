@@ -839,17 +839,13 @@ public class FPCDefaultAI extends PlayerAI
 		if ((now - _checkAggroTimestamp) > Config.AGGRO_CHECK_INTERVAL && !player.isInPeaceZone() && getFPCIntention() == FPCIntention.FARMING)
 		{
 			_checkAggroTimestamp = now;
-			
-			if (!_aggroList.isEmpty())
+			// TODO prepare this actor should choose task or just follow leader/dds
+			List<Playable> chars = World.getAroundPlayables(player, MAX_PURSUE_RANGE, 500);
+			CollectionUtils.eqSort(chars, _nearestTargetComparator);
+			for (Playable cha : chars)
 			{
-				List<Playable> chars = World.getAroundPlayables(player, MAX_PURSUE_RANGE, 500);
-				CollectionUtils.eqSort(chars, _nearestTargetComparator);
-				for (Playable cha : chars)
-				{
-					if (_aggroList.get(cha) != null)
-						if (checkAggression(cha))
-							return;
-				}
+				if (checkAggression(cha))
+					return;
 			}
 		}
 		
