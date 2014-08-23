@@ -362,6 +362,7 @@ public class EventFPC extends FPCDefaultAI
 		}
 		else if(_baseLocation != null)
 		{
+			debug("inparty tele to farmzone");
 			if(tryMoveLongAwayToLocation(_baseLocation))
 			{
 				setFPCIntention(FPCIntention.FARMING);

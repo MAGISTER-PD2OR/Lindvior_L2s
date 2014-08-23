@@ -604,6 +604,7 @@ public class FPCDefaultAI extends PlayerAI
 	
 	public void setBaseLocation(Location loc)
 	{
+		debug("change base Loaction");
 		_baseLocation = loc;
 	}
 	

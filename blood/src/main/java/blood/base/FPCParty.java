@@ -241,7 +241,7 @@ public class FPCParty {
 	
 	public void onEvtThing()
 	{
-		System.out.println("party heartbeat:"+_leader);
+//		System.out.println("party heartbeat:"+_leader);
 		updateCenterLoc();
 		switch (getIntention()) {
 		case IDLE:
