@@ -1,6 +1,7 @@
 package blood.ai;
 
 import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -28,6 +29,7 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.World;
+import l2s.gameserver.model.AggroList.AggroInfo;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.ChestInstance;
 import l2s.gameserver.model.instances.NpcInstance;
@@ -568,6 +570,8 @@ public class FPCDefaultAI extends PlayerAI
 		if (!target.isMonster())
 			return false;
 		
+		
+		
 		if (target.isPlayable())
 		{
 			if (!canSeeInSilentMove((Playable) target))
@@ -582,6 +586,32 @@ public class FPCDefaultAI extends PlayerAI
 		
 		if (!GeoEngine.canSeeTarget(player, target, false))
 			return false;
+		
+		// prevent KS
+		if(target.isNpc())
+		{
+			NpcInstance targetNpc = (NpcInstance) target;
+			List<Creature> hateList = targetNpc.getAggroList().getHateList();
+			int hateIndex = 0;
+			if(hateList.size() > 0)
+			{
+				for(Creature hater: hateList)
+				{
+					if(!hater.isPlayer())
+						continue;
+					
+					Player hatePlayer = hater.getPlayer();
+					
+					if(player.equals(hatePlayer) || player.isInSameParty(hatePlayer))
+					{
+						hateIndex++;
+					}
+				}
+				
+				if(hateIndex == 0)
+					return false;
+			}
+		}
 		
 		_aggroList.addDamageHate(target, 0, 2);
 		player.setTarget(target); // target monster before attack
@@ -748,7 +778,7 @@ public class FPCDefaultAI extends PlayerAI
 			List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
 			CollectionUtils.eqSort(chars, _nearestTargetComparator);
 			for (Creature cha : chars)
-			{
+			{	
 				if (checkAggression(cha))
 					return true;
 			}
@@ -781,20 +811,12 @@ public class FPCDefaultAI extends PlayerAI
 			return;
 		}
 		
-		if(thinkFPCIdle())
+		if(thinkFPCIdle() || thinkFPCWaitingParty())
 		{
 			return;
 		}
 		
-		if(thinkFPCWaitingParty())
-		{
-			return;
-		}
-		
-		if(thinkAggro())
-			return;
-		
-		if(thinkMadness())
+		if(thinkAggro() || thinkMadness())
 			return;
 		
 		if(player.isInParty())
