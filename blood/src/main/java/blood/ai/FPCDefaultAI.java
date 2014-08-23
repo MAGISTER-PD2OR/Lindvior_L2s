@@ -1,7 +1,6 @@
 package blood.ai;
 
 import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -29,7 +28,6 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.World;
-import l2s.gameserver.model.AggroList.AggroInfo;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.ChestInstance;
 import l2s.gameserver.model.instances.NpcInstance;
@@ -593,6 +591,7 @@ public class FPCDefaultAI extends PlayerAI
 			NpcInstance targetNpc = (NpcInstance) target;
 			List<Creature> hateList = targetNpc.getAggroList().getHateList();
 			int hateIndex = 0;
+			int outPtIndex = 0;
 			if(hateList.size() > 0)
 			{
 				for(Creature hater: hateList)
@@ -606,9 +605,13 @@ public class FPCDefaultAI extends PlayerAI
 					{
 						hateIndex++;
 					}
+					else
+					{
+						outPtIndex++;
+					}
 				}
 				
-				if(hateIndex == 0)
+				if(hateIndex == 0 && outPtIndex > 0)
 					return false;
 			}
 		}

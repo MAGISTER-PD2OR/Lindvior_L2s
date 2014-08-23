@@ -109,10 +109,7 @@ public class FPCParty {
 		
 		// check level
 		if(!isValidLevel(player.getLevel()))
-		{
-			System.out.println("not valid level "+player);
 			return false;
-		}
 		
 		if(isDamageDealerAvaialble(player) && getParty().addPartyMember(player))
 			_dds.add(player);
@@ -123,10 +120,7 @@ public class FPCParty {
 		else if(isSupportAvailable(player) && getParty().addPartyMember(player))
 			_iss = player;
 		else
-		{
-			System.out.println("not valid class "+player);
 			return false;
-		}
 		
 		// join party in middle of active
 		switch(_intention){
@@ -250,12 +244,12 @@ public class FPCParty {
 		for(Player member: getParty().getPartyMembers())
 		{
 			double memberDistance = member.getDistance(_beginLoc);
-			minDistance = Math.min(minDistance, member.getDistance(_beginLoc));
+			minDistance = Math.min(minDistance, memberDistance);
 			
-			if(memberDistance > 500)
-			{
-				System.out.println(_leader + "'s party waiting for:"+member+" distane:"+memberDistance);
-			}
+//			if(memberDistance > 500)
+//			{
+//				System.out.println(_leader + "'s party waiting for:"+member+" distane:"+memberDistance);
+//			}
 		}
 		
 		if(minDistance < 500)
