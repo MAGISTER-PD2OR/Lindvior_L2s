@@ -595,14 +595,14 @@ public class FPCDefaultAI extends PlayerAI
 	protected long _checkRandomWalkTimestamp;
 	protected Location _baseLocation = null;
 	
-	protected Location getBaseLocation()
+	public Location getBaseLocation()
 	{
 		if(_baseLocation == null)
 			return getActor().getLoc();
 		return _baseLocation;
 	}
 	
-	protected void setBaseLocation(Location loc)
+	public void setBaseLocation(Location loc)
 	{
 		_baseLocation = loc;
 	}

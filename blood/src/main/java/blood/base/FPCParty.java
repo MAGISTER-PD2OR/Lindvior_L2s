@@ -208,7 +208,12 @@ public class FPCParty {
 		setBeginLoc();
 		_centerLoc = getBeginLoc();
 		// TODO should move
-		teleportPartyMember(getBeginLoc());
+//		teleportPartyMember(getBeginLoc());
+		for(Player player: getParty().getPartyMembers())
+		{
+			FPCInfo.getInstance(player).getAI().setBaseLocation(getBeginLoc());
+			FPCInfo.fullRestore(player);	
+		}
 		// change leader to dd
 		setLeader(_dds.get(0));
 		// change party intension
@@ -218,7 +223,6 @@ public class FPCParty {
 	public void thinkActive()
 	{
 		tryReopen();
-		updateCenterLoc();
 	}
 	
 	public void thinkMoving()
@@ -233,12 +237,12 @@ public class FPCParty {
 	public void thinkActtack()
 	{
 		tryReopen();
-		updateCenterLoc();
 	}
 	
 	public void onEvtThing()
 	{
 		System.out.println("party heartbeat:"+_leader);
+		updateCenterLoc();
 		switch (getIntention()) {
 		case IDLE:
 			thinkIdle();
