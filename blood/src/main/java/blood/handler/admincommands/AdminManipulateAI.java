@@ -1,6 +1,7 @@
 package blood.handler.admincommands;
 
 import gnu.trove.map.TIntObjectMap;
+import l2s.gameserver.ai.PlayerAI;
 import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
 import l2s.gameserver.model.Player;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
+import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.data.holder.FarmZoneHolder;
 import blood.data.holder.NpcHelper;
@@ -28,7 +30,9 @@ public class AdminManipulateAI implements IAdminCommandHandler
 	
 	private static enum Commands
 	{
-		admin_find_path, admin_tryai
+		admin_tryai_party, 
+		admin_tryai,
+		admin_stopai
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -39,76 +43,31 @@ public class AdminManipulateAI implements IAdminCommandHandler
 
 		if(!activeChar.getPlayerAccess().CanEditNPC)
 			return false;
+		
+		FPCInfo newInfo;
 
 		switch(command)
 		{
 			case admin_tryai:
-				FPCInfo newInfo = new FPCInfo(activeChar);
+				newInfo = new FPCInfo(activeChar);
 				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
 				newInfo.getAI().toggleDebug();
 	//			newInfo.setPVEStyle(FPCPveStyle.PARTY);
 	//			newInfo.setParty();
 			break;
-			case admin_find_path:
-				FPCDefaultAI ai = FPCInfo.getInstance(activeChar).getAI();
-				Player player = activeChar;
+			
+			case admin_tryai_party:
+				newInfo = new FPCInfo(activeChar);
+				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
+				newInfo.getAI().toggleDebug();
+				newInfo.setPVEStyle(FPCPveStyle.PARTY);
+				newInfo.setParty();
+				break;
 				
-				Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
-				NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
-				NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
-				
-				int weight = 100;
-				
-				ai.addTaskTele(myRestartLocation, weight--);
-				ai.addTaskSleep(3*1000, weight--);
-				
-				if(myRestartLocation.distance(buffer.getLoc()) < 4000)
-				{
-					ai.addTaskMove(Location.findAroundPosition(gk, 150), true, true);
-					ai.addTaskSleep(5*1000, weight--);
-				}
-				
-				ai.addTaskMove(Location.findAroundPosition(gk, 150), true, true);
-				
-				Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
-				
-				if(targetLocation == null)
-					return false;
-				
-				Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
-				NpcInstance middleGK = NpcHelper.getClosestGatekeeper(middleRestartLocation);
-				
-				if(gk.getObjectId() != middleGK.getObjectId())
-				{
-					gk = middleGK;
-					ai.addTaskMove(Location.findAroundPosition(gk, 150), true, true);
-					ai.addTaskSleep(5*1000, weight--);
-				}
-				
-				TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
-				double minDistance = Double.MAX_VALUE;
-				Location spawnLocation = null;
-				for(TeleportLocation teleLoc: teleMap.valueCollection())
-				{
-					double distanceFromSpawnLoc = teleLoc.distance(targetLocation);
-					if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, targetLocation.x, targetLocation.y, targetLocation.z, player.getGeoIndex()))
-					{
-						minDistance = distanceFromSpawnLoc;
-						spawnLocation = teleLoc;
-					}
-				}
-				
-				if(spawnLocation != null)
-				{
-					ai.addTaskTele(spawnLocation, weight--);
-					ai.addTaskSleep(3*1000, weight--);
-					ai.addTaskMove(targetLocation, true);
-				}
-				else
-				{
-					ai.addTaskTele(targetLocation, weight--);
-				}
-			break;
+			case admin_stopai:
+				activeChar.setAI(new PlayerAI(activeChar));
+				break;
+			
 		}
 		return true;
 	}

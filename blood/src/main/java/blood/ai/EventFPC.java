@@ -25,6 +25,7 @@ import l2s.gameserver.templates.skill.EffectTemplate;
 import l2s.gameserver.utils.Location;
 import l2s.gameserver.utils.PositionUtils;
 import l2s.gameserver.utils.TeleportUtils;
+import blood.base.FPCPveStyle;
 import blood.data.holder.FarmZoneHolder;
 import blood.data.holder.NpcHelper;
 import blood.model.FPReward;
@@ -349,13 +350,30 @@ public class EventFPC extends FPCDefaultAI
 		
 		clearTasks();
 		
-		Location farmLocation = FarmZoneHolder.getInstance().getLocation(getActor());
-		setBaseLocation(farmLocation);
-		
-		if(tryMoveLongAwayToLocation(farmLocation))
+		if(getFPCInfo().getPveStyle() == FPCPveStyle.SOLO)
 		{
-			setFPCIntention(FPCIntention.FARMING);
+			Location farmLocation = FarmZoneHolder.getInstance().getLocation(getActor());
+			setBaseLocation(farmLocation);
+			
+			if(tryMoveLongAwayToLocation(farmLocation))
+			{
+				setFPCIntention(FPCIntention.FARMING);
+			}
 		}
+		else if(_baseLocation != null)
+		{
+			if(tryMoveLongAwayToLocation(_baseLocation))
+			{
+				setFPCIntention(FPCIntention.FARMING);
+			}
+		}
+		else if(!getActor().isInPeaceZone())
+		{
+			getActor().teleToClosestTown();
+		}
+		
+		// generate in town task here
+		
 		
 		return true;
 	}

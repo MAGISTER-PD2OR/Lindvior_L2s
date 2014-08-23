@@ -2083,24 +2083,15 @@ public class FPCDefaultAI extends PlayerAI
 		return 10000;
 	}
 	
-	protected FPCInfo _fpcInfo = null;
 	protected FPCParty _fpcParty = null;
 	
 	
 	public FPCInfo getFPCInfo() {
-		return _fpcInfo;
-	}
-
-	public void setFPCInfo(FPCInfo _fpcInfo) {
-		this._fpcInfo = _fpcInfo;
+		return FPCInfo.getInstance(getActor());
 	}
 
 	public FPCParty getFPCParty() {
-		return _fpcParty;
-	}
-
-	public void setFPCParty(FPCParty _fpcParty) {
-		this._fpcParty = _fpcParty;
+		return getFPCInfo().getParty();
 	}
 
 	public void runAwayFromTarget(Creature attacker)

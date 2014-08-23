@@ -191,7 +191,6 @@ public class FPCInfo
 	public void setParty()
 	{
 		_party = FPCPartyManager.getInstance().getParty(this);;
-		_ai.setFPCParty(_party);
 	}
 	
 	public FPCParty getParty()
