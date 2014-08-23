@@ -38,32 +38,5 @@ public class FPCBishop extends HealerPC
 		return SkillList;
 	}
 	
-	@Override
-	protected ArrayList<Integer> getCriticalHealSkill()
-	{
-		
-		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
-		
-		_allowSkills.add(1218); //Greater Battle Heal
-		_allowSkills.add(1418); //Celestial Shield
-		
-		return SkillList;
-		
-	}
-	
-	@Override
-	protected ArrayList<Integer> getNormalHealSkill()
-	{
-		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
-		
-		_allowSkills.add(1218); //Greater Heal
-		_allowSkills.add(1219); //Greater Group Heal
-		_allowSkills.add(1401); //Major Heal
-		_allowSkills.add(1402); //Major Group Heal
-		_allowSkills.add(1020); //vitalize
-		_allowSkills.add(1258); //Restore Life
-		
-		return SkillList;
-	}
 }
 

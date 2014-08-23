@@ -31,22 +31,5 @@ public class FPCEvaSaint extends HealerPC
 		return SkillList;
 	}
 	
-	@Override
-	protected ArrayList<Integer> getCriticalHealSkill()
-	{
-		return getNormalHealSkill();
-	}
-	
-	@Override
-	protected ArrayList<Integer> getNormalHealSkill()
-	{
-		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
-		
-		_allowSkills.add(1218); //greater heal
-		_allowSkills.add(1219); //Greater Group Heal
-		_allowSkills.add(1020); //vitalize
-		_allowSkills.add(1401); //Major Heal
-		return SkillList;
-	}
 }
 
