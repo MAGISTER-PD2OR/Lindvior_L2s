@@ -1225,8 +1225,8 @@ public class FPCDefaultAI extends PlayerAI
 				if (!checkTarget(target, castRange))
 				{
 					debug("check range failed");
-					debug("Distance: " + actor.getRealDistance3D(target) + " castRange: " + castRange+" isInRange:"+actor.isInRangeZ(target, castRange));
-					actor.moveToLocation(target.getLoc(), castRange + 20, true);
+					debug("Distance3D: " + actor.getRealDistance3D(target) +" Distance: " + actor.getDistance(target) + " castRange: " + castRange+" isInRange:"+actor.isInRangeZ(target, castRange));
+					actor.moveToLocation(target.getLoc(), castRange - 20, true);
 					return true;
 				}
 				
