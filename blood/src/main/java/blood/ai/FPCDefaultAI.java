@@ -805,6 +805,7 @@ public class FPCDefaultAI extends PlayerAI
 	 */
 	protected void thinkActive()
 	{
+		debug("i'm think active");
 		Player player = getActor();
 		
 		if(player.isDead()) /* FIXME */
@@ -1381,6 +1382,8 @@ public class FPCDefaultAI extends PlayerAI
 	protected void onEvtThink()
 	{
 		Player actor = getActor();
+		
+		debug("I'm on event think.... actor.isActionsDisabled():"+actor.isActionsDisabled());
 		
 		if(actor.isCastingNow())
 		{
