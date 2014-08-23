@@ -8,6 +8,7 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.utils.Location;
 import blood.FPCInfo;
 import blood.FPCPartyManager;
+import blood.ai.FPCDefaultAI.FPCIntention;
 import blood.data.holder.FarmZoneHolder;
 import blood.utils.ClassFunctions;
 
@@ -133,6 +134,7 @@ public class FPCParty {
 		case ACTIVE:
 		case MOVING:
 			player.teleToLocation(_leader.getLoc());
+			FPCInfo.getInstance(player).getAI().setFPCIntention(FPCIntention.FARMING);
 			break;
 		default:
 			break;
@@ -146,7 +148,26 @@ public class FPCParty {
 	}
 
 	public void setIntention(PartyIntention intention) {
-		_intention = intention;
+		if(_intention != intention)
+		{
+			_intention = intention;
+			onEvtChangeIntention(_intention);
+		}
+	}
+	
+	public void onEvtChangeIntention(PartyIntention intention)
+	{
+		switch(intention){
+		case ATTACK:
+			for(Player player: getParty().getPartyMembers())
+			{
+				FPCInfo.getInstance(player).getAI().setFPCIntention(FPCIntention.FARMING);
+			}
+			break;
+		default:
+			break;
+			
+		}
 	}
 	
 	public Location getBeginLoc()
@@ -172,7 +193,6 @@ public class FPCParty {
 		
 		int size = 0;
 		
-		// TODO should try to use dd only
 		for(Player player: _dds)
 		{
 			x += player.getX();
@@ -207,42 +227,50 @@ public class FPCParty {
 		
 		setBeginLoc();
 		_centerLoc = getBeginLoc();
-		// TODO should move
-//		teleportPartyMember(getBeginLoc());
 		for(Player player: getParty().getPartyMembers())
 		{
-			FPCInfo.getInstance(player).getAI().setBaseLocation(getBeginLoc());
-			FPCInfo.fullRestore(player);	
+			FPCInfo.fullRestore(player);
+			FPCInfo.getInstance(player).getAI().setBaseLocation(_beginLoc);
+			FPCInfo.getInstance(player).getAI().tryMoveLongAwayToLocation(_beginLoc);
 		}
 		// change leader to dd
 		setLeader(_dds.get(0));
 		// change party intension
-		setIntention(PartyIntention.ACTIVE);
+		setIntention(PartyIntention.MOVING);
 	}
 	
 	public void thinkActive()
 	{
-		tryReopen();
+		updateCenterLoc();
 	}
 	
 	public void thinkMoving()
 	{
-		tryReopen();
-		if(_nextLoc == null)
+		double minDistance = Double.MAX_VALUE;
+		for(Player member: getParty().getPartyMembers())
 		{
-			setIntention(PartyIntention.ACTIVE);
+			double memberDistance = member.getDistance(_beginLoc);
+			minDistance = Math.min(minDistance, member.getDistance(_beginLoc));
+			
+			if(memberDistance > 500)
+			{
+				System.out.println(_leader + "'s party waiting for:"+member+" distane:"+memberDistance);
+			}
 		}
+		
+		if(minDistance < 500)
+			setIntention(PartyIntention.ATTACK);
 	}
 	
 	public void thinkActtack()
 	{
-		tryReopen();
+		updateCenterLoc();
 	}
 	
 	public void onEvtThing()
 	{
 //		System.out.println("party heartbeat:"+_leader);
-		updateCenterLoc();
+		
 		switch (getIntention()) {
 		case IDLE:
 			thinkIdle();
@@ -263,7 +291,6 @@ public class FPCParty {
 	}
 
 	public void debug() {
-		// TODO Auto-generated method stub
 		System.out.println("=====Party DEBUG=====");
 		System.out.println("leader:"+_leader);
 		System.out.println("tanker:"+_tanker);
@@ -292,6 +319,34 @@ public class FPCParty {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void kick(Player player) {
+		for(Player dd: _dds)
+		{
+			if(player.equals(dd))
+			{
+				_dds.remove(dd);
+				break;
+			}
+		}
+		
+		// TODO - add case all dd out
+		
+		if(_tanker != null && _tanker.equals(player))
+			_tanker = null;
+		
+		if(_iss != null && _iss.equals(player))
+			_iss = null;
+		
+		if(_healer != null && _healer.equals(player))
+			_healer = null;
+		
+		if(_leader.equals(player))
+			setLeader(_dds.get(0));
+		
+		tryReopen();
+		
 	}
 
 }

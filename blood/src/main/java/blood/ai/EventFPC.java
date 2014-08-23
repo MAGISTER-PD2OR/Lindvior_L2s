@@ -1,7 +1,5 @@
 package blood.ai;
 
-import gnu.trove.map.TIntObjectMap;
-
 import java.util.HashSet;
 
 import l2s.commons.util.Rnd;
@@ -15,19 +13,14 @@ import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
-import l2s.gameserver.model.base.RestartType;
-import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.skills.EffectType;
 import l2s.gameserver.tables.SkillTable;
-import l2s.gameserver.templates.TeleportLocation;
 import l2s.gameserver.templates.skill.EffectTemplate;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.utils.Location;
 import l2s.gameserver.utils.PositionUtils;
-import l2s.gameserver.utils.TeleportUtils;
 import blood.base.FPCPveStyle;
 import blood.data.holder.FarmZoneHolder;
-import blood.data.holder.NpcHelper;
 import blood.model.FPReward;
 
 public class EventFPC extends FPCDefaultAI
@@ -360,86 +353,25 @@ public class EventFPC extends FPCDefaultAI
 				setFPCIntention(FPCIntention.FARMING);
 			}
 		}
-		else if(_baseLocation != null)
+		else
 		{
-			debug("inparty tele to farmzone");
-			if(tryMoveLongAwayToLocation(_baseLocation))
-			{
-				setFPCIntention(FPCIntention.FARMING);
-			}
-		}
-		else if(!getActor().isInPeaceZone())
-		{
-			getActor().teleToClosestTown();
+			if(!getActor().isInPeaceZone())
+				getActor().teleToClosestTown();
+			setFPCIntention(FPCIntention.WAITING_PARTY);
 		}
 		
 		// generate in town task here
 		
-		
 		return true;
 	}
 	
-	protected boolean tryMoveLongAwayToLocation(Location loc)
+	protected boolean thinkFPCWaitingParty()
 	{
-		if(loc == null)
-			return false;
-		
-		Player player = getActor();
-		
-		Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
-		NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
-		NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
-		
-		int weight = 100;
-		
-		addTaskTele(myRestartLocation, weight--);
-		addTaskSleep(3*1000, weight--);
-		
-		if(myRestartLocation.distance(buffer.getLoc()) < 4000)
-		{
-			addTaskMove(Location.findAroundPosition(buffer, 150), true, true, weight--);
-			addTaskSleep(5*1000, weight--);
-		}
-		
-		addTaskMove(Location.findAroundPosition(gk, 150), true, true, weight--);
-		addTaskSleep(5*1000, weight--);
-		
-		Location middleRestartLocation = TeleportUtils.getRestartLocation(player, loc, RestartType.TO_VILLAGE);
-		NpcInstance middleGK = NpcHelper.getClosestGatekeeper(middleRestartLocation);
-		
-		if(gk.getObjectId() != middleGK.getObjectId())
-		{
-			gk = middleGK;
-			addTaskTele(Location.findAroundPosition(gk, 150), weight--);
-			addTaskSleep(5*1000, weight--);
-		}
-		
-		TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
-		double minDistance = Double.MAX_VALUE;
-		Location spawnLocation = null;
-		for(TeleportLocation teleLoc: teleMap.valueCollection())
-		{
-			double distanceFromSpawnLoc = teleLoc.distance(loc);
-			if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, loc.x, loc.y, loc.z, player.getGeoIndex()))
-			{
-				minDistance = distanceFromSpawnLoc;
-				spawnLocation = teleLoc;
-			}
-		}
-		
-		if(spawnLocation != null)
-		{
-			addTaskTele(spawnLocation, weight--);
-			addTaskSleep(3*1000, weight--);
-			addTaskMove(loc, true, true, weight--);
-		}
-		else
-		{
-			addTaskTele(loc, weight--);
-		}
-		
-		return true;
+		//just wait task from party
+		return getFPCIntention() == FPCIntention.WAITING_PARTY;
 	}
+	
+	
 	
 	/*
 	 * About force warrior or kamael soul

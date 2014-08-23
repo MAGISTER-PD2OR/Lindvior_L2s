@@ -344,7 +344,7 @@ public class FPCInfo
 		
 		if(actor.isInParty())
 		{
-			_log.info(actor +": kicked <--- Party");
+			getParty().kick(actor);
 		}
 		
 		_log.info(actor +": kicked");
