@@ -84,10 +84,10 @@ public class FPCTyrr extends WarriorPC
 		
 		/* rush task */
 		
-		if(canUseSkill(SKILL_Hurricane_Rush, target, distance))
+		if(distance > 200 && canUseSkill(SKILL_Hurricane_Rush, target, distance))
 			return tryCastSkill(SKILL_Hurricane_Rush, target, distance);
 		
-		if(canUseSkill(SKILL_RUSH_IMPACT, target, distance))
+		if(distance > 200 && canUseSkill(SKILL_RUSH_IMPACT, target, distance))
 			return tryCastSkill(SKILL_RUSH_IMPACT, target, distance);
 		
 		if(player.getIncreasedForce() < 3 && canUseSkill(SKILL_HURRICANE_BLASTER, target, distance))

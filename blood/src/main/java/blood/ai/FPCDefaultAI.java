@@ -1223,6 +1223,7 @@ public class FPCDefaultAI extends PlayerAI
 				if (!checkTarget(target, castRange))
 				{
 					debug("check range failed");
+					debug("Distance: " + actor.getRealDistance3D(target) + " castRange: " + castRange);
 					return true;
 				}
 				
@@ -1235,8 +1236,7 @@ public class FPCDefaultAI extends PlayerAI
 					return true;
 				}
 				
-				debug("Distance: " + actor.getRealDistance3D(target) + " castRange: " + castRange);
-				debug("Skill name: " + currentTask.skill.toString());
+				
 				
 				if ((actor.getRealDistance3D(target) <= (castRange + 60)) && GeoEngine.canSeeTarget(actor, target, false))
 				{
