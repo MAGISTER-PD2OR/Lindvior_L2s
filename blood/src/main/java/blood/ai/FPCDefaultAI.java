@@ -1474,12 +1474,9 @@ public class FPCDefaultAI extends PlayerAI
 		return null;
 	}
 	
-	public boolean hasEffect(Creature target, int skillId)
-	{
-		return target.getEffectList().containsEffects(skillId);
-	}
 	
-	protected boolean canUseSkill(Skill skill, Creature target, double distance)
+	
+	protected boolean canUseSkill(Skill skill, Creature target, double distance, boolean override)
 	{
 
 		Player actor = getActor();
@@ -1524,7 +1521,7 @@ public class FPCDefaultAI extends PlayerAI
 			return false;
 		}
 		
-		if (target.getEffectList().containsEffects(skill))
+		if (!override && target.getEffectList().containsEffects(skill))
 		{
 			return false;
 		}
@@ -1532,14 +1529,24 @@ public class FPCDefaultAI extends PlayerAI
 		return true;
 	}
 	
+	protected boolean canUseSkill(Skill skill, Creature target, double distance)
+	{
+		return canUseSkill(skill, target, distance, false);
+	}
+	
 	protected boolean canUseSkill(Skill sk, Creature target)
 	{
 		return canUseSkill(sk, target, 0);
 	}
 	
-	protected boolean canUseSkill(int sk, Creature target, double distance)
+	protected boolean canUseSkill(int sk, Creature target, double distance, boolean override)
 	{
 		return canUseSkill(getActor().getKnownSkill(sk), target, distance);
+	}
+	
+	protected boolean canUseSkill(int sk, Creature target, double distance)
+	{
+		return canUseSkill(sk, target, distance);
 	}
 	
 	protected boolean canUseSkill(int sk, Creature target)

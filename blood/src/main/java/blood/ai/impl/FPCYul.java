@@ -44,6 +44,9 @@ public class FPCYul extends RangerPC
 		_allowSelfBuffSkills.add(SKILL_DEAD_EYE_STANCE);
 		_allowSelfBuffSkills.add(SKILL_SNIPING);
 		_allowSelfBuffSkills.add(SKILL_YUL_AURA);
+		// should move to situation skill
+		_allowSelfBuffSkills.add(SKILL_QUICK_FIRE);
+		_allowSelfBuffSkills.add(SKILL_MIND_EYE);
 	}
 	
 	protected boolean defaultSubFightTask(Creature target)
@@ -70,15 +73,29 @@ public class FPCYul extends RangerPC
 		Player actor = getActor();
 		
 		double distance = actor.getDistance(target);
-		double actorMp = actor.getCurrentMpPercents();
 		
 		if(distance < 300 && canUseSkill(SKILL_QUICK_EVASION, target, distance))
 			return tryCastSkill(SKILL_QUICK_EVASION, target, distance);
 		
-		if(actorMp > 50 && canUseSkill(SKILL_QUICK_SHOT, target, distance))
+		if(canUseSkill(SKILL_BULLSEYE, target, distance))
+			return tryCastSkill(SKILL_BULLSEYE, target, distance);
+		
+		// AOE
+		if(target.getAroundNpc(200, 200).size() > 3)
+		{
+			if(canUseSkill(SKILL_HEAVY_ARROW_RAIN, target, distance))
+				return tryCastSkill(SKILL_HEAVY_ARROW_RAIN, target, distance);
+			
+			if(canUseSkill(SKILL_MULTIPLE_ARROW, target, distance))
+				return tryCastSkill(SKILL_MULTIPLE_ARROW, target, distance);
+		}
+		
+		// single
+		
+		if(canUseSkill(SKILL_QUICK_SHOT, target, distance))
 			return tryCastSkill(SKILL_QUICK_SHOT, target, distance);
 		
-		if(actorMp > 50 && canUseSkill(SKILL_PINPOINT_SHOT, target, distance))
+		if(canUseSkill(SKILL_PINPOINT_SHOT, target, distance))
 			return tryCastSkill(SKILL_PINPOINT_SHOT, target, distance);
 		
 		return chooseTaskAndTargets(null, target, distance);

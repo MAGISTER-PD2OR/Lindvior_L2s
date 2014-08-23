@@ -86,16 +86,28 @@ public class FPCIss extends WarriorPC
 		
 		double distance = player.getDistance(target);
 		
-		if(distance > 600)
-			tryMoveToTarget(target, 550);
-		
-		if(canUseSkill(SKILL_ASSAULT_RUSH, target, distance))
+		if(distance > 300 && canUseSkill(SKILL_ASSAULT_RUSH, target, distance))
 			tryCastSkill(SKILL_ASSAULT_RUSH, target, distance);
 		
-		if(!hasEffect(target, SKILL_SHADOW_BLADE) && canUseSkill(SKILL_SHADOW_BLADE, target, distance))
+		if(target.getAroundNpc(200, 200).size() > 3)
+		{
+			if(canUseSkill(SKILL_MASS_GIANT_ROOT, target, distance))
+				tryCastSkill(SKILL_MASS_GIANT_ROOT, target, distance);
+			
+			if(canUseSkill(SKILL_ULTIMATE_SUSPENSION, target, distance))
+				tryCastSkill(SKILL_ULTIMATE_SUSPENSION, target, distance);
+			
+			if(canUseSkill(SKILL_MASS_SHADOW_BLADE, target, distance))
+				tryCastSkill(SKILL_MASS_SHADOW_BLADE, target, distance);
+			
+			if(canUseSkill(SKILL_MASS_CRIPPLING_ATTACK, target, distance))
+				tryCastSkill(SKILL_MASS_CRIPPLING_ATTACK, target, distance);
+		}
+		
+		if(canUseSkill(SKILL_SHADOW_BLADE, target, distance))
 			tryCastSkill(SKILL_SHADOW_BLADE, target, distance);
 		
-		if(!hasEffect(target, SKILL_CRIPPLING_ATTACK) && canUseSkill(SKILL_CRIPPLING_ATTACK, target, distance))
+		if(canUseSkill(SKILL_CRIPPLING_ATTACK, target, distance))
 			tryCastSkill(SKILL_CRIPPLING_ATTACK, target, distance);
 		
 		if(canUseSkill(SKILL_DEATH_STRIKE, target, distance))
@@ -131,7 +143,14 @@ public class FPCIss extends WarriorPC
 		if(!attacked.isPlayer())
 			return;
 		
+		Player player = getActor();
 		Player member = attacked.getPlayer();
+		
+		if(member.getCurrentHpPercents() < 20)
+		{
+			if(canUseSkill(SKILL_CELESTIAL_AEGIS, player) && tryCastSkill(SKILL_CELESTIAL_AEGIS, player))
+				return;
+		}
 		
 		if(member.getCurrentHpPercents() < 50)
 		{
