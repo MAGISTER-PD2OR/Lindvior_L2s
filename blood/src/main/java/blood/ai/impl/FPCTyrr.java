@@ -79,8 +79,8 @@ public class FPCTyrr extends WarriorPC
 		if(player.getIncreasedForce() == maxCharge && player.getEffectList().containsEffects(SKILL_Momentum_Charge))
 			player.getEffectList().stopEffects(SKILL_Momentum_Charge);
 		
-		if(actorMp < 20)
-			return chooseTaskAndTargets(null, target, distance);
+//		if(actorMp < 20)
+//			return chooseTaskAndTargets(null, target, distance);
 		
 		/* rush task */
 		
