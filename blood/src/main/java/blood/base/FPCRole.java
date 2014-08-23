@@ -43,7 +43,7 @@ import blood.ai.impl.FPCStormScreamer;
 import blood.ai.impl.FPCSwordMuse;
 import blood.ai.impl.FPCTitan;
 import blood.ai.impl.FPCTrickster;
-import blood.ai.impl.FPCTyr;
+import blood.ai.impl.FPCTyrr;
 import blood.ai.impl.FPCWindRider;
 import blood.ai.impl.FPCWynn;
 import blood.ai.impl.FPCYul;
@@ -239,7 +239,7 @@ public enum FPCRole {
 			case TYR_MAESTRO:
 			case TYR_DOOMBRINGER:
 			case TYR_WARRIOR:
-				return new FPCTyr(player);
+				return new FPCTyrr(player);
 				
 			default:
 				break;
@@ -393,7 +393,7 @@ public enum FPCRole {
 			case "sigel":
 				return new FPCSigel(player);
 			case "tyr":
-				return new FPCTyr(player);
+				return new FPCTyrr(player);
 			case "othell":
 				return new FPCOthell(player);
 			case "feoh":

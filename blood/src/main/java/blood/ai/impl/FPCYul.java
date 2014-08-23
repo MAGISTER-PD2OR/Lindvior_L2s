@@ -2,7 +2,6 @@ package blood.ai.impl;
 
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
-import blood.utils.ClassFunctions;
 
 public class FPCYul extends RangerPC
 {
@@ -34,6 +33,7 @@ public class FPCYul extends RangerPC
 	public final int SKILL_PINPOINT_SHOT		= 10763; // Lv.1 	active 	117 	0 	10000 	1100 	- 	Aims for the target's weak points to attack with 22198 Power added to P. Atk. Disregards 30% of the target's P. Def. Requires a bow or crossbow to be equipped. Over-hit. Critical. Half-kill.
 	public final int SKILL_MULTIPLE_ARROW		= 10771; // Lv.1 	active 	124 	0 	10000 	1100 	- 	Attacks frontal enemies with 23391 Power added to P. Atk. Requires a bow or crossbow to be equipped. Over-hit. Critical.
 	public final int SKILL_BOW_STRIKE			= 10761; // Lv.1 	active 	60 	0 	10000 	40 	- 	Knocks back frontal enemies. Attacks the target with 2681 Power added to P. Atk. Requires a bow or crossbow to be equipped. Over-hit. Critical. 
+	
 	public FPCYul(Player actor)
 	{
 		super(actor);
@@ -50,15 +50,17 @@ public class FPCYul extends RangerPC
 		return true;
 	}
 	
-	protected void criticalFight(Creature target)
+	protected boolean criticalFight(Creature target)
 	{
 		double distance = getActor().getDistance(target);
 		
 		if(canUseSkill(SKILL_IMPACT_SHOT, target, distance))
-			tryCastSkill(SKILL_IMPACT_SHOT, target, distance);
+			return tryCastSkill(SKILL_IMPACT_SHOT, target, distance);
 		
 		if(canUseSkill(SKILL_RECOIL_SHOT, target, distance))
-			tryCastSkill(SKILL_RECOIL_SHOT, target, distance);
+			return tryCastSkill(SKILL_RECOIL_SHOT, target, distance);
+		
+		return false;
 	}
 	
 	protected boolean yulFightTask(Creature target)
@@ -66,22 +68,18 @@ public class FPCYul extends RangerPC
 		Player actor = getActor();
 		
 		double distance = actor.getDistance(target);
-//		double targetHp = target.getCurrentHpPercents();
-//		double actorHp = actor.getCurrentHpPercents();
 		double actorMp = actor.getCurrentMpPercents();
 		
 		if(distance < 300 && canUseSkill(SKILL_QUICK_EVASION, target, distance))
-			tryCastSkill(SKILL_QUICK_EVASION, target, distance);
+			return tryCastSkill(SKILL_QUICK_EVASION, target, distance);
 		
 		if(actorMp > 50 && canUseSkill(SKILL_QUICK_SHOT, target, distance))
-			tryCastSkill(SKILL_QUICK_SHOT, target, distance);
+			return tryCastSkill(SKILL_QUICK_SHOT, target, distance);
 		
 		if(actorMp > 50 && canUseSkill(SKILL_PINPOINT_SHOT, target, distance))
-			tryCastSkill(SKILL_PINPOINT_SHOT, target, distance);
+			return tryCastSkill(SKILL_PINPOINT_SHOT, target, distance);
 		
-		chooseTaskAndTargets(null, target, distance);
-		
-		return false;
+		return chooseTaskAndTargets(null, target, distance);
 	}
 	
 	@Override
@@ -92,7 +90,7 @@ public class FPCYul extends RangerPC
 		
 		Player member = attacked.getPlayer();
 		
-		if(ClassFunctions.isHealer(member) || ClassFunctions.isIss(member) || member.getCurrentHpPercents() < 50)
+		if(member.getCurrentHpPercents() < 50)
 		{
 			criticalFight(attacker);
 		}

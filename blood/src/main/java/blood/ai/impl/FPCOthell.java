@@ -54,43 +54,36 @@ public class FPCOthell extends WarriorPC
 	
 	protected boolean othellFightTask(Creature target)
 	{
-		Player actor = getActor();
+		Player player = getActor();
 		
-		double distance = actor.getDistance(target);
+		double distance = player.getDistance(target);
 //		double targetHp = target.getCurrentHpPercents();
 //		double actorHp = actor.getCurrentHpPercents();
-		double actorMp = actor.getCurrentMpPercents();
+		double actorMp = player.getCurrentMpPercents();
 		
-		if(!hasEffect(target, SKILL_SHADOW_CHASE) 
-				&& !hasEffect(target, SKILL_POWER_BLUFF) 
-				&& !hasEffect(target, SKILL_KICK)
-				&& !hasEffect(target, SKILL_DARK_PARALYSIS))
+		if(!hasEffect(target, SKILL_SHADOW_CHASE) && !hasEffect(target, SKILL_POWER_BLUFF) && !hasEffect(target, SKILL_KICK))
 		{
-			if(actorMp > 50 && canUseSkill(SKILL_SHADOW_CHASE, target, distance))
-				tryCastSkill(SKILL_SHADOW_CHASE, target, distance);
+			if(actorMp > 50 && distance > 300 && canUseSkill(SKILL_SHADOW_CHASE, target, distance))
+				return tryCastSkill(SKILL_SHADOW_CHASE, target, distance);
 			else if(actorMp > 50 && canUseSkill(SKILL_POWER_BLUFF, target, distance))
-				tryCastSkill(SKILL_POWER_BLUFF, target, distance);
+				return tryCastSkill(SKILL_POWER_BLUFF, target, distance);
 			else if(actorMp > 50 && canUseSkill(SKILL_KICK, target, distance))
-				tryCastSkill(SKILL_KICK, target, distance);
-			else if(actorMp > 50 && canUseSkill(SKILL_DARK_PARALYSIS, target, distance))
-				tryCastSkill(SKILL_DARK_PARALYSIS, target, distance);
+				return tryCastSkill(SKILL_KICK, target, distance);
 		}
 		
 		if(hasEffect(target, SKILL_KICK) && canUseSkill(SKILL_HEART_BREAKER, target, distance))
-			tryCastSkill(SKILL_HEART_BREAKER, target, distance);
+			return tryCastSkill(SKILL_HEART_BREAKER, target, distance);
 		
 		if(hasEffect(target, SKILL_BLOOD_STAB) && canUseSkill(SKILL_CHAIN_BLOW, target, distance))
-			tryCastSkill(SKILL_CHAIN_BLOW, target, distance);
+			return tryCastSkill(SKILL_CHAIN_BLOW, target, distance);
 		
 		if(canUseSkill(SKILL_BLOOD_STAB, target, distance))
-			tryCastSkill(SKILL_BLOOD_STAB, target, distance);
+			return tryCastSkill(SKILL_BLOOD_STAB, target, distance);
 		
 		if(canUseSkill(SKILL_REVERSE, target, distance))
-			tryCastSkill(SKILL_REVERSE, target, distance);
+			return tryCastSkill(SKILL_REVERSE, target, distance);
 			
-		chooseTaskAndTargets(null, target, distance);
-		
-		return false;
+		return chooseTaskAndTargets(null, target, distance);
 	}
 	
 }

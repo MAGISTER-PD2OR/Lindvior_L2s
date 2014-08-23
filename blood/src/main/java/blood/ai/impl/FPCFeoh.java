@@ -112,13 +112,13 @@ public class FPCFeoh extends MysticPC
 		}
 		
 		// if we are feoh soul taker we should debuf darkcurse first
-		if(!_last_target_dark_curse && canUseSkill(skillDarkCurse, target, distance) && target.getEffectList().getEffectsCount(skillDarkCurse) == 0){
+		if(!_last_target_dark_curse && canUseSkill(skillDarkCurse, target, distance)){
 			_last_target_dark_curse = true;
 			return chooseTaskAndTargets(skillDarkCurse, target, distance);
 		}
 			
 		// 1st use death curse
-		if(canUseSkill(skillDeathCurse, target, distance) && target.getEffectList().getEffectsCount(skillDeathCurse) == 0)
+		if(canUseSkill(skillDeathCurse, target, distance))
 			return chooseTaskAndTargets(skillDeathCurse, target, distance);
 		
 		if(player.getCurrentHpPercents() < 50)

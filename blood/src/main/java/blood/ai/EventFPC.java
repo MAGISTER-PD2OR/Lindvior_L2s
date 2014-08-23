@@ -151,7 +151,7 @@ public class EventFPC extends FPCDefaultAI
 		{
 			for(Skill skill: _selfBuffSkills)
 			{
-				if(canUseSkill(skill, player) && !player.getEffectList().containsEffects(skill))
+				if(canUseSkill(skill, player))
 					return chooseTaskAndTargets(skill, player, 0);
 			}
 		}
@@ -165,7 +165,7 @@ public class EventFPC extends FPCDefaultAI
 				
 				for(Skill skill: _servitorBuffSkills)
 				{
-					if(canUseSkill(skill, servitor, distance) && !servitor.getEffectList().containsEffects(skill))
+					if(canUseSkill(skill, servitor, distance))
 						return chooseTaskAndTargets(skill, servitor, distance);
 				}
 			}
@@ -183,7 +183,7 @@ public class EventFPC extends FPCDefaultAI
 				
 				for(Skill skill: _selfBuffSkills)
 				{
-					if(canUseSkill(skill, member, distance) && !member.getEffectList().containsEffects(skill))
+					if(canUseSkill(skill, member, distance))
 						return chooseTaskAndTargets(skill, member, distance);
 				}
 				
@@ -508,19 +508,21 @@ public class EventFPC extends FPCDefaultAI
 		return new Location(obj);
 	}
 	
-	protected void tryCastSkill(int skillId, Creature target)
+	protected boolean tryCastSkill(int skillId, Creature target)
 	{
-		tryCastSkill(skillId, target, getActor().getDistance(target));
+		return tryCastSkill(skillId, target, getActor().getDistance(target));
 	}
 
-	protected void tryCastSkill(int skillId, Creature target, double distance)
+	protected boolean tryCastSkill(int skillId, Creature target, double distance)
 	{
 		Player actor = getActor();
 		Skill skill = actor.getKnownSkill(skillId);
 		if(skill != null && target != null)
 		{
-			chooseTaskAndTargets(skill, target, distance);
+			return chooseTaskAndTargets(skill, target, distance);
 		}
+		
+		return false;
 			
 	}
 	

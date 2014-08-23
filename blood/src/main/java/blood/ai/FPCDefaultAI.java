@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import blood.FPCInfo;
 import blood.base.FPCParty;
 import blood.model.AggroListPC;
-import blood.model.FPReward;
 import blood.model.AggroListPC.AggroInfoPC;
 
 public class FPCDefaultAI extends PlayerAI
@@ -1476,7 +1475,7 @@ public class FPCDefaultAI extends PlayerAI
 			return false;
 		}
 		
-		if (target.getEffectList().getEffectsCount(skill.getId()) > 0)
+		if (target.getEffectList().containsEffects(skill))
 		{
 			return false;
 		}

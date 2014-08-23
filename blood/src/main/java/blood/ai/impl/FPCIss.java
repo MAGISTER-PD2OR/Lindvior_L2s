@@ -57,10 +57,10 @@ public class FPCIss extends WarriorPC
 	}
 	
 	public void prepareSkillsSetup() {
-//		_allowSelfBuffSkills.add(SKILL_RESISTANCE_OF_SAHA);
+		_allowSelfBuffSkills.add(SKILL_ELEMENTAL_RESISTANCE);
 //		_allowSelfBuffSkills.add(SKILL_CLARITY_OF_SAHA);
 		
-//		_allowPartyBuffSkills.add(SKILL_RESISTANCE_OF_SAHA);
+		_allowPartyBuffSkills.add(SKILL_ELEMENTAL_RESISTANCE);
 //		_allowPartyBuffSkills.add(SKILL_CLARITY_OF_SAHA);
 	}
 	
@@ -80,19 +80,9 @@ public class FPCIss extends WarriorPC
 	
 	protected boolean issFightTask(Creature target)
 	{
-		Player actor = getActor();
+		Player player = getActor();
 		
-		double distance = actor.getDistance(target);
-		double actorHp = actor.getCurrentHpPercents();
-		
-		// TODO should move to evt attacked
-		if(actorHp < 30)
-		{
-			if(canUseSkill(SKILL_QUICK_ESCAPE, actor, distance))
-				tryCastSkill(SKILL_QUICK_ESCAPE, actor, distance);
-			if(canUseSkill(SKILL_POLYMORPH, actor, distance))
-				tryCastSkill(SKILL_POLYMORPH, actor, distance);
-		}
+		double distance = player.getDistance(target);
 		
 		if(distance > 600)
 			tryMoveToTarget(target, 550);
@@ -115,15 +105,33 @@ public class FPCIss extends WarriorPC
 		return false;
 	}
 	
+	@Override 
+	protected void onEvtAttacked(Creature attacker, int damage)
+	{
+		super.onEvtAttacked(attacker, damage);
+		
+		Player player = getActor();
+		
+		// TODO should move to evt attacked
+		if(player.getCurrentHpPercents() < 30)
+		{
+			if(canUseSkill(SKILL_QUICK_ESCAPE, player, 0))
+				tryCastSkill(SKILL_QUICK_ESCAPE, player, 0);
+			if(canUseSkill(SKILL_POLYMORPH, player, 0))
+				tryCastSkill(SKILL_POLYMORPH, player, 0);
+		}
+	}
+	
 	@Override
 	protected void onEvtClanAttacked(Creature attacked, Creature attacker, int damage)
 	{
+		super.onEvtClanAttacked(attacked, attacker, damage);
 		if(!attacked.isPlayer())
 			return;
 		
 		Player member = attacked.getPlayer();
 		
-		if(ClassFunctions.isHealer(member) || member.getCurrentHpPercents() < 50)
+		if(member.getCurrentHpPercents() < 50)
 		{
 			criticalFight(attacker);
 		}

@@ -154,16 +154,16 @@ public class FPCWynn extends SummonerPC
 		if(doHeal && canUseSkill(healSkill, target))
 			return chooseTaskAndTargets(healSkill, target, distance);
 		
-		if(canUseSkill(skillMarkOfVoid, target, distance) && target.getEffectList().getEffectsCount(skillMarkOfVoid) == 0)
+		if(canUseSkill(skillMarkOfVoid, target, distance))
 			return chooseTaskAndTargets(skillMarkOfVoid, target, distance);
 		
-		if(canUseSkill(skillMarkOfWeakness, target, distance) && target.getEffectList().getEffectsCount(skillMarkOfWeakness) == 0)
+		if(canUseSkill(skillMarkOfWeakness, target, distance))
 			return chooseTaskAndTargets(skillMarkOfWeakness, target, distance);
 		
-		if(canUseSkill(markOfPlagueSkill, target, distance) && target.getEffectList().getEffectsCount(markOfPlagueSkill) == 0)
+		if(canUseSkill(markOfPlagueSkill, target, distance))
 			return chooseTaskAndTargets(markOfPlagueSkill, target, distance);
 		
-		if(canUseSkill(markOfTrickSkill, target, distance) && target.getEffectList().getEffectsCount(markOfTrickSkill) == 0)
+		if(canUseSkill(markOfTrickSkill, target, distance))
 			return chooseTaskAndTargets(markOfTrickSkill, target, distance);
 		
 		if(target.getEffectList().getEffectsCount(markOfPlagueSkill) > 0)
