@@ -1504,7 +1504,7 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean canUseSkill(Skill sk, Creature target)
 	{
-		return canUseSkill(sk, target, getActor().getDistance(target));
+		return canUseSkill(sk, target, 0);
 	}
 	
 	protected boolean canUseSkill(int sk, Creature target, double distance)
@@ -1514,7 +1514,7 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean canUseSkill(int sk, Creature target)
 	{
-		return canUseSkill(sk, target, getActor().getDistance(target));
+		return canUseSkill(sk, target, 0);
 	}
 	
 	protected Skill[] selectUsableSkills(Creature target, double distance, Skill[] skills)

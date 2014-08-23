@@ -155,8 +155,8 @@ public class FPCAeore extends HealerPC
 			if(hp75 > 3 && canUseSkill(SKILL_Brilliant_Heal, player, 0))
 				return tryCastSkill(SKILL_Brilliant_Heal, player, 0);
 			
-			if(lowestMpMember != null && canUseSkill(SKILL_Radiant_Recharge, target))
-				return tryCastSkill(SKILL_Radiant_Recharge, player, 0);
+			if(lowestMpMember != null && canUseSkill(SKILL_Radiant_Recharge, lowestMpMember, 0))
+				return tryCastSkill(SKILL_Radiant_Recharge, lowestMpMember, 0);
 		}
 		
 		return true;
