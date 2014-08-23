@@ -58,10 +58,12 @@ public class FPCIss extends WarriorPC
 	
 	public void prepareSkillsSetup() {
 		_allowSelfBuffSkills.add(SKILL_ELEMENTAL_RESISTANCE);
-//		_allowSelfBuffSkills.add(SKILL_CLARITY_OF_SAHA);
+		_allowSelfBuffSkills.add(SKILL_HOLY_ATTACK_RESISTANCE);
+		_allowSelfBuffSkills.add(SKILL_MENTAL_ATTACK_RESISTANCE);
 		
 		_allowPartyBuffSkills.add(SKILL_ELEMENTAL_RESISTANCE);
-//		_allowPartyBuffSkills.add(SKILL_CLARITY_OF_SAHA);
+		_allowPartyBuffSkills.add(SKILL_HOLY_ATTACK_RESISTANCE);
+		_allowPartyBuffSkills.add(SKILL_MENTAL_ATTACK_RESISTANCE);
 	}
 	
 	protected boolean defaultSubFightTask(Creature target)

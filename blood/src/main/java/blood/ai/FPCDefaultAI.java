@@ -2197,7 +2197,8 @@ public class FPCDefaultAI extends PlayerAI
 		for(TeleportLocation teleLoc: teleMap.valueCollection())
 		{
 			double distanceFromSpawnLoc = teleLoc.distance(loc);
-			if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, loc.x, loc.y, loc.z, player.getGeoIndex()))
+//			if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, loc.x, loc.y, loc.z, player.getGeoIndex()))
+			if(distanceFromSpawnLoc < minDistance)
 			{
 				minDistance = distanceFromSpawnLoc;
 				spawnLocation = teleLoc;
@@ -2208,7 +2209,7 @@ public class FPCDefaultAI extends PlayerAI
 		{
 			addTaskTele(spawnLocation, weight--);
 			addTaskSleep(3*1000, weight--);
-			addTaskMove(loc, true, true, weight--);
+			addTaskMove(Location.findAroundPosition(loc, 200, player.getGeoIndex()), true, true, weight--);
 		}
 		else
 		{
