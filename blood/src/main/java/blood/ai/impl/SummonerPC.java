@@ -1,6 +1,5 @@
 package blood.ai.impl;
 
-import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
 import blood.ai.EventFPC;
@@ -16,14 +15,6 @@ public class SummonerPC extends EventFPC
 	protected Skill getNpcSuperiorBuff()
 	{
 		return getSkill(15649, 1); //warrior
-	}
-
-	
-	@Override
-	protected void onEvtAttacked(Creature attacker, int damage)
-	{
-		super.onEvtAttacked(attacker, damage);
-		runAwayFromTarget(attacker);
 	}
 
 	@Override

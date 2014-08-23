@@ -19,28 +19,6 @@ public class RangerPC extends EventFPC
 		return getSkill(15649, 1); //warrior
 //		return getSkill(15650, 1); //wizzard
 	}
-
-
-	@Override
-	protected void onEvtAttacked(Creature attacker, int damage)
-	{
-		super.onEvtAttacked(attacker, damage);
-		
-		runAwayFromTarget(attacker);
-		
-		Player actor = getActor();
-		int hpLevel	= (int) actor.getCurrentHpPercents();
-		
-		if(hpLevel < 60)
-		{
-			try
-			{
-				//cast Ultimate Evasion
-				tryCastSkill(111, actor);
-			}
-			catch(Exception e){}
-		}
-	}
 	
 	protected int getReuseDelay(Creature target)
 	{
@@ -53,11 +31,6 @@ public class RangerPC extends EventFPC
 		//return 0;
 	}
 
-	@Override
-	protected boolean createNewTask()
-	{
-		return defaultFightTask();
-	}
 
 	@Override
 	public int getRatePHYS()

@@ -36,15 +36,5 @@ public class FPCEvaTemplar extends TankerPC
 		super.prepareSkillsSetup();
 	}
 	
-	@Override
-	protected ArrayList<Integer> getDrawTargetSkill()
-	{
-		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
-		
-		_allowSkills.add(28); //Aggression
-		_allowSkills.add(402); //Arrest
-		
-		return SkillList;
-	}
 }
 

@@ -37,15 +37,5 @@ public class FPCPhoenixKnight extends TankerPC
 		super.prepareSkillsSetup();
 	}
 	
-	@Override
-	protected ArrayList<Integer> getDrawTargetSkill()
-	{
-		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
-		
-		_allowSkills.add(28); //Aggression
-		_allowSkills.add(403); //Shackle
-		
-		return SkillList;
-	}
 }
 

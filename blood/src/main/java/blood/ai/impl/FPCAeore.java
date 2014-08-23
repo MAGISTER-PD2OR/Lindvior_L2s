@@ -89,7 +89,7 @@ public class FPCAeore extends HealerPC
 	{
 		Player player = getActor();
 		
-		if(player.getCurrentMpPercents() < 80 && canUseSkill(SKILL_CRYSTAL_REGENERATION, player))
+		if(player.getCurrentMpPercents() < 90 && canUseSkill(SKILL_CRYSTAL_REGENERATION, player))
 			return tryCastSkill(SKILL_CRYSTAL_REGENERATION, player);
 		
 		double distance = player.getDistance(target);
@@ -155,7 +155,7 @@ public class FPCAeore extends HealerPC
 			if(hp75 > 3 && canUseSkill(SKILL_Brilliant_Heal, player, 0))
 				return tryCastSkill(SKILL_Brilliant_Heal, player, 0);
 			
-			if(lowestMpMember != null && canUseSkill(SKILL_Radiant_Recharge, lowestMpMember, 0))
+			if(lowestMpMember != null && lowestMpPercent < 90 && canUseSkill(SKILL_Radiant_Recharge, lowestMpMember, 0))
 				return tryCastSkill(SKILL_Radiant_Recharge, lowestMpMember, 0);
 		}
 		

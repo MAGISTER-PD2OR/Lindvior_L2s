@@ -35,6 +35,7 @@ public class FPCSigel extends TankerPC
 	public final int SKILL_JUSTICE_PUNISHMENT		= 10010; // Lv.1 	debuff 	80 	0 	10000 	40 	- 	Attacks the selected target with 17476 Power added to P. Atk, and P. Atk./M. Atk. - 20%. Blocks the use of magic skills. Requires a sword or blunt weapon to be equipped. Over-hit. Critical.
 	public final int SKILL_SHIELD_IMPACT			= 10011; // Lv.1 	debuff 	49 	0 	10000 	40 	- 	Attacks the selected target with 9870 Power added to P. Atk. and Stuns for 5 seconds. Can be used while a shield is equipped.
 	public final int SKILL_SIGEL_AURA 				= 1927;
+	public final int SKILL_PROVOKING_SHAKLE			= 10090;
 	
 	public FPCSigel(Player actor)
 	{
@@ -60,17 +61,29 @@ public class FPCSigel extends TankerPC
 		
 		double distance = actor.getDistance(target);
 		
-		if(canUseSkill(SKILL_CHAIN_STRIKE, target, distance))
+		if(distance > 300 && canUseSkill(SKILL_CHAIN_STRIKE, target, distance))
 			return tryCastSkill(SKILL_CHAIN_STRIKE, target, distance);
 		
-		if(canUseSkill(SKILL_SHIELD_IMPACT, target, distance))
-			return tryCastSkill(SKILL_SHIELD_IMPACT, target, distance);
+		if(canUseSkill(SKILL_SUPERIOR_AGGRESSION, target, distance))
+			return tryCastSkill(SKILL_SUPERIOR_AGGRESSION, target, distance);
+		
+		if(canUseSkill(SKILL_SUPERIOR_AGGRESSION_AURA, target, distance))
+			return tryCastSkill(SKILL_SUPERIOR_AGGRESSION_AURA, target, distance);
 		
 		if(canUseSkill(SKILL_SHIELD_CHARGE, target, distance))
 			return tryCastSkill(SKILL_SHIELD_CHARGE, target, distance);
 		
-		if(canUseSkill(SKILL_SUPERIOR_AGGRESSION, target, distance))
-			return tryCastSkill(SKILL_SUPERIOR_AGGRESSION, target, distance);
+		if(canUseSkill(SKILL_SUPERIOR_AGGRESSION_AURA, target, distance))
+			return tryCastSkill(SKILL_SUPERIOR_AGGRESSION_AURA, target, distance);
+		
+		if(canUseSkill(SKILL_PROVOKING_SHAKLE, target, distance))
+			return tryCastSkill(SKILL_PROVOKING_SHAKLE, target, distance);
+		
+		if(canUseSkill(SKILL_MASS_SHACKLING, target, distance))
+			return tryCastSkill(SKILL_MASS_SHACKLING, target, distance);
+		
+		if(canUseSkill(SKILL_SHIELD_IMPACT, target, distance))
+			return tryCastSkill(SKILL_SHIELD_IMPACT, target, distance);
 		
 		return false;
 	}
@@ -84,6 +97,7 @@ public class FPCSigel extends TankerPC
 		
 		Player player = getActor();
 		
+		thinkBuff();
 		
 		double distance = player.getDistance(attacker);
 		
@@ -92,10 +106,13 @@ public class FPCSigel extends TankerPC
 		
 		Player member = attacked.getPlayer();
 		
+		if(!ClassFunctions.isHealer(member) && member.getCurrentHpPercents() > 80)
+			return;
+		
 		if(ClassFunctions.isHealer(member))
 			setAttackTarget(attacker);
 		
-		if(canUseSkill(SKILL_CHAIN_STRIKE, attacker, distance) && tryCastSkill(SKILL_CHAIN_STRIKE, attacker, distance))
+		if(distance > 300 && canUseSkill(SKILL_CHAIN_STRIKE, attacker, distance) && tryCastSkill(SKILL_CHAIN_STRIKE, attacker, distance))
 			return;
 		
 		if(canUseSkill(SKILL_SUPERIOR_AGGRESSION, attacker, distance) && tryCastSkill(SKILL_SUPERIOR_AGGRESSION, attacker, distance))

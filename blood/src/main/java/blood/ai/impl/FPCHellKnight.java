@@ -36,15 +36,5 @@ public class FPCHellKnight extends TankerPC
 		_allowSkills.add(763);	//Hell Scream
 	}
 	
-	@Override
-	protected ArrayList<Integer> getDrawTargetSkill()
-	{
-		ArrayList<Integer>	SkillList	= new ArrayList<Integer>();
-		
-		_allowSkills.add(28); //Aggression
-		_allowSkills.add(403); //Shackle
-		
-		return SkillList;
-	}
 }
 

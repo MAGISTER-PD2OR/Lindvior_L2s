@@ -13,63 +13,6 @@ public class TankerPC extends EventFPC
 	public TankerPC(Player actor)
 	{
 		super(actor);
-		_allowSkills.add(82); // Majesty
-		_allowSkills.add(112); // Deflect Arrow
-	}
-
-	@Override
-	protected void onEvtClanAttacked(Creature attacked, Creature attacker, int damage)
-	{
-		Player actor = getActor();
-		//check if target is in 1000 range
-		if(!attacked.isInRange(actor.getLoc(), 1000)) 
-			return; 
-		
-		//check target critical level, base on HP level
-		int hpLevel 					= (int) attacked.getCurrentHpPercents();
-		ArrayList<Integer>	SkillList;
-		//take action
-		if(hpLevel < 80)
-		{
-			SkillList = getDrawTargetSkill();
-			if(Rnd.chance(10) && SkillList != null)
-				tryCastSkill(SkillList.get(Rnd.get(_allowSkills.size())), attacked);
-		}
-	}
-	
-	@Override
-	protected void onEvtAttacked(Creature attacker, int damage)
-	{
-		super.onEvtAttacked(attacker, damage);
-		Player actor = getActor();
-		if(actor.isDead() || attacker == null || actor.getDistance(attacker) > 700)
-			return;
-
-		if(actor.isMoving)
-			return;
-		
-		int hpLevel	= (int) actor.getCurrentHpPercents();
-		
-		if(hpLevel < 40)
-		{
-			try
-			{
-				//cast Ultimate Defense
-				actor.doCast(SkillTable.getInstance().getInfo(110, 1), actor, false);
-			}
-			catch(Exception e){}
-		}
-	}
-	
-	protected ArrayList<Integer> getDrawTargetSkill()
-	{
-		return null;
-	}
-	
-	@Override
-	protected boolean createNewTask()
-	{
-		return defaultFightTask();
 	}
 
 	@Override
