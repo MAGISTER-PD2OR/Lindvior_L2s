@@ -28,9 +28,11 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.World;
+import l2s.gameserver.model.Skill.SkillTargetType;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.ChestInstance;
 import l2s.gameserver.model.instances.NpcInstance;
+import l2s.gameserver.network.l2.s2c.FlyToLocation.FlyType;
 import l2s.gameserver.network.l2.s2c.MagicSkillUse;
 import l2s.gameserver.skills.EffectType;
 //import l2s.gameserver.skills.effects.EffectTemplate;
@@ -1091,6 +1093,12 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected long _sleepEnd = 0L;
 	
+	protected boolean doTaskMove(Task currentTask)
+	{
+		
+		return false;
+	}
+	
 	protected boolean doTask()
 	{
 		long now = System.currentTimeMillis();
@@ -1134,7 +1142,7 @@ public class FPCDefaultAI extends PlayerAI
 					return false;
 				}
 				
-				if (!actor.moveToLocation(currentTask.loc, 0, currentTask.pathfind) || currentTask.createTime + 30*1000 < System.currentTimeMillis())
+				if (!actor.moveToLocation(currentTask.loc, 0, currentTask.pathfind))
 				{
 					clientStopMoving();
 					_pathfindFails = 0;
@@ -1212,16 +1220,23 @@ public class FPCDefaultAI extends PlayerAI
 				boolean isAoE = currentTask.skill.getTargetType() == Skill.SkillTargetType.TARGET_AURA;
 				int castRange = currentTask.skill.getAOECastRange();
 				
-				if (!checkTarget(target, MAX_PURSUE_RANGE + castRange))
+				if (!checkTarget(target, castRange))
+				{
+					debug("check range failed");
 					return true;
+				}
 				
 				setAttackTarget(target);
 				
-				if(actor.getRealDistance3D(target) <= castRange)
+				
+				if(currentTask.skill.getFlyType() == FlyType.CHARGE && actor.getRealDistance3D(target) < 200)
 				{
-					debug("Distance: " + actor.getRealDistance3D(target) + " castRange: " + castRange);
-					debug("Skill name: " + currentTask.skill.toString());
+					debug("charge range failed");
+					return true;
 				}
+				
+				debug("Distance: " + actor.getRealDistance3D(target) + " castRange: " + castRange);
+				debug("Skill name: " + currentTask.skill.toString());
 				
 				if ((actor.getRealDistance3D(target) <= (castRange + 60)) && GeoEngine.canSeeTarget(actor, target, false))
 				{
@@ -1258,15 +1273,17 @@ public class FPCDefaultAI extends PlayerAI
 					return maybeNextTask(currentTask);
 				}
 				
-//				if (actor.isMoving)
-//				{
-//					return Rnd.chance(10);
-//				}
-//				
-//				if (actor.isMovementDisabled() || !getIsMobile())
-//				{
-//					return true;
-//				}
+				if (actor.isMoving && Rnd.chance(10))
+				{
+					debug("cancel cast because moving");
+					return Rnd.chance(10);
+				}
+
+				if (actor.isMovementDisabled() || !getIsMobile())
+				{
+					debug("can't move, return");
+					return true;
+				}
 				
 				debug("try to move to target please");
 				
@@ -1288,15 +1305,17 @@ public class FPCDefaultAI extends PlayerAI
 				
 				if ((target == null) || target.isAlikeDead() || !actor.isInRange(target, 2000))
 				{
+					debug(" target dead or so far, distance:"+actor.getDistance(target));
 					return true;
 				}
 				
 				boolean isAoE = currentTask.skill.getTargetType() == Skill.SkillTargetType.TARGET_AURA;
 				int castRange = currentTask.skill.getAOECastRange();
 				
-				if (actor.isMoving)
+				if (actor.isMoving && Rnd.chance(10))
 				{
-					return Rnd.chance(10);
+					debug("cancel buff task because moving? lolz");
+					return true;
 				}
 				
 				if ((actor.getRealDistance3D(target) <= (castRange + 60)) && GeoEngine.canSeeTarget(actor, target, false))
