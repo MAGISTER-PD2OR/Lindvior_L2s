@@ -28,10 +28,12 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.World;
+import l2s.gameserver.model.AggroList.AggroInfo;
 import l2s.gameserver.model.Skill.NextAction;
 import l2s.gameserver.model.Skill.SkillTargetType;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.ChestInstance;
+import l2s.gameserver.model.instances.DecoyInstance;
 import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.network.l2.s2c.FlyToLocation.FlyType;
 import l2s.gameserver.network.l2.s2c.MagicSkillUse;
@@ -1050,7 +1052,34 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected boolean tryMoveToTarget(Creature target, int range)
 	{
-		return tryMoveToLoc(target.getLoc(), range);
+		Player actor = getActor();
+
+		if(!actor.followToCharacter(target, actor.getPhysicalAttackRange(), true))
+			_pathfindFails++;
+
+		if(_pathfindFails >= getMaxPathfindFails() && (System.currentTimeMillis() > getAttackTimeout() - getMaxAttackTimeout() + getTeleportTimeout()) && actor.isInRange(target, MAX_PURSUE_RANGE))
+		{
+			_pathfindFails = 0;
+
+//			if(target.isPlayable())
+//			{
+//				AggroInfo hate = actor.getAggroList().get(target);
+//				if(hate == null || hate.hate < 100)
+//				{
+//					if(!(actor instanceof DecoyInstance))
+//					{
+//						returnHome();
+//						return false;
+//					}
+//				}
+//			}
+			Location loc = GeoEngine.moveCheckForAI(target.getLoc(), actor.getLoc(), actor.getGeoIndex());
+			if(!GeoEngine.canMoveToCoord(actor.getX(), actor.getY(), actor.getZ(), loc.x, loc.y, loc.z, actor.getGeoIndex())) // Для подстраховки
+				loc = target.getLoc();
+			actor.teleToLocation(loc);
+		}
+
+		return true;
 	}
 	
 	protected boolean tryMoveToLoc(Location loc, int range)
