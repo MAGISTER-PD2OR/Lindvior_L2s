@@ -114,11 +114,10 @@ public class FPCWynn extends SummonerPC
 		boolean doHeal = false;
 		boolean doUD = false;
 		
-		// TODO force servitor use skill
 		if (player.getServitors().length > 0){
 			for (Servitor summon: player.getServitors())
 			{
-				summon.getAI().Attack(target, true, false);
+//				summon.getAI().Attack(target, true, false);
 				if(summon.getCurrentHpPercents() < 80){
 					doHeal = true;
 					tryCastSkill(SKILL_SERVITOR_HEAL, summon);

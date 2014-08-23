@@ -85,6 +85,7 @@ public class FPCIss extends WarriorPC
 		double distance = actor.getDistance(target);
 		double actorHp = actor.getCurrentHpPercents();
 		
+		// TODO should move to evt attacked
 		if(actorHp < 30)
 		{
 			if(canUseSkill(SKILL_QUICK_ESCAPE, actor, distance))
@@ -92,6 +93,9 @@ public class FPCIss extends WarriorPC
 			if(canUseSkill(SKILL_POLYMORPH, actor, distance))
 				tryCastSkill(SKILL_POLYMORPH, actor, distance);
 		}
+		
+		if(distance > 600)
+			tryMoveToTarget(target, 550);
 		
 		if(canUseSkill(SKILL_ASSAULT_RUSH, target, distance))
 			tryCastSkill(SKILL_ASSAULT_RUSH, target, distance);
