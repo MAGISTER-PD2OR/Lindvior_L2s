@@ -586,35 +586,35 @@ public class FPCDefaultAI extends PlayerAI
 			return false;
 		
 		// prevent KS
-		if(target.isNpc())
-		{
-			NpcInstance targetNpc = (NpcInstance) target;
-			List<Creature> hateList = targetNpc.getAggroList().getHateList();
-			int hateIndex = 0;
-			int outPtIndex = 0;
-			if(hateList.size() > 0)
-			{
-				for(Creature hater: hateList)
-				{
-					if(!hater.isPlayer())
-						continue;
-					
-					Player hatePlayer = hater.getPlayer();
-					
-					if(player.equals(hatePlayer) || player.isInSameParty(hatePlayer))
-					{
-						hateIndex++;
-					}
-					else
-					{
-						outPtIndex++;
-					}
-				}
-				
-				if(hateIndex == 0 && outPtIndex > 0)
-					return false;
-			}
-		}
+//		if(target.isNpc())
+//		{
+//			NpcInstance targetNpc = (NpcInstance) target;
+//			List<Creature> hateList = targetNpc.getAggroList().getHateList();
+//			int hateIndex = 0;
+//			int outPtIndex = 0;
+//			if(hateList.size() > 0)
+//			{
+//				for(Creature hater: hateList)
+//				{
+//					if(!hater.isPlayer())
+//						continue;
+//					
+//					Player hatePlayer = hater.getPlayer();
+//					
+//					if(player.equals(hatePlayer) || player.isInSameParty(hatePlayer))
+//					{
+//						hateIndex++;
+//					}
+//					else
+//					{
+//						outPtIndex++;
+//					}
+//				}
+//				
+//				if(hateIndex == 0 && outPtIndex > 0)
+//					return false;
+//			}
+//		}
 		
 		_aggroList.addDamageHate(target, 0, 2);
 		player.setTarget(target); // target monster before attack
