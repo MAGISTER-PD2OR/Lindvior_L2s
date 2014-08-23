@@ -28,6 +28,7 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.World;
+import l2s.gameserver.model.Skill.NextAction;
 import l2s.gameserver.model.Skill.SkillTargetType;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.ChestInstance;
@@ -1226,7 +1227,10 @@ public class FPCDefaultAI extends PlayerAI
 				{
 					debug("check range failed");
 					debug("Distance3D: " + actor.getRealDistance3D(target) +" Distance: " + actor.getDistance(target) + " castRange: " + castRange+" isInRange:"+actor.isInRangeZ(target, castRange));
-					actor.moveToLocation(target.getLoc(), castRange - 20, true);
+					if(_skill.getNextAction() == NextAction.ATTACK && !actor.equals(target))
+						addTaskAttack(target);
+					else
+						actor.moveToLocation(target.getLoc(), castRange < 100 ? 0 : castRange, true);
 					return true;
 				}
 				
