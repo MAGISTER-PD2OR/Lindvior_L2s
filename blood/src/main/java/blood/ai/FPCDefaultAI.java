@@ -1377,6 +1377,39 @@ public class FPCDefaultAI extends PlayerAI
 		Player actor = getActor();
 		debug("i'm thinking... "+getFPCIntention()+" "+getIntention()+" thinking:"+_thinking+" isActionsDisabled:"+actor.isActionsDisabled()+" isAfraid:"+actor.isAfraid());
 		
+		if(actor.isActionsDisabled())
+		{
+//			isBlocked() || isAlikeDead() || isStunned() || isSleeping() || isDecontrolled() || isAttackingNow() || isCastingNow() || isDualCastingNow() || isFrozen();
+			if(actor.isBlocked())
+				debug("i'm blocked");
+			if(actor.isAlikeDead())
+				debug("i'm isAlikeDead");
+			if(actor.isStunned())
+				debug("i'm isStunned");
+			if(actor.isSleeping())
+				debug("i'm isSleeping");
+			if(actor.isDecontrolled())
+			{
+				debug("i'm isDecontrolled");
+				if(actor.isParalyzed() )
+					debug("i'm isParalyzed");
+				if(actor.isKnockDowned())
+					debug("i'm isKnockDowned");
+				if(actor.isKnockBacked())
+					debug("i'm isKnockBacked");
+				if(actor.isFlyUp())
+					debug("i'm isFlyUp");
+			}
+			if(actor.isAttackingNow())
+				debug("i'm isAttackingNow");
+			if(actor.isCastingNow())
+				debug("i'm isCastingNow");
+			if(actor.isDualCastingNow())
+				debug("i'm isDualCastingNow");
+			if(actor.isFrozen())
+				debug("i'm isFrozen");
+		}
+		
 		if (_thinking || (actor == null) || actor.isActionsDisabled() || actor.isAfraid())
 			return;
 		
