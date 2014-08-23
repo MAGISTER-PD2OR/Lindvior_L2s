@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 
 import blood.FPCInfo;
 import blood.base.FPCParty;
+import blood.base.FPCPveStyle;
 import blood.data.holder.NpcHelper;
 import blood.model.AggroListPC;
 import blood.model.AggroListPC.AggroInfoPC;
@@ -734,6 +735,10 @@ public class FPCDefaultAI extends PlayerAI
 	protected boolean thinkMadness()
 	{
 		Player player = getActor();
+		
+		if(getFPCInfo().getPveStyle() == FPCPveStyle.PARTY && player.getParty().isLeader(player))
+			return false;
+		
 		// New madness
 		long now = System.currentTimeMillis();
 		if ((now - _checkAggroTimestamp) > Config.AGGRO_CHECK_INTERVAL && !player.isInPeaceZone() && getFPCIntention() == FPCIntention.FARMING)
@@ -801,7 +806,7 @@ public class FPCDefaultAI extends PlayerAI
 				if(distance > 4000)
 					player.teleToLocation(Location.findPointToStay(leader, 100, 250));
 				else if(distance > 500)
-					addTaskMove(Location.findPointToStay(leader, 100, 250), false);
+					addTaskMove(Location.findPointToStay(leader, 100, 250), false, true);
 				return;
 			}
 		}

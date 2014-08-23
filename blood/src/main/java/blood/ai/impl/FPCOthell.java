@@ -36,6 +36,8 @@ public class FPCOthell extends WarriorPC
 	public final int SKILL_DARK_PARALYSIS	= 10514;
 	public final int SKILL_KICK				= 10549;
 	public final int SKILL_UPPERCUT			= 10546; // lv 89
+	
+	public final int SKILL_OTHELL_AURA		= 1931;
 
 	public FPCOthell(Player actor)
 	{
@@ -44,6 +46,7 @@ public class FPCOthell extends WarriorPC
 	
 	public void prepareSkillsSetup() {
 		_allowSelfBuffSkills.add(SKILL_MORTAL_STRIKE);
+		_allowSelfBuffSkills.add(SKILL_OTHELL_AURA);
 	}
 	
 	protected boolean defaultSubFightTask(Creature target)

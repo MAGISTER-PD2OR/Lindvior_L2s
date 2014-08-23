@@ -42,6 +42,8 @@ public class FPCFeoh extends MysticPC
 	public final int SKILL_EARTH_STANCE	= 11010;
 	public final int SKILL_ARCANE_POWER = 337;
 	
+	public final int SKILL_FEOH_AURA	= 1935;
+	
 	protected long _darkcureTS = 0;
 	protected int _darkcureReuse = 30000;
 	
@@ -56,6 +58,7 @@ public class FPCFeoh extends MysticPC
 	public void prepareSkillsSetup() {
 		_allowSelfBuffSkills.add(SKILL_ARCANE_POWER);
 		_allowSelfBuffSkills.add(SKILL_EARTH_STANCE);
+		_allowSelfBuffSkills.add(SKILL_FEOH_AURA);
 	}
 	
 	@Override

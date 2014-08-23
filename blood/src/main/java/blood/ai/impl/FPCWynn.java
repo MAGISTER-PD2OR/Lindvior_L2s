@@ -45,6 +45,8 @@ public class FPCWynn extends SummonerPC
 	public final int SKILL_AVENGING_CUBIC 	= 11268;
 	public final int[] SKILL_SMART_CUBIC = new int[] {779, 780, 781, 782, 783};
 	
+	public final int SKILL_WYNN_AURA 		= 1937;
+	
 	public FPCWynn(Player actor)
 	{
 		super(actor);
@@ -59,6 +61,7 @@ public class FPCWynn extends SummonerPC
 		
 		_allowSelfBuffSkills.add(SKILL_ULTIMATE_SHARE);
 		_allowSelfBuffSkills.add(SKILL_ULTIMATE_TPAIN);
+		_allowSelfBuffSkills.add(SKILL_WYNN_AURA);
 		
 		_allowServitorBuffSkills.add(SKILL_SERVITOR_GHASTE);
 		_allowServitorBuffSkills.add(SKILL_SERVITOR_GDW);

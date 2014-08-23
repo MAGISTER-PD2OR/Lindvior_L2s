@@ -133,7 +133,7 @@ public class FPCParty {
 		case ATTACK:
 		case ACTIVE:
 		case MOVING:
-			player.teleToLocation(_leader.getLoc());
+			player.teleToLocation(getBeginLoc());
 			FPCInfo.getInstance(player).getAI().setFPCIntention(FPCIntention.FARMING);
 			break;
 		default:
@@ -265,12 +265,15 @@ public class FPCParty {
 	public void thinkActtack()
 	{
 		updateCenterLoc();
+		// FIXME should remove carefully
+		for(Player player: getParty().getPartyMembers())
+		{
+			FPCInfo.getInstance(player).getAI().setFPCIntention(FPCIntention.FARMING);
+		}
 	}
 	
 	public void onEvtThing()
 	{
-//		System.out.println("party heartbeat:"+_leader);
-		
 		switch (getIntention()) {
 		case IDLE:
 			thinkIdle();

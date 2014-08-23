@@ -32,7 +32,8 @@ public class FPCYul extends RangerPC
 	public final int SKILL_QUICK_SHOT			= 10762; // Lv.1 	active 	79 	0 	10000 	1100 	- 	Attacks the target with 15634 Power added to P. Atk. Requires a bow or crossbow to be equipped. Over-hit. Critical.
 	public final int SKILL_PINPOINT_SHOT		= 10763; // Lv.1 	active 	117 	0 	10000 	1100 	- 	Aims for the target's weak points to attack with 22198 Power added to P. Atk. Disregards 30% of the target's P. Def. Requires a bow or crossbow to be equipped. Over-hit. Critical. Half-kill.
 	public final int SKILL_MULTIPLE_ARROW		= 10771; // Lv.1 	active 	124 	0 	10000 	1100 	- 	Attacks frontal enemies with 23391 Power added to P. Atk. Requires a bow or crossbow to be equipped. Over-hit. Critical.
-	public final int SKILL_BOW_STRIKE			= 10761; // Lv.1 	active 	60 	0 	10000 	40 	- 	Knocks back frontal enemies. Attacks the target with 2681 Power added to P. Atk. Requires a bow or crossbow to be equipped. Over-hit. Critical. 
+	public final int SKILL_BOW_STRIKE			= 10761; // Lv.1 	active 	60 	0 	10000 	40 	- 	Knocks back frontal enemies. Attacks the target with 2681 Power added to P. Atk. Requires a bow or crossbow to be equipped. Over-hit. Critical.
+	public final int SKILL_YUL_AURA				= 1933;
 	
 	public FPCYul(Player actor)
 	{
@@ -42,6 +43,7 @@ public class FPCYul extends RangerPC
 	public void prepareSkillsSetup() {
 		_allowSelfBuffSkills.add(SKILL_DEAD_EYE_STANCE);
 		_allowSelfBuffSkills.add(SKILL_SNIPING);
+		_allowSelfBuffSkills.add(SKILL_YUL_AURA);
 	}
 	
 	protected boolean defaultSubFightTask(Creature target)

@@ -34,6 +34,7 @@ public class FPCSigel extends TankerPC
 	public final int SKILL_LAST_JUDGMENT			= 10009; // Lv.1 	debuff 	64 	0 	10000 	40 	- 	Attacks the selected target with 13673 Power added to P. Atk, and Speed - 70. Can be used while a sword/blunt weapon is equipped. Over-hit. Critical.
 	public final int SKILL_JUSTICE_PUNISHMENT		= 10010; // Lv.1 	debuff 	80 	0 	10000 	40 	- 	Attacks the selected target with 17476 Power added to P. Atk, and P. Atk./M. Atk. - 20%. Blocks the use of magic skills. Requires a sword or blunt weapon to be equipped. Over-hit. Critical.
 	public final int SKILL_SHIELD_IMPACT			= 10011; // Lv.1 	debuff 	49 	0 	10000 	40 	- 	Attacks the selected target with 9870 Power added to P. Atk. and Stuns for 5 seconds. Can be used while a shield is equipped.
+	public final int SKILL_SIGEL_AURA 				= 1927;
 	
 	public FPCSigel(Player actor)
 	{
@@ -44,6 +45,7 @@ public class FPCSigel extends TankerPC
 		_allowSkills.add(SKILL_SUMMON_KNIGHT_CUBIC);
 		_allowSelfBuffSkills.add(SKILL_IRON_AURA);
 		_allowSelfBuffSkills.add(SKILL_FOCUS_SHIELD);
+		_allowSelfBuffSkills.add(SKILL_SIGEL_AURA);
 	}
 	
 	protected boolean defaultSubFightTask(Creature target)
