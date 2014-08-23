@@ -1,5 +1,6 @@
 package blood.ai.impl;
 
+import blood.utils.ClassFunctions;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
@@ -75,7 +76,6 @@ public class FPCAeore extends HealerPC
 	public void prepareSkillsSetup() {
 		_allowSelfBuffSkills.add(SKILL_AEORE_AURA);
 		_allowSelfBuffSkills.add(SKILL_Divine_Prayer);
-		
 		_allowPartyBuffSkills.add(SKILL_Divine_Prayer);
 	}
 	
@@ -93,9 +93,6 @@ public class FPCAeore extends HealerPC
 			return tryCastSkill(SKILL_CRYSTAL_REGENERATION, player);
 		
 		double distance = player.getDistance(target);
-		
-		if(canUseSkill(SKILL_MARK_LUMI, target, distance))
-			return tryCastSkill(SKILL_MARK_LUMI, target, distance);
 		
 		Party party = player.getParty();
 		
@@ -143,21 +140,24 @@ public class FPCAeore extends HealerPC
 				}
 			}
 			
-			if((mp50 > 3 || mp25 > 1) && canUseSkill(SKILL_Rebirth, player, 0))
+			if((mp50 >= 3 || mp25 > 1) && canUseSkill(SKILL_Rebirth, player, 0))
 				return tryCastSkill(SKILL_Rebirth, player, 0);	
 			
 			if(hp50 > 0 && canUseSkill(SKILL_Balance_Heal, player, 0, true))
 				return tryCastSkill(SKILL_Balance_Heal, player, 0);
 			
-			if(hp75 > 3 && player.getServitorsCount() == 0 && canUseSkill(SKILL_Summon_Tree_of_Life, player, 0))
+			if(hp75 >= 3 && player.getServitorsCount() == 0 && canUseSkill(SKILL_Summon_Tree_of_Life, player, 0))
 				return tryCastSkill(SKILL_Summon_Tree_of_Life, player, 0);
 			
-			if(hp75 > 3 && canUseSkill(SKILL_Brilliant_Heal, player, 0))
+			if(hp75 >= 3 && canUseSkill(SKILL_Brilliant_Heal, player, 0))
 				return tryCastSkill(SKILL_Brilliant_Heal, player, 0);
 			
 			if(lowestMpMember != null && lowestMpPercent < 90 && canUseSkill(SKILL_Radiant_Recharge, lowestMpMember, 0))
 				return tryCastSkill(SKILL_Radiant_Recharge, lowestMpMember, 0);
 		}
+		
+		if(canUseSkill(SKILL_MARK_LUMI, target, distance))
+			return tryCastSkill(SKILL_MARK_LUMI, target, distance);
 		
 		return true;
 	}
@@ -188,11 +188,24 @@ public class FPCAeore extends HealerPC
 	{
 		super.onEvtClanAttacked(attacked, attacker, damage);
 		
-		if(canUseSkill(SKILL_Fatal_Sleep, attacker, 0))
-		{
-			tryCastSkill(SKILL_Fatal_Sleep, attacker, 0);
+		if(!attacked.isPlayer())
 			return;
-		}
+		
+		Player member = attacked.getPlayer();
+		
+		if(ClassFunctions.isTanker(member))
+			return;
+		
+		if(member.getCurrentHpPercents() > 80)
+			return;
+		
+		// btw, your task is not protect member, you should protect your self
+		
+//		if(canUseSkill(SKILL_Fatal_Sleep, attacker, 0))
+//		{
+//			tryCastSkill(SKILL_Fatal_Sleep, attacker, 0);
+//			return;
+//		}
 		
 	}
 	

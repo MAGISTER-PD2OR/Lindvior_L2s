@@ -68,7 +68,7 @@ public class EventFPC extends FPCDefaultAI
 		return false;
 	}
 
-	private boolean thinkCubic() 
+	protected boolean thinkCubic() 
 	{
 		if(_nextSumCubicRound > System.currentTimeMillis())
 			return false;
@@ -241,6 +241,16 @@ public class EventFPC extends FPCDefaultAI
 	/*
 	 * Method provide protect party
 	 */
+	
+	protected boolean checkAggression(Creature target)
+	{
+		boolean result = super.checkAggression(target);
+		
+		if(result)
+			notifyFriends(target, 2);
+		
+		return result;
+	}
 	
 	protected void notifyFriends(Creature attacker, int damage)
 	{

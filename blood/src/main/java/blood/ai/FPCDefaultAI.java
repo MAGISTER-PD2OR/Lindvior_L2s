@@ -814,10 +814,11 @@ public class FPCDefaultAI extends PlayerAI
 			return;
 		}
 		
-		if(thinkFPCIdle() || thinkFPCWaitingParty())
-		{
+		if(thinkBuff() || thinkSummon() || thinkCubic())
 			return;
-		}
+		
+		if(thinkFPCIdle() || thinkFPCWaitingParty())
+			return;
 		
 		if(thinkAggro() || thinkMadness())
 			return;
@@ -843,8 +844,19 @@ public class FPCDefaultAI extends PlayerAI
 		
 	}
 	
+	protected boolean thinkCubic() {
+		return false;
+	}
+
+	protected boolean thinkSummon() {
+		return false;
+	}
+
+	protected boolean thinkBuff() {
+		return false;
+	}
+
 	protected boolean thinkFPCIdle() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
@@ -1327,14 +1339,8 @@ public class FPCDefaultAI extends PlayerAI
 			if(!actor.isInParty())
 			{
 				setAttackTarget(null);
+				setFPCIntention(FPCIntention.IDLE);
 				actor.teleToClosestTown();
-				actor.doRevive(100);
-				actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
-				if(actor.isPlayer())
-					actor.setCurrentCp(actor.getMaxCp());
-			}
-			else
-			{
 				actor.doRevive(100);
 				actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
 				if(actor.isPlayer())
@@ -1618,7 +1624,7 @@ public class FPCDefaultAI extends PlayerAI
 		return rnd.select();
 	}
 	
-	protected static Skill selectTopSkillByDebuff(Creature actor, Creature target, double distance, Skill[] skills) // FIXME
+	protected static Skill selectTopSkillByDebuff(Creature actor, Creature target, double distance, Skill[] skills)
 	{
 
 		if ((skills == null) || (skills.length == 0))
@@ -1943,7 +1949,6 @@ public class FPCDefaultAI extends PlayerAI
 			return true;
 		}
 		
-		// TODO make a reasonable choice of buff, first select the appropriate and then randomly one of them
 		if (Rnd.chance(rateSelf))
 		{
 			double actorHp = actor.getCurrentHpPercents();
@@ -2071,8 +2076,6 @@ public class FPCDefaultAI extends PlayerAI
 			}
 		}
 		
-		// TODO make treatment and buff friendly targets
-		
 		return chooseTaskAndTargets(null, target, distance);
 	}
 	
@@ -2198,16 +2201,21 @@ public class FPCDefaultAI extends PlayerAI
 		if(loc == null)
 			return false;
 		
-		Player player = getActor();
-		
-		Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
-		NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
-		NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
-		
 		int weight = 100;
 		
-		addTaskTele(myRestartLocation, weight--);
-		addTaskSleep(3*1000, weight--);
+		Player player = getActor();
+		
+		Location myRestartLocation = player.getLoc();
+		
+		if(!player.isInPeaceZone())
+		{
+			myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
+			addTaskTele(myRestartLocation, weight--);
+			addTaskSleep(3*1000, weight--);
+		}
+		
+		NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
+		NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
 		
 		if(myRestartLocation.distance(buffer.getLoc()) < 4000)
 		{
@@ -2221,7 +2229,7 @@ public class FPCDefaultAI extends PlayerAI
 		Location middleRestartLocation = TeleportUtils.getRestartLocation(player, loc, RestartType.TO_VILLAGE);
 		NpcInstance middleGK = NpcHelper.getClosestGatekeeper(middleRestartLocation);
 		
-		if(gk.getObjectId() != middleGK.getObjectId())
+		if(!middleGK.equals(gk))
 		{
 			gk = middleGK;
 			addTaskTele(Location.findAroundPosition(gk, 150), weight--);
@@ -2234,8 +2242,8 @@ public class FPCDefaultAI extends PlayerAI
 		for(TeleportLocation teleLoc: teleMap.valueCollection())
 		{
 			double distanceFromSpawnLoc = teleLoc.distance(loc);
-//			if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, loc.x, loc.y, loc.z, player.getGeoIndex()))
-			if(distanceFromSpawnLoc < minDistance)
+			if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, loc.x, loc.y, loc.z, player.getGeoIndex()))
+//			if(distanceFromSpawnLoc < minDistance)
 			{
 				minDistance = distanceFromSpawnLoc;
 				spawnLocation = teleLoc;
@@ -2251,6 +2259,7 @@ public class FPCDefaultAI extends PlayerAI
 		else
 		{
 			addTaskTele(loc, weight--);
+			addTaskSleep(3*1000, weight--);
 		}
 		
 		return true;

@@ -94,7 +94,7 @@ public class FPCFeoh extends MysticPC
 		Player actor = getActor();
 		
 		double distance = actor.getDistance(attacker);
-		if(distance < 200)
+		if(distance < 200 && !actor.isInParty())
 		{
 			if(attacker.getAroundNpc(200, 200).size() > 3)
 			{
@@ -128,11 +128,11 @@ public class FPCFeoh extends MysticPC
 		
 		if(target.getAroundNpc(200, 200).size() > 3)
 		{
-			if(canUseSkill(SKILL_Double_Casting, target, distance))
-				return tryCastSkill(SKILL_Double_Casting, target, distance);
+			if(canUseSkill(SKILL_Double_Casting, player))
+				return tryCastSkill(SKILL_Double_Casting, player);
 			
-			if(canUseSkill(SKILL_Wizard_Spirit, target, distance))
-				return tryCastSkill(SKILL_Wizard_Spirit, target, distance);
+			if(canUseSkill(SKILL_Wizard_Spirit, player))
+				return tryCastSkill(SKILL_Wizard_Spirit, player);
 			
 			if(canUseSkill(SKILL_Mass_Devil_Curse, target, distance))
 				return tryCastSkill(SKILL_Mass_Devil_Curse, target, distance);
@@ -144,18 +144,24 @@ public class FPCFeoh extends MysticPC
 				return tryCastSkill(SKILL_Elemental_Blast, target, distance);
 		}
 		
-		if(distance < 400 && canUseSkill(SKILL_Death_Fear, target))
-			return tryCastSkill(SKILL_Death_Fear, target, distance);
 		
-		if(_last_target_id != target.getObjectId())
+		// SOLO job
+		if(!player.isInParty())
 		{
-			_last_target_dark_curse = false;
-		}
-		
-		// if we are feoh soul taker we should debuf darkcurse first
-		if(!_last_target_dark_curse && canUseSkill(SKILL_DARK_CURSE, target, distance)){
-			_last_target_dark_curse = true;
-			return tryCastSkill(SKILL_DARK_CURSE, target, distance);
+			if(distance < 400 && canUseSkill(SKILL_Death_Fear, target))
+				return tryCastSkill(SKILL_Death_Fear, target, distance);
+			
+			if(_last_target_id != target.getObjectId())
+			{
+				_last_target_dark_curse = false;
+			}
+			
+			// if we are feoh soul taker we should debuf darkcurse first
+			if(!_last_target_dark_curse && canUseSkill(SKILL_DARK_CURSE, target, distance)){
+				_last_target_dark_curse = true;
+				_last_target_id = target.getObjectId();
+				return tryCastSkill(SKILL_DARK_CURSE, target, distance);
+			}
 		}
 			
 		// 1st use death curse
