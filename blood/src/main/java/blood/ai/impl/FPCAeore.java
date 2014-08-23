@@ -146,7 +146,7 @@ public class FPCAeore extends HealerPC
 			if((mp50 > 3 || mp25 > 1) && canUseSkill(SKILL_Rebirth, player, 0))
 				return tryCastSkill(SKILL_Rebirth, player, 0);	
 			
-			if(hp50 > 0 && canUseSkill(SKILL_Balance_Heal, player, 0))
+			if(hp50 > 0 && canUseSkill(SKILL_Balance_Heal, player, 0, true))
 				return tryCastSkill(SKILL_Balance_Heal, player, 0);
 			
 			if(hp75 > 3 && player.getServitorsCount() == 0 && canUseSkill(SKILL_Summon_Tree_of_Life, player, 0))
