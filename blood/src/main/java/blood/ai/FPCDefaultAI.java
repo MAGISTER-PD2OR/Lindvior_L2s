@@ -1370,8 +1370,8 @@ public class FPCDefaultAI extends PlayerAI
 	@Override
 	protected void onEvtThink()
 	{
-		debug("i'm thinking...");
 		Player actor = getActor();
+		debug("i'm thinking... "+getFPCIntention()+" "+getIntention()+" thinking:"+_thinking+" isActionsDisabled:"+actor.isActionsDisabled()+" isAfraid:"+actor.isAfraid());
 		
 		if (_thinking || (actor == null) || actor.isActionsDisabled() || actor.isAfraid())
 			return;
