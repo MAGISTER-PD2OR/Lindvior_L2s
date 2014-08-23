@@ -802,8 +802,24 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		Player player = getActor();
 		
+		if(player.isDead()) /* FIXME */
+		{
+			debug("i'm dead");
+			if(!player.isInParty())
+			{
+				setAttackTarget(null);
+				setFPCIntention(FPCIntention.IDLE);
+				player.teleToClosestTown();
+				player.doRevive(100);
+				player.setCurrentHpMp(player.getMaxHp(), player.getMaxMp());
+				if(player.isPlayer())
+					player.setCurrentCp(player.getMaxCp());
+			}
+		}
+		
 		if (player.isActionsDisabled())
 		{
+			debug("i'm isActionsDisabled");
 			return;
 		}
 		
@@ -1332,21 +1348,8 @@ public class FPCDefaultAI extends PlayerAI
 	@Override
 	protected void onEvtThink()
 	{
+		debug("i'm thinking...");
 		Player actor = getActor();
-		
-		if(actor.isDead()) /* FIXME */
-		{
-			if(!actor.isInParty())
-			{
-				setAttackTarget(null);
-				setFPCIntention(FPCIntention.IDLE);
-				actor.teleToClosestTown();
-				actor.doRevive(100);
-				actor.setCurrentHpMp(actor.getMaxHp(), actor.getMaxMp());
-				if(actor.isPlayer())
-					actor.setCurrentCp(actor.getMaxCp());
-			}
-		}
 		
 		if (_thinking || (actor == null) || actor.isActionsDisabled() || actor.isAfraid())
 			return;
