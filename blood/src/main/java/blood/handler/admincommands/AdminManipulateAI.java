@@ -52,7 +52,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				newInfo = new FPCInfo(activeChar);
 				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
 				newInfo.getAI().toggleDebug();
-	//			newInfo.setPVEStyle(FPCPveStyle.PARTY);
+				newInfo.setPVEStyle(FPCPveStyle.SOLO);
 	//			newInfo.setParty();
 			break;
 			

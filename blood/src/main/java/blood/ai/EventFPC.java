@@ -355,6 +355,7 @@ public class EventFPC extends FPCDefaultAI
 		
 		if(getFPCInfo().getPveStyle() == FPCPveStyle.SOLO)
 		{
+			debug("prepare to go to farming zone");
 			Location farmLocation = FarmZoneHolder.getInstance().getLocation(getActor());
 			setBaseLocation(farmLocation);
 			
