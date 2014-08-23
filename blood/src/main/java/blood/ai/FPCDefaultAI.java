@@ -1240,8 +1240,6 @@ public class FPCDefaultAI extends PlayerAI
 			// Task 'go there - attack with skill "
 			case CAST:
 			{
-				debug("do cast:"+ currentTask.skill);
-				
 				Creature target = currentTask.target.get();
 				if(target != null)
 					actor.setTarget(target);
@@ -1254,25 +1252,10 @@ public class FPCDefaultAI extends PlayerAI
 				
 				if (!checkTarget(target, MAX_PURSUE_RANGE + castRange))
 				{
-					debug("check range failed");
-					debug("Distance3D: " + actor.getRealDistance3D(target) +" Distance: " + actor.getDistance(target) + " castRange: " + castRange+" isInRange:"+actor.isInRangeZ(target, castRange));
-					if(currentTask.skill.getNextAction() == NextAction.ATTACK && !actor.equals(target))
-						addTaskAttack(target);
-					else
-						actor.moveToLocation(target.getLoc(), castRange < 100 ? 0 : castRange, true);
 					return true;
 				}
 				
 				setAttackTarget(target);
-				
-				
-				if(currentTask.skill.getFlyType() == FlyType.CHARGE && actor.getRealDistance3D(target) < 200)
-				{
-					debug("charge range failed");
-					return true;
-				}
-				
-				
 				
 				if ((actor.getRealDistance3D(target) <= (castRange + 60)) && GeoEngine.canSeeTarget(actor, target, false))
 				{
@@ -1311,17 +1294,13 @@ public class FPCDefaultAI extends PlayerAI
 				
 				if (actor.isMoving && Rnd.chance(10))
 				{
-					debug("cancel cast because moving");
 					return Rnd.chance(10);
 				}
 
 				if (actor.isMovementDisabled() || !getIsMobile())
 				{
-					debug("can't move, return");
 					return true;
 				}
-				
-				debug("try to move to target please");
 				
 				tryMoveToTarget(target, castRange);
 			}
@@ -1332,8 +1311,6 @@ public class FPCDefaultAI extends PlayerAI
 				
 				Creature target = currentTask.target.get();
 				
-				debug("detail BUFF: target: "+target+" skill:"+currentTask.skill);
-				
 				if (actor.isMuted(currentTask.skill) || actor.isSkillDisabled(currentTask.skill) || actor.isUnActiveSkill(currentTask.skill.getId()))
 				{
 					return true;
@@ -1341,7 +1318,6 @@ public class FPCDefaultAI extends PlayerAI
 				
 				if ((target == null) || target.isAlikeDead() || !actor.isInRange(target, 2000))
 				{
-					debug(" target dead or so far, distance:"+actor.getDistance(target));
 					return true;
 				}
 				
@@ -1350,7 +1326,6 @@ public class FPCDefaultAI extends PlayerAI
 				
 				if (actor.isMoving && Rnd.chance(10))
 				{
-					debug("cancel buff task because moving? lolz");
 					return true;
 				}
 				
@@ -1406,7 +1381,6 @@ public class FPCDefaultAI extends PlayerAI
 	protected void onEvtThink()
 	{
 		Player actor = getActor();
-		debug("i'm thinking... "+getFPCIntention()+" "+getIntention()+" thinking:"+_thinking+" isActionsDisabled:"+actor.isActionsDisabled()+" isAfraid:"+actor.isAfraid());
 		
 		if(actor.isCastingNow())
 		{
@@ -1417,39 +1391,6 @@ public class FPCDefaultAI extends PlayerAI
 		{
 			actor.clearCastVars(false);
 			_countCasting = 0;
-		}
-		
-		if(actor.isActionsDisabled())
-		{
-//			isBlocked() || isAlikeDead() || isStunned() || isSleeping() || isDecontrolled() || isAttackingNow() || isCastingNow() || isDualCastingNow() || isFrozen();
-			if(actor.isBlocked())
-				debug("i'm blocked");
-			if(actor.isAlikeDead())
-				debug("i'm isAlikeDead");
-			if(actor.isStunned())
-				debug("i'm isStunned");
-			if(actor.isSleeping())
-				debug("i'm isSleeping");
-			if(actor.isDecontrolled())
-			{
-				debug("i'm isDecontrolled");
-				if(actor.isParalyzed() )
-					debug("i'm isParalyzed");
-				if(actor.isKnockDowned())
-					debug("i'm isKnockDowned");
-				if(actor.isKnockBacked())
-					debug("i'm isKnockBacked");
-				if(actor.isFlyUp())
-					debug("i'm isFlyUp");
-			}
-			if(actor.isAttackingNow())
-				debug("i'm isAttackingNow");
-			if(actor.isCastingNow())
-				debug("i'm isCastingNow");
-			if(actor.isDualCastingNow())
-				debug("i'm isDualCastingNow");
-			if(actor.isFrozen())
-				debug("i'm isFrozen");
 		}
 		
 		if (_thinking || (actor == null) || actor.isActionsDisabled() || actor.isAfraid())
