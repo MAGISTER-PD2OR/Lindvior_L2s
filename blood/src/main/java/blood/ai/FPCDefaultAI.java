@@ -1371,11 +1371,24 @@ public class FPCDefaultAI extends PlayerAI
 		return chooseTaskAndTargets(null, target, distance);
 	}
 	
+	protected int _countCasting = 0;
+	
 	@Override
 	protected void onEvtThink()
 	{
 		Player actor = getActor();
 		debug("i'm thinking... "+getFPCIntention()+" "+getIntention()+" thinking:"+_thinking+" isActionsDisabled:"+actor.isActionsDisabled()+" isAfraid:"+actor.isAfraid());
+		
+		if(actor.isCastingNow())
+		{
+			_countCasting++;
+		}
+		
+		if(_countCasting > 20)
+		{
+			actor.clearCastVars(false);
+			_countCasting = 0;
+		}
 		
 		if(actor.isActionsDisabled())
 		{
