@@ -1,5 +1,6 @@
 package blood.ai.impl;
 
+import blood.utils.ClassFunctions;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 
@@ -44,43 +45,30 @@ public class FPCSigel extends TankerPC
 		_allowSelfBuffSkills.add(SKILL_IRON_AURA);
 		_allowSelfBuffSkills.add(SKILL_FOCUS_SHIELD);
 	}
-
-	protected void criticalFight(Creature target)
-	{
-		double distance = getActor().getDistance(target);
-		
-		if(distance > 100 && distance < 600 && canUseSkill(SKILL_CHAIN_STRIKE, target, distance))
-			tryCastSkill(SKILL_CHAIN_STRIKE, target, distance);
-		
-		if(canUseSkill(SKILL_SUPERIOR_AGGRESSION, target, distance))
-			tryCastSkill(SKILL_SUPERIOR_AGGRESSION, target, distance);
-		
-		if(canUseSkill(SKILL_SHIELD_IMPACT, target, distance))
-			tryCastSkill(SKILL_SHIELD_IMPACT, target, distance);
-		
-		if(canUseSkill(SKILL_SHIELD_CHARGE, target, distance))
-			tryCastSkill(SKILL_SHIELD_CHARGE, target, distance);
-	}
 	
+	protected boolean defaultSubFightTask(Creature target)
+	{
+		sigelFightTask(target);
+		return true;
+	}
+
 	protected boolean sigelFightTask(Creature target)
 	{
 		Player actor = getActor();
 		
 		double distance = actor.getDistance(target);
-//		double targetHp = target.getCurrentHpPercents();
-//		double actorHp = actor.getCurrentHpPercents();
-		double actorMp = actor.getCurrentMpPercents();
 		
-		if(distance > 100 && distance < 600 && canUseSkill(SKILL_CHAIN_STRIKE, target, distance))
-			tryCastSkill(SKILL_CHAIN_STRIKE, target, distance);
+		if(canUseSkill(SKILL_CHAIN_STRIKE, target, distance))
+			return tryCastSkill(SKILL_CHAIN_STRIKE, target, distance);
 		
-		if(actorMp > 50 && canUseSkill(SKILL_SHIELD_IMPACT, target, distance))
-			tryCastSkill(SKILL_SHIELD_IMPACT, target, distance);
+		if(canUseSkill(SKILL_SHIELD_IMPACT, target, distance))
+			return tryCastSkill(SKILL_SHIELD_IMPACT, target, distance);
 		
-		if(actorMp > 50 && canUseSkill(SKILL_SHIELD_CHARGE, target, distance))
-			tryCastSkill(SKILL_SHIELD_CHARGE, target, distance);
+		if(canUseSkill(SKILL_SHIELD_CHARGE, target, distance))
+			return tryCastSkill(SKILL_SHIELD_CHARGE, target, distance);
 		
-		chooseTaskAndTargets(null, target, distance);
+		if(canUseSkill(SKILL_SUPERIOR_AGGRESSION, target, distance))
+			return tryCastSkill(SKILL_SUPERIOR_AGGRESSION, target, distance);
 		
 		return false;
 	}
@@ -88,12 +76,31 @@ public class FPCSigel extends TankerPC
 	@Override
 	protected void onEvtClanAttacked(Creature attacked, Creature attacker, int damage)
 	{
+		super.onEvtClanAttacked(attacked, attacker, damage);
 		if(!attacked.isPlayer())
 			return;
 		
-//		Player member = attacked.getPlayer();
+		Player player = getActor();
 		
-		criticalFight(attacker);
+		
+		double distance = player.getDistance(attacker);
+		
+		if(distance > 1000)
+			return;
+		
+		Player member = attacked.getPlayer();
+		
+		if(ClassFunctions.isHealer(member))
+			setAttackTarget(attacker);
+		
+		if(canUseSkill(SKILL_CHAIN_STRIKE, attacker, distance) && tryCastSkill(SKILL_CHAIN_STRIKE, attacker, distance))
+			return;
+		
+		if(canUseSkill(SKILL_SUPERIOR_AGGRESSION, attacker, distance) && tryCastSkill(SKILL_SUPERIOR_AGGRESSION, attacker, distance))
+			return;
+		
+		if(canUseSkill(SKILL_SUPERIOR_AGGRESSION_AURA, attacker, distance) && tryCastSkill(SKILL_SUPERIOR_AGGRESSION_AURA, attacker, distance))
+			return;
 	}
 	
 }
