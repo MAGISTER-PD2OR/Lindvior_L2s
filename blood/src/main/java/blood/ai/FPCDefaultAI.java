@@ -1223,7 +1223,7 @@ public class FPCDefaultAI extends PlayerAI
 				boolean isAoE = currentTask.skill.getTargetType() == Skill.SkillTargetType.TARGET_AURA;
 				int castRange = currentTask.skill.getAOECastRange();
 				
-				if (!checkTarget(target, castRange))
+				if (!checkTarget(target, MAX_PURSUE_RANGE + castRange))
 				{
 					debug("check range failed");
 					debug("Distance3D: " + actor.getRealDistance3D(target) +" Distance: " + actor.getDistance(target) + " castRange: " + castRange+" isInRange:"+actor.isInRangeZ(target, castRange));
