@@ -753,7 +753,7 @@ public class FPCDefaultAI extends PlayerAI
 		if(player.isInPeaceZone())
 			return false;
 		
-		if(getFPCIntention() == FPCIntention.FARMING)
+		if(getFPCIntention() != FPCIntention.FARMING)
 			return false;
 		
 		// New madness
