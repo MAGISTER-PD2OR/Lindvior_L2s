@@ -2,6 +2,7 @@ package blood.ai.impl;
 
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.utils.Location;
 
@@ -54,6 +55,11 @@ public class FPCWizzard extends MysticPC
 		Player player = getActor();
 		double distance = player.getDistance(target);
 		
+		for(Servitor summon: player.getServitors())
+		{
+			summon.getAI().Attack(target, true, false);
+		}
+		
 		if(canUseSkill(SKILL_BODY_TO_MIND, player))
 			return tryCastSkill(SKILL_BODY_TO_MIND, player);
 		
@@ -75,7 +81,7 @@ public class FPCWizzard extends MysticPC
 		if(canUseSkill(SKILL_SHADOW_SPARK, target, distance))
 			return tryCastSkill(SKILL_SHADOW_SPARK, target, distance);
 		
-		addTaskMove(Location.findAroundPosition(target, 600), true);
+		tryMoveToTarget(target, 600);
 		return false;
 	}
 	

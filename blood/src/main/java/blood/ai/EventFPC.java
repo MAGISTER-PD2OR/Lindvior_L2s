@@ -141,6 +141,8 @@ public class EventFPC extends FPCDefaultAI
 		
 		Player player = getActor();
 		
+		player.setVitality(Player.MAX_VITALITY_POINTS);
+		
 		if(_selfBuffSkills != null && _selfBuffSkills.size() > 0)
 		{
 			for(Skill skill: _selfBuffSkills)
@@ -202,19 +204,50 @@ public class EventFPC extends FPCDefaultAI
 	protected HashSet<Skill> getNewbieBuff()
 	{
 		HashSet<Skill> skills = new HashSet<Skill>();
+		if(getActor().getLevel() < 85)
+		{
+			skills.add(getSkill(9233, 1));
+			skills.add(getSkill(9227, 1));
+			skills.add(getSkill(9228, 1));
+			skills.add(getSkill(9229, 1));
+			skills.add(getSkill(9230, 1));
+			skills.add(getSkill(9231, 1));
+			skills.add(getSkill(9232, 1)); // mentor guidance 
+			
+			skills.add(getSkill(17082, 1));
+			skills.add(getSkill(17083, 1));
+			skills.add(getSkill(17084, 1));
+			
+			Skill superiorSkill = getNpcSuperiorBuff();
+			
+			if(superiorSkill.getId() == 15648)
+				superiorSkill = getSkill(9376, 1);
+
+			if(superiorSkill.getId() == 15649)
+				superiorSkill = getSkill(9377, 1);
+			
+			if(superiorSkill.getId() == 15650)
+				superiorSkill = getSkill(9378, 1);
+			
+			skills.add(superiorSkill);
+		}
+		else if(getActor().getLevel() < 91)
+		{
+			skills.add(getSkill(15642, 1));
+			skills.add(getSkill(15643, 1));
+			skills.add(getSkill(15644, 1));
+			skills.add(getSkill(15645, 1));
+			skills.add(getSkill(15646, 1));
+			skills.add(getSkill(15647, 1));
+			
+			skills.add(getSkill(15651, 1));
+			skills.add(getSkill(15652, 1));
+			skills.add(getSkill(15653, 1));
+			
+			skills.add(getNpcSuperiorBuff());
+		}
 		
-		skills.add(getSkill(15642, 1));
-		skills.add(getSkill(15643, 1));
-		skills.add(getSkill(15644, 1));
-		skills.add(getSkill(15645, 1));
-		skills.add(getSkill(15646, 1));
-		skills.add(getSkill(15647, 1));
 		
-		skills.add(getSkill(15651, 1));
-		skills.add(getSkill(15652, 1));
-		skills.add(getSkill(15653, 1));
-		
-		skills.add(getNpcSuperiorBuff());
 		
 		// TODO add montor exp buff for character < 85
 		
