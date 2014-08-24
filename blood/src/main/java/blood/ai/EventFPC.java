@@ -386,8 +386,9 @@ public class EventFPC extends FPCDefaultAI
 		if(getFPCInfo().getPveStyle() == FPCPveStyle.SOLO)
 		{
 			setFPCIntention(FPCIntention.IDLE);
-			player.teleToClosestTown();
 			FPCInfo.fullRestore(player);
+			player.teleToClosestTown();
+			return true;
 		}
 		
 		return false;
