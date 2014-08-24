@@ -41,17 +41,21 @@ public final class FarmLocationHolder  extends AbstractHolder{
 			if(loc.isValidPlayer(player))
 				tmp.add(loc, 1);
 		
-		return tmp.select();
+		FarmLocation result = tmp.select();
+		
+		return result == null ? null : result.getAround(300, 500, player.getGeoIndex());
 	}
 	
-	public FarmLocation getPartyLocation(int level)
+	public FarmLocation getPartyLocation(int level, int geoIndex)
 	{
 		RndSelector<FarmLocation> tmp = new RndSelector<FarmLocation>();
 		for(FarmLocation loc: _lists)
 			if(loc.isPartyRequired() && loc.isValidLevel(level))
 				tmp.add(loc, 1);
 		
-		return tmp.select();
+		FarmLocation result = tmp.select();
+		
+		return result == null ? null : result.getAround(300, 500, geoIndex);
 	}
 	
 

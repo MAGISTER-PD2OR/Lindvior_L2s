@@ -41,6 +41,11 @@ public class FarmLocation extends Location {
 		return _party_required;
 	}
 	
+	public HashSet<Integer> getAllowIds()
+	{
+		return _allowClassIds;
+	}
+	
 	public boolean isAllowClass(int classId)
 	{
 		return _allowClassIds == null || _allowClassIds.size() == 0 || _allowClassIds.contains(classId);
@@ -59,6 +64,13 @@ public class FarmLocation extends Location {
 	public boolean isValidPlayer(Player player)
 	{
 		return isValidLevel(player.getLevel()) && isAllowClass(player.getClassId()) && _party_required == player.isInParty();
+	}
+	
+	public FarmLocation getAround(int radiusmin, int radiusmax, int geoIndex)
+	{
+		FarmLocation newLoc = new FarmLocation(_min_level, _max_level, _party_required, _allowClassIds);
+		newLoc.set(Location.findPointToStay(this, radiusmin, radiusmax, geoIndex));
+		return newLoc;
 	}
 	
 }

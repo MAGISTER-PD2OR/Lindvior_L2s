@@ -19,6 +19,7 @@ import l2s.gameserver.templates.skill.EffectTemplate;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.utils.Location;
 import l2s.gameserver.utils.PositionUtils;
+import blood.FPCInfo;
 import blood.base.FPCPveStyle;
 import blood.data.holder.FarmLocationHolder;
 import blood.model.FPReward;
@@ -381,14 +382,18 @@ public class EventFPC extends FPCDefaultAI
 		if(getFPCIntention() != FPCIntention.IDLE)
 			return false;
 		
-		thinkEquip();
-		thinkBuff();
+		Player player = getActor();
 		
 		clearTasks();
 		
 		if(getFPCInfo().getPveStyle() == FPCPveStyle.SOLO)
 		{
-			debug("prepare to go to farming zone");
+			if(getActor().isAlikeDead())
+			{
+				player.teleToClosestTown();
+				FPCInfo.fullRestore(player);
+			}
+			
 			FarmLocation farmLocation = FarmLocationHolder.getInstance().getLocation(getActor());
 			setFarmLocation(farmLocation);
 			
@@ -421,6 +426,12 @@ public class EventFPC extends FPCDefaultAI
 			return false;
 		
 		if(_farmLocation == null || !_farmLocation.isValidPlayer(getActor()))
+		{
+			setFPCIntention(FPCIntention.IDLE);
+			return true;
+		}
+		
+		if(getActor().isAlikeDead())
 		{
 			setFPCIntention(FPCIntention.IDLE);
 			return true;

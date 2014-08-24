@@ -778,23 +778,8 @@ public class FPCDefaultAI extends PlayerAI
 	 */
 	protected void thinkActive()
 	{
-		debug("i'm think active");
+//		debug("i'm think active");
 		Player player = getActor();
-		
-		if(player.isDead()) /* FIXME */
-		{
-			debug("i'm dead");
-			if(!player.isInParty())
-			{
-				setAttackTarget(null);
-				setFPCIntention(FPCIntention.IDLE);
-				player.teleToClosestTown();
-				player.doRevive(100);
-				player.setCurrentHpMp(player.getMaxHp(), player.getMaxMp());
-				if(player.isPlayer())
-					player.setCurrentCp(player.getMaxCp());
-			}
-		}
 		
 		if (player.isActionsDisabled())
 		{
@@ -809,7 +794,7 @@ public class FPCDefaultAI extends PlayerAI
 			return;
 		}
 		
-		if(thinkBuff() || thinkSummon() || thinkCubic())
+		if(thinkEquip() || thinkBuff() || thinkSummon() || thinkCubic())
 			return;
 		
 		if(thinkFPCIdle() || thinkFPCWaitingParty() || thinkFarming())

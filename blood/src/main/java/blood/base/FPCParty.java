@@ -172,7 +172,7 @@ public class FPCParty {
 	
 	public void setBeginLoc()
 	{
-		_farmLoc = FarmLocationHolder.getInstance().getPartyLocation(_averageLevel);
+		_farmLoc = FarmLocationHolder.getInstance().getPartyLocation(_averageLevel, _leader.getGeoIndex());
 	}
 	
 	public Location getCenterLoc()
