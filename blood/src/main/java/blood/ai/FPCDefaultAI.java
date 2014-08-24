@@ -1063,27 +1063,6 @@ public class FPCDefaultAI extends PlayerAI
 		return true;
 	}
 	
-	protected boolean tryMoveToLoc(Location loc, int range)
-	{
-		long now = System.currentTimeMillis();
-		if ((now - _checkRandomWalkTimestamp) < 10000 )
-			return false;
-		
-		Player actor = getActor();
-		double distance = actor.getDistance(loc);
-		
-		if(distance < range)
-			return false;
-		
-		Location nextLoc = Location.findAroundPosition(loc, range, actor.getGeoIndex());
-		
-		debug("New Loc distance:"+actor.getDistance(nextLoc));
-		
-		addTaskMove(nextLoc, true, true);
-		_checkRandomWalkTimestamp = now + Rnd.get(3000);
-		return true;
-	}
-	
 	protected boolean maybeNextTask(Task currentTask)
 	{
 //		_log.info("removed task", new Exception());
@@ -1151,7 +1130,7 @@ public class FPCDefaultAI extends PlayerAI
 				
 				if (actor.isMoving)
 				{
-					_tasks.add(currentTask);
+//					_tasks.add(currentTask);
 					return false;
 				}
 				
@@ -1164,8 +1143,8 @@ public class FPCDefaultAI extends PlayerAI
 					// ThreadPoolManager.getInstance().scheduleAi(new Teleport(currentTask.loc), 500, false);
 					return maybeNextTask(currentTask);
 				}
-				if(currentTask.forceMove)
-					_tasks.add(currentTask);
+//				if(currentTask.forceMove)
+//					_tasks.add(currentTask);
 				break;
 			case TELE:
 				actor.teleToLocation(currentTask.loc);
@@ -1363,7 +1342,7 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		Player actor = getActor();
 		
-		debug("I'm on event think.... actor.isActionsDisabled():"+actor.isActionsDisabled());
+//		debug("I'm on event think.... actor.isActionsDisabled():"+actor.isActionsDisabled());
 		
 		if(actor.isCastingNow())
 		{
