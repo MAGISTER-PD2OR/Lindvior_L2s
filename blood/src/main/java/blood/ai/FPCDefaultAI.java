@@ -816,7 +816,10 @@ public class FPCDefaultAI extends PlayerAI
 			return;
 		
 		if(thinkAggro() || thinkMadness())
+		{
+			_pathfindFails = 0;
 			return;
+		}
 		
 		if(player.isInParty())
 		{
