@@ -573,7 +573,8 @@ public class FPCDefaultAI extends PlayerAI
 		if (!target.isMonster())
 			return false;
 		
-		
+		if(Math.abs(target.getLevel() - player.getLevel()) > 9)
+			return false;
 		
 		if (target.isPlayable())
 		{
@@ -589,37 +590,6 @@ public class FPCDefaultAI extends PlayerAI
 		
 		if (!GeoEngine.canSeeTarget(player, target, false))
 			return false;
-		
-		// prevent KS
-//		if(target.isNpc())
-//		{
-//			NpcInstance targetNpc = (NpcInstance) target;
-//			List<Creature> hateList = targetNpc.getAggroList().getHateList();
-//			int hateIndex = 0;
-//			int outPtIndex = 0;
-//			if(hateList.size() > 0)
-//			{
-//				for(Creature hater: hateList)
-//				{
-//					if(!hater.isPlayer())
-//						continue;
-//					
-//					Player hatePlayer = hater.getPlayer();
-//					
-//					if(player.equals(hatePlayer) || player.isInSameParty(hatePlayer))
-//					{
-//						hateIndex++;
-//					}
-//					else
-//					{
-//						outPtIndex++;
-//					}
-//				}
-//				
-//				if(hateIndex == 0 && outPtIndex > 0)
-//					return false;
-//			}
-//		}
 		
 		_aggroList.addDamageHate(target, 0, 2);
 		player.setTarget(target); // target monster before attack
@@ -754,17 +724,20 @@ public class FPCDefaultAI extends PlayerAI
 	protected boolean thinkAggro()
 	{
 		Player player = getActor();
+		
 		// Finish aggro list
-		if (!_aggroList.isEmpty())
+		if(_aggroList.isEmpty())
+			return false;
+		
+		List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
+		CollectionUtils.eqSort(chars, _nearestTargetComparator);
+		for (Creature cha : chars)
 		{
-			List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
-			CollectionUtils.eqSort(chars, _nearestTargetComparator);
-			for (Creature cha : chars)
-			{
-				if (_aggroList.get(cha) != null)
-					if (checkAggression(cha))
-						return true;
-			}
+			if (_aggroList.get(cha) == null)
+				continue;
+			
+			if (checkAggression(cha))
+				return true;
 		}
 		
 		return false;
@@ -777,19 +750,29 @@ public class FPCDefaultAI extends PlayerAI
 		if(getFPCInfo().getPveStyle() == FPCPveStyle.PARTY && player.getParty().isLeader(player))
 			return false;
 		
+		if(player.isInPeaceZone())
+			return false;
+		
+		if(getFPCIntention() == FPCIntention.FARMING)
+			return false;
+		
 		// New madness
 		long now = System.currentTimeMillis();
-		if ((now - _checkAggroTimestamp) > Config.AGGRO_CHECK_INTERVAL && !player.isInPeaceZone() && getFPCIntention() == FPCIntention.FARMING)
-		{
-			_checkAggroTimestamp = now;
-			
-			List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
-			CollectionUtils.eqSort(chars, _nearestTargetComparator);
-			for (Creature cha : chars)
-			{	
-				if (checkAggression(cha))
-					return true;
-			}
+		if ((now - _checkAggroTimestamp) < Config.AGGRO_CHECK_INTERVAL)
+			return false;
+		
+		_checkAggroTimestamp = now;
+		
+		List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
+		CollectionUtils.eqSort(chars, _nearestTargetComparator);
+		for (Creature cha : chars)
+		{	
+			// preventing ks
+			if(cha.getCurrentHpPercents() < 100D)
+				continue;
+
+			if (checkAggression(cha))
+				return true;
 		}
 		
 		return false;

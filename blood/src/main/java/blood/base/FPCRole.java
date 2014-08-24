@@ -45,6 +45,7 @@ import blood.ai.impl.FPCTitan;
 import blood.ai.impl.FPCTrickster;
 import blood.ai.impl.FPCTyrr;
 import blood.ai.impl.FPCWindRider;
+import blood.ai.impl.FPCWizzard;
 import blood.ai.impl.FPCWynn;
 import blood.ai.impl.FPCYul;
 import blood.ai.impl.FighterPC;
@@ -286,6 +287,10 @@ public enum FPCRole {
 	        	case OVERLORD:
 	        	case DOMINATOR:
 	        		return new FPCDominator(player);
+	        	case WIZARD:
+	        	case ELVEN_WIZARD:
+	        	case DARK_WIZARD:
+	        		return new FPCWizzard(player);
         		default:
         			return new MysticPC(player);
         	}
