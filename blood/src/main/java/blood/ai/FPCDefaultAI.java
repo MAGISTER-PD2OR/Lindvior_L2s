@@ -1132,9 +1132,29 @@ public class FPCDefaultAI extends PlayerAI
 //					_tasks.add(currentTask);
 				break;
 			case TELE:
+				if (actor.isMovementDisabled() || !getIsMobile())
+					return true;
+				
+				if (actor.isInRange(currentTask.loc, 100))
+					return maybeNextTask(currentTask);
+				
+				if (actor.isMoving)
+				{
+					_tasks.add(currentTask);
+					return false;
+				}
+				
 				actor.teleToLocation(currentTask.loc);
 				return maybeNextTask(currentTask);
 			case SLEEP:
+				if (actor.isMovementDisabled() || !getIsMobile())
+					return true;
+				
+				if (actor.isMoving)
+				{
+					_tasks.add(currentTask);
+					return false;
+				}
 				_sleepEnd = now + currentTask.sleepTime;
 				return maybeNextTask(currentTask);
 			// Task "to run - to strike"
