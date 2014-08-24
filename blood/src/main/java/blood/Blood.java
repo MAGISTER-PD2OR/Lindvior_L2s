@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.data.parser.FPItemParser;
-import blood.data.parser.FarmZoneParser;
+import blood.data.parser.FarmLocationParser;
 import blood.data.parser.NpcHelperParser;
 import blood.handler.admincommands.AdminFakePlayers;
 import blood.handler.admincommands.AdminManipulateAI;
@@ -70,7 +70,7 @@ class Blood {
 //    	FPCMerchantTable.getInstance();
     	storeFakePlayers();
     	FPItemParser.getInstance().load();
-    	FarmZoneParser.getInstance().load();
+    	FarmLocationParser.getInstance().load();
     	NpcHelperParser.getInstance().load();
     	if(MQ_ENABLE)
     		L2MQ.getInstance();

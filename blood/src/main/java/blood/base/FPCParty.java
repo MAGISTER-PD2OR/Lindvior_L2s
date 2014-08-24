@@ -9,7 +9,8 @@ import l2s.gameserver.utils.Location;
 import blood.FPCInfo;
 import blood.FPCPartyManager;
 import blood.ai.FPCDefaultAI.FPCIntention;
-import blood.data.holder.FarmZoneHolder;
+import blood.data.holder.FarmLocationHolder;
+import blood.model.FarmLocation;
 import blood.utils.ClassFunctions;
 
 public class FPCParty {
@@ -32,7 +33,7 @@ public class FPCParty {
 	protected ArrayList<Player> _dds = new ArrayList<Player>();
 	protected int _averageLevel = 0;
 	protected Party _party = null;
-	protected Location _beginLoc = null;
+	protected FarmLocation _farmLoc = null;
 	protected Location _centerLoc = null;
 	protected Location _nextLoc = null;
 	protected PartyIntention _intention = null;
@@ -164,14 +165,14 @@ public class FPCParty {
 		}
 	}
 	
-	public Location getBeginLoc()
+	public FarmLocation getBeginLoc()
 	{
-		return _beginLoc;
+		return _farmLoc;
 	}
 	
 	public void setBeginLoc()
 	{
-		_beginLoc = FarmZoneHolder.getInstance().getPartyLocation(_averageLevel);
+		_farmLoc = FarmLocationHolder.getInstance().getPartyLocation(_averageLevel);
 	}
 	
 	public Location getCenterLoc()
@@ -224,8 +225,8 @@ public class FPCParty {
 		for(Player player: getParty().getPartyMembers())
 		{
 			FPCInfo.fullRestore(player);
-			FPCInfo.getInstance(player).getAI().setBaseLocation(_beginLoc);
-			FPCInfo.getInstance(player).getAI().tryMoveLongAwayToLocation(_beginLoc);
+			FPCInfo.getInstance(player).getAI().setFarmLocation(_farmLoc);
+			FPCInfo.getInstance(player).getAI().tryMoveLongAwayToLocation(_farmLoc);
 		}
 		// change leader to dd
 		setLeader(_dds.get(0));
@@ -243,13 +244,8 @@ public class FPCParty {
 		double minDistance = Double.MAX_VALUE;
 		for(Player member: getParty().getPartyMembers())
 		{
-			double memberDistance = member.getDistance(_beginLoc);
+			double memberDistance = member.getDistance(_farmLoc);
 			minDistance = Math.min(minDistance, memberDistance);
-			
-//			if(memberDistance > 500)
-//			{
-//				System.out.println(_leader + "'s party waiting for:"+member+" distane:"+memberDistance);
-//			}
 		}
 		
 		if(minDistance < 500)

@@ -1,7 +1,5 @@
 package blood.ai;
 
-import gnu.trove.map.TIntObjectMap;
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -28,20 +26,14 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.World;
-import l2s.gameserver.model.AggroList.AggroInfo;
-import l2s.gameserver.model.Skill.NextAction;
-import l2s.gameserver.model.Skill.SkillTargetType;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.ChestInstance;
-import l2s.gameserver.model.instances.DecoyInstance;
 import l2s.gameserver.model.instances.NpcInstance;
-import l2s.gameserver.network.l2.s2c.FlyToLocation.FlyType;
 import l2s.gameserver.network.l2.s2c.MagicSkillUse;
 import l2s.gameserver.skills.EffectType;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.stats.Stats;
 import l2s.gameserver.taskmanager.AiTaskManager;
-import l2s.gameserver.templates.TeleportLocation;
 import l2s.gameserver.templates.skill.EffectTemplate;
 import l2s.gameserver.utils.ItemFunctions;
 import l2s.gameserver.utils.Location;
@@ -57,6 +49,7 @@ import blood.base.FPCPveStyle;
 import blood.data.holder.NpcHelper;
 import blood.model.AggroListPC;
 import blood.model.AggroListPC.AggroInfoPC;
+import blood.model.FarmLocation;
 
 public class FPCDefaultAI extends PlayerAI
 {
@@ -610,19 +603,16 @@ public class FPCDefaultAI extends PlayerAI
 	 */
 	
 	protected long _checkRandomWalkTimestamp;
-	protected Location _baseLocation = null;
+	protected FarmLocation _farmLocation = null;
 	
-	public Location getBaseLocation()
+	public FarmLocation getFarmLocation()
 	{
-		if(_baseLocation == null)
-			return getActor().getLoc();
-		return _baseLocation;
+		return _farmLocation;
 	}
 	
-	public void setBaseLocation(Location loc)
+	public void setFarmLocation(FarmLocation loc)
 	{
-		debug("change base Loaction");
-		_baseLocation = loc;
+		_farmLocation = loc;
 	}
 	
 	protected int getMaxDriftRange()
@@ -635,7 +625,7 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		Player player = getActor();
 		
-		Location basePos = getBaseLocation();
+		Location basePos = getFarmLocation();
 		
 		if(player == null)
 			return false;
@@ -670,7 +660,7 @@ public class FPCDefaultAI extends PlayerAI
 	{
 		Player player = getActor();
 			
-		Location baseLoc = getBaseLocation();
+		Location baseLoc = getFarmLocation();
 
 		// Удаляем все задания
 		clearTasks();
@@ -822,7 +812,7 @@ public class FPCDefaultAI extends PlayerAI
 		if(thinkBuff() || thinkSummon() || thinkCubic())
 			return;
 		
-		if(thinkFPCIdle() || thinkFPCWaitingParty())
+		if(thinkFPCIdle() || thinkFPCWaitingParty() || thinkFarming())
 			return;
 		
 		if(thinkAggro() || thinkMadness())
@@ -849,6 +839,10 @@ public class FPCDefaultAI extends PlayerAI
 		
 	}
 	
+	protected boolean thinkFarming() {
+		return false;
+	}
+
 	protected boolean thinkCubic() {
 		return false;
 	}
@@ -994,7 +988,7 @@ public class FPCDefaultAI extends PlayerAI
 			player.standUp();
 		}
 		
-		Location loc = getBaseLocation();
+		Location loc = getFarmLocation();
 		if(!player.isInRange(loc, MAX_PURSUE_RANGE))
 		{
 			teleportHome(); // TODO check what it look like
@@ -2266,32 +2260,9 @@ public class FPCDefaultAI extends PlayerAI
 			addTaskTele(Location.findAroundPosition(gk, 150), weight--);
 			addTaskSleep(5*1000, weight--);
 		}
-		
-		TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
-		double minDistance = Double.MAX_VALUE;
-		Location spawnLocation = null;
-		for(TeleportLocation teleLoc: teleMap.valueCollection())
-		{
-			double distanceFromSpawnLoc = teleLoc.distance(loc);
-			if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, loc.x, loc.y, loc.z, player.getGeoIndex()))
-//			if(distanceFromSpawnLoc < minDistance)
-			{
-				minDistance = distanceFromSpawnLoc;
-				spawnLocation = teleLoc;
-			}
-		}
-		
-		if(spawnLocation != null)
-		{
-			addTaskTele(spawnLocation, weight--);
-			addTaskSleep(3*1000, weight--);
-			addTaskMove(Location.findAroundPosition(loc, 200, player.getGeoIndex()), true, true, weight--);
-		}
-		else
-		{
-			addTaskTele(loc, weight--);
-			addTaskSleep(3*1000, weight--);
-		}
+
+		addTaskTele(loc, weight--);
+		addTaskSleep(3*1000, weight--);
 		
 		return true;
 	}

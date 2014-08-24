@@ -26,7 +26,7 @@ import blood.base.FPCParty;
 import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
-import blood.data.holder.FarmZoneHolder;
+import blood.data.holder.FarmLocationHolder;
 import blood.model.FPReward;
 import blood.table.MerchantItem;
 import blood.utils.ClassFunctions;
@@ -212,7 +212,7 @@ public class FPCInfo
 		
 		Player player = getActor();
 		Location nextLoc;
-		nextLoc = FarmZoneHolder.getInstance().getLocation(player);
+		nextLoc = FarmLocationHolder.getInstance().getLocation(player);
 		if(nextLoc != null)
 			player.teleToLocation(nextLoc);
 	}

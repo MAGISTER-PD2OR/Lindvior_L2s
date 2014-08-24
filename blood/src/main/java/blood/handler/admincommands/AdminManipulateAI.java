@@ -18,7 +18,7 @@ import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
 import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
-import blood.data.holder.FarmZoneHolder;
+import blood.data.holder.FarmLocationHolder;
 import blood.data.holder.NpcHelper;
 //import l2s.gameserver.model.Effect;
 //import l2s.gameserver.tables.PetDataTable;

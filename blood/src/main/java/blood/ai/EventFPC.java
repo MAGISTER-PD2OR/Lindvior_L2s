@@ -20,8 +20,9 @@ import l2s.gameserver.templates.skill.EffectTemplate;
 import l2s.gameserver.utils.Location;
 import l2s.gameserver.utils.PositionUtils;
 import blood.base.FPCPveStyle;
-import blood.data.holder.FarmZoneHolder;
+import blood.data.holder.FarmLocationHolder;
 import blood.model.FPReward;
+import blood.model.FarmLocation;
 
 public class EventFPC extends FPCDefaultAI
 {
@@ -63,9 +64,9 @@ public class EventFPC extends FPCDefaultAI
 		if(_nextEquipRound > System.currentTimeMillis())
 			return false;
 		
-		_nextEquipRound = System.currentTimeMillis();
+		_nextEquipRound = System.currentTimeMillis() + 30000;
 		FPReward.getInstance().giveReward(getActor());
-		return false;
+		return true;
 	}
 
 	protected boolean thinkCubic() 
@@ -91,13 +92,12 @@ public class EventFPC extends FPCDefaultAI
 			{
 				if(player.getCubic(et.getParam().getInteger("cubicId")) == null)
 				{
-					chooseTaskAndTargets(skill, player, 0);
-					return true;
+					return chooseTaskAndTargets(skill, player, 0);
 				}
 			}
 		}
 		
-		_nextSumCubicRound = System.currentTimeMillis() + 5000;
+		_nextSumCubicRound = System.currentTimeMillis() + 11000;
 		
 		return false;
 	}
@@ -121,7 +121,7 @@ public class EventFPC extends FPCDefaultAI
 			}
 		}
 		
-		_nextSummonRound = System.currentTimeMillis() + 5000;
+		_nextSummonRound = System.currentTimeMillis() + 12000;
 		
 		return false;
 	}
@@ -186,7 +186,7 @@ public class EventFPC extends FPCDefaultAI
 			}
 		}
 		
-		_nextBuffRound = System.currentTimeMillis() + 5000;
+		_nextBuffRound = System.currentTimeMillis() + 13000;
 		
 		return false;
 	}
@@ -389,8 +389,8 @@ public class EventFPC extends FPCDefaultAI
 		if(getFPCInfo().getPveStyle() == FPCPveStyle.SOLO)
 		{
 			debug("prepare to go to farming zone");
-			Location farmLocation = FarmZoneHolder.getInstance().getLocation(getActor());
-			setBaseLocation(farmLocation);
+			FarmLocation farmLocation = FarmLocationHolder.getInstance().getLocation(getActor());
+			setFarmLocation(farmLocation);
 			
 			if(tryMoveLongAwayToLocation(farmLocation))
 			{
@@ -415,7 +415,19 @@ public class EventFPC extends FPCDefaultAI
 		return getFPCIntention() == FPCIntention.WAITING_PARTY;
 	}
 	
-	
+	protected boolean thinkFarming() 
+	{
+		if(getFPCIntention() != FPCIntention.FARMING)
+			return false;
+		
+		if(_farmLocation == null || !_farmLocation.isValidPlayer(getActor()))
+		{
+			setFPCIntention(FPCIntention.IDLE);
+			return true;
+		}
+		
+		return false;
+	}
 	
 	/*
 	 * About force warrior or kamael soul
@@ -503,6 +515,18 @@ public class EventFPC extends FPCDefaultAI
 		return new Location(obj);
 	}
 	
+	/**
+	 * utils method to get any skill
+	 * @param id
+	 * @param level
+	 * @return
+	 */
+	
+	protected Skill getSkill(int id, int level)
+	{
+		return SkillTable.getInstance().getInfo(id, level);
+	}
+	
 	protected boolean tryCastSkill(int skillId, Creature target)
 	{
 		return tryCastSkill(skillId, target, getActor().getDistance(target));
@@ -519,18 +543,6 @@ public class EventFPC extends FPCDefaultAI
 		
 		return false;
 			
-	}
-	
-	/**
-	 * utils method to get any skill
-	 * @param id
-	 * @param level
-	 * @return
-	 */
-	
-	protected Skill getSkill(int id, int level)
-	{
-		return SkillTable.getInstance().getInfo(id, level);
 	}
 	
 

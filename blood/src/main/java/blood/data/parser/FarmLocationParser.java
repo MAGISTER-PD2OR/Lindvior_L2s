@@ -1,28 +1,28 @@
 package blood.data.parser;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import l2s.commons.data.xml.AbstractFileParser;
 import l2s.gameserver.Config;
-import l2s.gameserver.utils.Location;
 
 import org.dom4j.Element;
 
-import blood.data.holder.FarmZoneHolder;
-import blood.model.FarmZone;
+import blood.data.holder.FarmLocationHolder;
+import blood.model.FarmLocation;
 
-public final class FarmZoneParser  extends AbstractFileParser<FarmZoneHolder>{
+public final class FarmLocationParser  extends AbstractFileParser<FarmLocationHolder>{
 	/**
 	 * Field _instance.
 	 */
-	private static final FarmZoneParser _instance = new FarmZoneParser();
+	private static final FarmLocationParser _instance = new FarmLocationParser();
 	
 	/**
 	 * Method getInstance.
 	 * @return LevelBonusParser
 	 */
-	public static FarmZoneParser getInstance()
+	public static FarmLocationParser getInstance()
 	{
 		return _instance;
 	}
@@ -30,9 +30,9 @@ public final class FarmZoneParser  extends AbstractFileParser<FarmZoneHolder>{
 	/**
 	 * Constructor for LevelBonusParser.
 	 */
-	private FarmZoneParser()
+	private FarmLocationParser()
 	{
-		super(FarmZoneHolder.getInstance());
+		super(FarmLocationHolder.getInstance());
 	}
 	
 	/**
@@ -70,22 +70,23 @@ public final class FarmZoneParser  extends AbstractFileParser<FarmZoneHolder>{
 			int max_level = Integer.parseInt(groupElement.attributeValue("max_level"));
 			boolean is_party = Boolean.parseBoolean(groupElement.attributeValue("is_party"));
 			String[] class_ids_str = groupElement.attributeValue("class_ids") != null ? groupElement.attributeValue("class_ids").split(",") : new String[]{};
-			FarmZone farmZone = new FarmZone(min_level, max_level, is_party);
+			HashSet<Integer> class_ids = new HashSet<Integer>();
 			
 			for(int i = 0;i < class_ids_str.length;i++)
 			{
-				farmZone.addClass(Integer.parseInt(class_ids_str[i]));
+				class_ids.add(Integer.parseInt(class_ids_str[i]));
 			}
-			 
+						 
 			for (Element locElement : groupElement.elements())
 			{
 				int x = Integer.parseInt(locElement.attributeValue("x"));
 				int y = Integer.parseInt(locElement.attributeValue("y"));
 				int z = Integer.parseInt(locElement.attributeValue("z"));
 				
-				farmZone.addLocation(new Location(x, y, z));
+				FarmLocation farmLoc = new FarmLocation(min_level, max_level, is_party, class_ids);
+				farmLoc.set(x, y, z);
+				getHolder().addLoc(farmLoc);
 			}
-			getHolder().addZone(farmZone);
 		}
 	}
 
