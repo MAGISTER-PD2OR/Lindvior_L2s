@@ -34,6 +34,7 @@ public class FPCWizzard extends MysticPC
 	public FPCWizzard(Player actor)
 	{
 		super(actor);
+		System.out.println("init new FPCWizzard");
 	}
 	
 	public void prepareSkillsSetup() {

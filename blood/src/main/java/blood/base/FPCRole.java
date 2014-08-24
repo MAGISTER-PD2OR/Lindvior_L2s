@@ -183,7 +183,8 @@ public enum FPCRole {
 	
 	private FPCDefaultAI getAggresiveAI(Player player)
 	{
-		if(player.getClassId().isOfLevel(ClassLevel.AWAKED)){
+		if(player.getClassId().isOfLevel(ClassLevel.AWAKED))
+		{
 			switch (player.getClassId()) {
 			case FEOH_ARCHMAGE:
 			case FEOH_SOULTAKER:
@@ -246,6 +247,7 @@ public enum FPCRole {
 				break;
 			}
 		}
+		
 		if(player.isMageClass())
         {
         	switch(player.getClassId())
