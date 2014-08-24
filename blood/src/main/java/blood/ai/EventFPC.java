@@ -545,5 +545,13 @@ public class EventFPC extends FPCDefaultAI
 			
 	}
 	
+	/**
+	 * Movement
+	 */
+	public int getMaxPathfindFails()
+	{
+		return 10;
+	}
+	
 
 }
