@@ -385,9 +385,10 @@ public class EventFPC extends FPCDefaultAI
 		
 		if(getFPCInfo().getPveStyle() == FPCPveStyle.SOLO)
 		{
-			setFPCIntention(FPCIntention.IDLE);
-			FPCInfo.fullRestore(player);
+			player.setCurrentHpMp(player.getMaxHp(), player.getMaxMp());
+			player.setCurrentCp(player.getMaxCp());
 			player.teleToClosestTown();
+			setFPCIntention(FPCIntention.IDLE);
 			return true;
 		}
 		
