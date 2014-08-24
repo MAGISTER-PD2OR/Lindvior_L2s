@@ -388,7 +388,7 @@ public class EventFPC extends FPCDefaultAI
 		
 		if(getFPCInfo().getPveStyle() == FPCPveStyle.SOLO)
 		{
-			if(getActor().isAlikeDead())
+			if(getActor().isDead())
 			{
 				player.teleToClosestTown();
 				FPCInfo.fullRestore(player);
