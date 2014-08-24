@@ -1329,6 +1329,9 @@ public class FPCDefaultAI extends PlayerAI
 		
 //		debug("I'm on event think.... actor.isActionsDisabled():"+actor.isActionsDisabled());
 		
+		if(thinkDead())
+			return;
+		
 		if(actor.isCastingNow())
 		{
 			_countCasting++;
@@ -1365,6 +1368,10 @@ public class FPCDefaultAI extends PlayerAI
 	}
 	
 	
+	protected boolean thinkDead() {
+		return false;
+	}
+
 	@Override
 	protected void onEvtDead(Creature killer)
 	{	

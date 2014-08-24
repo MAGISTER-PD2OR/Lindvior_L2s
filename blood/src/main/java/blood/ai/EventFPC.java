@@ -377,6 +377,22 @@ public class EventFPC extends FPCDefaultAI
 		setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 	}
 	
+	protected boolean thinkDead() {
+		Player player = getActor();
+		
+		if(!player.isDead())
+			return false;
+		
+		if(getFPCInfo().getPveStyle() == FPCPveStyle.SOLO)
+		{
+			setFPCIntention(FPCIntention.IDLE);
+			player.teleToClosestTown();
+			FPCInfo.fullRestore(player);
+		}
+		
+		return false;
+	}
+	
 	protected boolean thinkFPCIdle() 
 	{
 		if(getFPCIntention() != FPCIntention.IDLE)
@@ -387,13 +403,7 @@ public class EventFPC extends FPCDefaultAI
 		clearTasks();
 		
 		if(getFPCInfo().getPveStyle() == FPCPveStyle.SOLO)
-		{
-			if(getActor().isDead())
-			{
-				player.teleToClosestTown();
-				FPCInfo.fullRestore(player);
-			}
-			
+		{	
 			FarmLocation farmLocation = FarmLocationHolder.getInstance().getLocation(getActor());
 			setFarmLocation(farmLocation);
 			
@@ -404,8 +414,8 @@ public class EventFPC extends FPCDefaultAI
 		}
 		else
 		{
-			if(!getActor().isInPeaceZone())
-				getActor().teleToClosestTown();
+			if(!player.isInPeaceZone())
+				player.teleToClosestTown();
 			setFPCIntention(FPCIntention.WAITING_PARTY);
 		}
 		
