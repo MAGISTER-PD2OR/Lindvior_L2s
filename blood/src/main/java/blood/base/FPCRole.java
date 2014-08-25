@@ -5,10 +5,12 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassLevel;
 import blood.Blood;
 import blood.FPCInfo;
-import blood.ai.*;
+import blood.ai.FPCDefaultAI;
+import blood.ai.IdleFPC;
+import blood.ai.MarketFPC;
+import blood.ai.impl.FPCAdventurer;
 import blood.ai.impl.FPCAeore;
 import blood.ai.impl.FPCArcarnaLord;
-import blood.ai.impl.FPCAdventurer;
 import blood.ai.impl.FPCArchmage;
 import blood.ai.impl.FPCBishop;
 import blood.ai.impl.FPCDominator;
@@ -21,6 +23,7 @@ import blood.ai.impl.FPCEvaTemplar;
 import blood.ai.impl.FPCFeoh;
 import blood.ai.impl.FPCFortuneSeeker;
 import blood.ai.impl.FPCGhostHunter;
+import blood.ai.impl.FPCGhostSentinel;
 import blood.ai.impl.FPCGrandKhauatari;
 import blood.ai.impl.FPCHellKnight;
 import blood.ai.impl.FPCIss;
@@ -28,7 +31,6 @@ import blood.ai.impl.FPCJudicator;
 import blood.ai.impl.FPCMaestro;
 import blood.ai.impl.FPCMaleSoulhound;
 import blood.ai.impl.FPCMoonlightSentinel;
-import blood.ai.impl.FPCGhostSentinel;
 import blood.ai.impl.FPCMysticMuse;
 import blood.ai.impl.FPCOthell;
 import blood.ai.impl.FPCPhoenixKnight;
@@ -48,7 +50,7 @@ import blood.ai.impl.FPCWindRider;
 import blood.ai.impl.FPCWizzard;
 import blood.ai.impl.FPCWynn;
 import blood.ai.impl.FPCYul;
-import blood.ai.impl.FighterPC;
+import blood.ai.impl.LowLevelFarming;
 import blood.ai.impl.MysticPC;
 
 public enum FPCRole {
@@ -379,7 +381,8 @@ public enum FPCRole {
 	        	case JUDICATOR:
 	        		return new FPCJudicator(player);
 	    		default:
-	            	return new FighterPC(player);
+//	            	return new FighterPC(player);
+	    			return new LowLevelFarming(player);
         	}
         }
 		
