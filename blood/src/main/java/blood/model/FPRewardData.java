@@ -36,6 +36,7 @@ public class FPRewardData {
 			ItemFunctions.addItem(player, _item_id, _item_count - iventoryCount, false);
 		
 		tryToUse(player);
+		garbageClean(player);
 	}
 	
 	public void tryToUse(Player player)
@@ -78,9 +79,7 @@ public class FPRewardData {
 			return;
 		
 		for(ItemInstance item: player.getInventory().getItemsByItemId(_replace_id))
-		{
-			if(item.isWeapon() || item.isArmor() || item.isAccessory())
+			if(isGear(item))
 				player.getInventory().removeItem(item);
-		}
 	}
 }

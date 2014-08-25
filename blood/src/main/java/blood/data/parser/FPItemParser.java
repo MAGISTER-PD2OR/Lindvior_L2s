@@ -87,7 +87,7 @@ public final class FPItemParser extends AbstractFileParser<FPItemHolder>
 				{
 					int item_id = Integer.parseInt(itemElement.attributeValue("id"));
 					int item_count = Integer.parseInt(itemElement.attributeValue("count"));
-					int replace_id = Integer.parseInt(itemElement.attributeValue("replace_id"));
+					int replace_id = itemElement.attributeValue("replace_id") != null ? Integer.parseInt(itemElement.attributeValue("replace_id")) : 0;
 					rewardList.addItem(new FPRewardData(item_id, item_count, replace_id));
 				}
 				
