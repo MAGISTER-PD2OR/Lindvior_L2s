@@ -1021,14 +1021,6 @@ public class FPCDefaultAI extends PlayerAI
 			player.standUp();
 		}
 		
-		Location loc = getFarmLocation();
-		if(!player.isInRange(loc, MAX_PURSUE_RANGE))
-		{
-			// TODO check what it look like, should inrease max_pursue_range or move method to thinking
-			addTaskMove(loc, true); 
-			return;
-		}
-		
 		if (doTask() && !player.isAttackingNow() && !player.isCastingNow())
 		{
 			if(!createNewTask())

@@ -434,6 +434,8 @@ public class EventFPC extends FPCDefaultAI
 	
 	protected boolean thinkFarming() 
 	{
+		
+		Player player = getActor();
 		if(getFPCIntention() != FPCIntention.FARMING)
 			return false;
 		
@@ -443,9 +445,17 @@ public class EventFPC extends FPCDefaultAI
 			return true;
 		}
 		
-		if(getActor().isAlikeDead())
+		if(player.isAlikeDead())
 		{
 			setFPCIntention(FPCIntention.IDLE);
+			return true;
+		}
+		
+		Location loc = getFarmLocation();
+		if(!player.isInRange(loc, MAX_PURSUE_RANGE))
+		{
+			// TODO check what it look like, should inrease max_pursue_range or move method to thinking
+			addTaskMove(loc, true); 
 			return true;
 		}
 		
