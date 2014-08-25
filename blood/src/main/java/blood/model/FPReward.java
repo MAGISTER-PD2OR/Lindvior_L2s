@@ -102,7 +102,13 @@ public class FPReward {
 		
 		else if(item.getItemType() == EtcItemType.SOULSHOT 
 				|| item.getItemType() == EtcItemType.SPIRITSHOT
-				|| item.getItemType() == EtcItemType.BLESSED_SPIRITSHOT)
+				|| item.getItemType() == EtcItemType.BLESSED_SPIRITSHOT
+				|| item.getItemId() == 6645
+				|| item.getItemId() == 6646
+				|| item.getItemId() == 6647
+				|| item.getItemId() == 20332
+				|| item.getItemId() == 20333
+				|| item.getItemId() == 20334)
 		{	
 			if(!player.getAutoSoulShot().contains(item.getItemId()))
 			{
