@@ -8,7 +8,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassId;
-import l2s.gameserver.model.base.Experience;
 //import l2s.gameserver.model.entity.events.impl.DominionSiegeEvent;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.model.items.TradeItem;
@@ -30,7 +29,6 @@ import blood.data.holder.FarmLocationHolder;
 import blood.model.FPReward;
 import blood.table.MerchantItem;
 import blood.utils.ClassFunctions;
-import blood.utils.LocationFunctions;
 import blood.utils.MerchantFunctions;
 
 
@@ -286,19 +284,10 @@ public class FPCInfo
     		player.setHeading(Rnd.get(0, 9000));
             player.setOnlineStatus(true);
             player.restoreExp();
-            LocationFunctions.randomTown(player);
+//            LocationFunctions.randomTown(player);
             
             _isMage = player.isMageClass();
             _classId = player.getClassId();
-            
-            // TODO should not up level character here
-            if(player.getLevel() < 85)
-            {
-            	Long exp_add = Experience.LEVEL[85] - player.getExp();
-    			player.addExpAndSp(exp_add, 0, true);
-            }
-            
-            ClassFunctions.upClass(player);
             
             FPReward.getInstance().giveReward(player);
             

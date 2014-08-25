@@ -19,13 +19,16 @@ import l2s.gameserver.Config;
 import l2s.gameserver.ThreadPoolManager;
 import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.ai.PlayerAI;
+import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Playable;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.World;
+import l2s.gameserver.model.base.AcquireType;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.ChestInstance;
 import l2s.gameserver.model.instances.NpcInstance;
@@ -33,6 +36,7 @@ import l2s.gameserver.network.l2.s2c.MagicSkillUse;
 import l2s.gameserver.skills.EffectType;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.stats.Stats;
+import l2s.gameserver.tables.SkillTable;
 import l2s.gameserver.taskmanager.AiTaskManager;
 import l2s.gameserver.templates.skill.EffectTemplate;
 import l2s.gameserver.utils.ItemFunctions;
@@ -50,6 +54,7 @@ import blood.data.holder.NpcHelper;
 import blood.model.AggroListPC;
 import blood.model.AggroListPC.AggroInfoPC;
 import blood.model.FarmLocation;
+import blood.utils.ClassFunctions;
 
 public class FPCDefaultAI extends PlayerAI
 {
@@ -794,6 +799,9 @@ public class FPCDefaultAI extends PlayerAI
 			return;
 		}
 		
+		if(thinkClass())
+			return;
+		
 		if(thinkEquip() || thinkBuff() || thinkSummon() || thinkCubic())
 			return;
 		
@@ -827,6 +835,43 @@ public class FPCDefaultAI extends PlayerAI
 		
 	}
 	
+	private long _upClassLTS = 0L;
+	private final int _upClassInteval = 3*60*1000;
+	
+	private boolean thinkClass() {
+		
+		if(_upClassLTS > System.currentTimeMillis())
+			return false;
+		
+		_upClassLTS = System.currentTimeMillis() + _upClassInteval;
+		
+		ClassFunctions.upClass(getActor());
+		rewardSkillsFPC();
+		return true;
+	}
+	
+	public int rewardSkillsFPC()
+	{
+		Player player = getActor();
+		int addedSkillsCount = 0;
+		for(SkillLearn sl : SkillAcquireHolder.getInstance().getAvailableMaxLvlSkills(player, AcquireType.NORMAL))
+		{
+			Skill skill = SkillTable.getInstance().getInfo(sl.getId(), sl.getLevel());
+			if(skill == null)
+				continue;
+
+			if(player.addSkill(skill, true) == null)
+			{
+				addedSkillsCount++;
+				addSkill(skill);
+			}
+		}
+
+		player.updateStats();
+
+		return addedSkillsCount;
+	}
+
 	protected boolean thinkFarming() {
 		return false;
 	}

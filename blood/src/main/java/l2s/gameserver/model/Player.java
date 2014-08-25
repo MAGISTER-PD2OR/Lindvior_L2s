@@ -2433,17 +2433,17 @@ public final class Player extends Playable implements PlayerGroup
 	private void rewardSkills(boolean send)
 	{
 		if(getClassId().isOfLevel(ClassLevel.AWAKED))
-			rewardSkills(send, true, Config.AUTO_LEARN_AWAKED_SKILLS || isFakePlayer(), false);
+			rewardSkills(send, true, Config.AUTO_LEARN_AWAKED_SKILLS, false);
 		else
-			rewardSkills(send, true, Config.AUTO_LEARN_SKILLS  || isFakePlayer(), false);
+			rewardSkills(send, true, Config.AUTO_LEARN_SKILLS, false);
 	}
 
 	private void rewardSkills(boolean send, boolean send2)
 	{
 		if(getClassId().isOfLevel(ClassLevel.AWAKED))
-			rewardSkills(send, true, Config.AUTO_LEARN_AWAKED_SKILLS || isFakePlayer(), send2);
+			rewardSkills(send, true, Config.AUTO_LEARN_AWAKED_SKILLS, send2);
 		else
-			rewardSkills(send, true, Config.AUTO_LEARN_SKILLS  || isFakePlayer(), send2);
+			rewardSkills(send, true, Config.AUTO_LEARN_SKILLS, send2);
 	}
 
 	public int rewardSkills(boolean send, boolean checkShortCuts, boolean learnAllSkills, boolean send2)
@@ -11670,10 +11670,13 @@ public final class Player extends Playable implements PlayerGroup
 		return _arenaIdForLogout;
 	}
 	
+	/*
+	 * New method
+	 */
+	
 	protected boolean _fakePlayer = false;
 
 	public void setFakePlayer() {
-		// TODO Auto-generated method stub
 		_fakePlayer = true;
 	}
 	

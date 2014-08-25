@@ -11,6 +11,7 @@ import l2s.gameserver.database.DatabaseFactory;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.base.AcquireType;
+import l2s.gameserver.model.base.Experience;
 import l2s.gameserver.tables.SkillTable;
 import l2s.gameserver.templates.player.PlayerTemplate;
 
@@ -279,6 +280,11 @@ public class FPCCreator
 		newChar.setCurrentHpMp(newChar.getMaxHp(), newChar.getMaxMp());
 		newChar.setCurrentCp(0); // retail
 		newChar.setOnlineStatus(false);
+		
+		int newLevel = Rnd.chance(20) ? 85 : 20;
+		
+    	Long exp_add = Experience.LEVEL[newLevel] - newChar.getExp();
+    	newChar.addExpAndSp(exp_add, 0, true);
 
 		newChar.store(false);
 		newChar.getInventory().store();
