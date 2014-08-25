@@ -49,6 +49,9 @@ class Blood {
     public static int FPC_NEXUS = 0;
     public static int FPC_MARKET = 0;
     public static boolean MQ_ENABLE = false;
+    public static String MQ_SERVER = "125.212.219.44";
+    public static int MQ_PORT = 4730;
+    public static String MQ_PREFIX = "kain";
     
     public static boolean AI_ATTACK_ALLOW = true;
     public static boolean IS_FENCE = false;
@@ -93,6 +96,9 @@ class Blood {
     	FPC_NEXUS = bfconfig.getProperty("FPC_NEXUS", 0);
     	FPC_MARKET = bfconfig.getProperty("FPC_MARKET", 0);
     	MQ_ENABLE = bfconfig.getProperty("MQ_ENABLE", false);
+    	MQ_SERVER = bfconfig.getProperty("MQ_SERVER", "125.212.219.44");
+    	MQ_PORT = bfconfig.getProperty("MQ_PORT", 4730);
+    	MQ_PREFIX = bfconfig.getProperty("MQ_PREFIX", "kain");
     }
     
     public static void storeFakePlayers() {

@@ -20,9 +20,6 @@ public class L2MQ
 	private static final Logger 		_log 			= LoggerFactory.getLogger(L2MQ.class);
 	private static L2MQ 				_instance;
 	
-	private static String 				_mqServerIP		= "125.212.219.44";
-	private static Integer 				_mqServerPort	= 4730;
-	
 	private static Gearman 				_gearman;
 	private static GearmanClient 		_client;
 	private static GearmanServer 		_server;
@@ -57,7 +54,7 @@ public class L2MQ
 	{
 		if(_server == null)
 		{
-			_server = getGearman().createGearmanServer(_mqServerIP, _mqServerPort);
+			_server = getGearman().createGearmanServer(Blood.MQ_SERVER, Blood.MQ_PORT);
 		}
 		
 		return _server;
@@ -88,8 +85,8 @@ public class L2MQ
 	
 	public static void asignTaskForWorker(GearmanWorker worker)
 	{
-		worker.addFunction("gameMail_Kain", new MQMailer());
-		worker.addFunction("gameSay_Kain", new ChatterSay());
+		worker.addFunction("gameMail_"+Blood.MQ_PREFIX, new MQMailer());
+		worker.addFunction("gameSay_"+Blood.MQ_PREFIX, new ChatterSay());
 	}
 	
 	
@@ -119,7 +116,7 @@ public class L2MQ
 	{
 		if(!Blood.MQ_ENABLE)
 			return;
-		jobData = "Kain;" + jobData;
+		jobData = Blood.MQ_PREFIX +";" + jobData;
 		System.out.println(jobName+"|"+jobData);
 		getClient().submitBackgroundJob(jobName, jobData.getBytes());
 	}

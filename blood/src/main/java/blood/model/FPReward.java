@@ -3,9 +3,6 @@ package blood.model;
 import java.util.List;
 
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.items.ItemInstance;
-import l2s.gameserver.templates.item.EtcItemTemplate.EtcItemType;
-import l2s.gameserver.utils.ItemFunctions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +33,8 @@ public class FPReward {
 	}
 	
 	public void giveReward(Player player){
-		
-//		_log.error("just tracing", new Exception("trace"));
-		
 		int playerLvl = player.getLevel();
 		int playerClassId = player.getClassId().getId();
-//		System.out.println("playerLvl:" + playerLvl + " playerClassId:" + playerClassId);
 		for (int i = playerLvl; i > 0; i--) {
 			List<FPRewardList> rewardByLevel = FPItemHolder.getInstance().getLevelBonus(i);
 			if (rewardByLevel != null){
@@ -64,60 +57,7 @@ public class FPReward {
 	
 	public void distributeList(FPRewardList itemList, Player player){
 		for(FPRewardData item: itemList.getReward())
-		{
-			long iventoryCount = player.getInventory().getCountOf(item._item_id);
-			if (iventoryCount < item._item_count)
-			{
-				ItemFunctions.addItem(player, item._item_id, item._item_count - iventoryCount, false);
-			}
-			
-			tryToUseItem(player, item._item_id);
-		}
+			item.distribute(player);
 	}
-	
-	public void tryToUseItem(Player player, int itemId)
-	{
-		for(ItemInstance item: player.getInventory().getItemsByItemId(itemId))
-		{
-			tryToUseItem(player, item);
-		}
-	}
-	
-	public void tryToUseItem(Player player, ItemInstance item)
-	{
-		if(item.isWeapon() && !item.isEquipped())
-		{
-			player.useItem(item, false);
-		}
-		else if(item.isArmor() && !item.isEquipped())
-		{
-//			System.out.println(player + " try to use armor:"+item.getBodyPart()+" "+item.getItemId());
-			player.useItem(item, false);
-		}
-		else if(item.isAccessory() && !item.isEquipped())
-		{
-//			System.out.println(player + " try to use accessory:"+item.getBodyPart()+" "+item.getItemId()+" "+item.getName());
-			player.useItem(item, false);
-		}
-		
-		else if(item.getItemType() == EtcItemType.SOULSHOT 
-				|| item.getItemType() == EtcItemType.SPIRITSHOT
-				|| item.getItemType() == EtcItemType.BLESSED_SPIRITSHOT
-				|| item.getItemId() == 6645
-				|| item.getItemId() == 6646
-				|| item.getItemId() == 6647
-				|| item.getItemId() == 20332
-				|| item.getItemId() == 20333
-				|| item.getItemId() == 20334)
-		{	
-			if(!player.getAutoSoulShot().contains(item.getItemId()))
-			{
-//				System.out.println(player + " active soulshot "+item.getItemId());
-				player.addAutoSoulShot(item.getItemId());
-			}
-			
-		}
-	}
-	
 	
 }
