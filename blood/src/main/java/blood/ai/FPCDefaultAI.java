@@ -1024,7 +1024,8 @@ public class FPCDefaultAI extends PlayerAI
 		Location loc = getFarmLocation();
 		if(!player.isInRange(loc, MAX_PURSUE_RANGE))
 		{
-			teleportHome(); // TODO check what it look like
+			// TODO check what it look like, should inrease max_pursue_range or move method to thinking
+			addTaskMove(loc, true); 
 			return;
 		}
 		
