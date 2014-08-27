@@ -275,7 +275,8 @@ public class Formulas
 
 		double deathRcpt = 0.01 * target.calcStat(Stats.DEATH_VULNERABILITY, attacker, skill);
 		
-		if(target.isMonster() && target.getLevel() > 95) deathRcpt = 0;
+		//remove halfkill on monster
+		if(target.isMonster()) deathRcpt = 0;
 		
 		final double lethal1Chance = skill.getLethal1(attacker) * deathRcpt;
 		final double lethal2Chance = skill.getLethal2(attacker) * deathRcpt;
