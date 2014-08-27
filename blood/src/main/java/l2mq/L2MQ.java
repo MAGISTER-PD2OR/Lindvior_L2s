@@ -96,20 +96,20 @@ public class L2MQ
 		public String msg;
 	}
 	
-	public static void addFacebookStatus(Player player, String msg)
+	public static void chat(Player receiver, ChatType chat_type, String sender, String msg)
 	{
-		addBackgroundJob("newStatus", player.getAccountName()+";"+player.getObjectId()+";"+msg);
-	}
-	
-	public void addChat(Player receiver, String msg, ChatType chatType, Player sender)
-	{
-//		if(receiver.isFakePlayer())
-//			addBackgroundJob("chat", receiver.getAccountName()+";"+receiver.getName()+";"+sender.getName()+";"+chatType.ordinal()+";"+msg);
-	}
-	
-	public static void requestAnswer(Player player, String msg)
-	{
-		addBackgroundJob("chatFromGame", player.getName()+";"+player.getObjectId()+";"+msg);
+		StringBuilder builder = new StringBuilder();
+		builder.append(receiver.getAccountName());
+		builder.append(";");
+		builder.append(receiver.getName());
+		builder.append(";");
+		builder.append(chat_type.ordinal());
+		builder.append(";");
+		builder.append(sender);
+		builder.append(";");
+		builder.append(msg);
+		
+		addBackgroundJob("chat", builder.toString());
 	}
 	
 	public static void addBackgroundJob(String jobName, String jobData)
@@ -120,4 +120,5 @@ public class L2MQ
 		System.out.println(jobName+"|"+jobData);
 		getClient().submitBackgroundJob(jobName, jobData.getBytes());
 	}
+	
 }
