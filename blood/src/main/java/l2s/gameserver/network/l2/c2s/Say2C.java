@@ -510,30 +510,6 @@ public class Say2C extends L2GameClientPacket
 				_log.warn("Character " + activeChar.getName() + " used unknown chat type: " + _type.ordinal() + ".");
 		}
 	}
-	
-	private static void shout(Player activeChar, Say2 cs, ChatType type, String msg)
-	{
-		int rx = MapUtils.regionX(activeChar);
-		int ry = MapUtils.regionY(activeChar);
-		int offset = Config.SHOUT_OFFSET;
-
-		for(Player player : GameObjectsStorage.getAllPlayersForIterate())
-		{
-			if(player == activeChar || activeChar.getReflection() != player.getReflection() || player.isBlockAll() || player.getBlockList().contains(activeChar))
-				continue;
-
-			int tx = MapUtils.regionX(player);
-			int ty = MapUtils.regionY(player);
-
-			if(tx >= rx - offset && tx <= rx + offset && ty >= ry - offset && ty <= ry + offset || activeChar.isInRangeZ(player, Config.CHAT_RANGE))
-			{
-				if(player.isFakePlayer())
-					L2MQ.chat(player, type, activeChar.getName(), msg);
-				else
-					player.sendPacket(cs);
-			}
-		}
-	}
 
 	private static void shout(Player activeChar, Say2 cs)
 	{
