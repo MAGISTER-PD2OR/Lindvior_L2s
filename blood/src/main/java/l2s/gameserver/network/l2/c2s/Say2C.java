@@ -323,13 +323,14 @@ public class Say2C extends L2GameClientPacket
 				if(!activeChar.getAntiFlood().canShout(_text))
 					return;
 
+				L2MQ.chat(activeChar, _type, activeChar.getName(), _text);
+				
 				if(Config.GLOBAL_SHOUT)
 				{
-					L2MQ.chat(activeChar, _type, activeChar.getName(), _text);
 					announce(activeChar, cs);
 				}
 				else
-					shout(activeChar, cs, _type, _text);
+					shout(activeChar, cs);
 
 				activeChar.sendPacket(cs);
 				break;
@@ -347,14 +348,15 @@ public class Say2C extends L2GameClientPacket
 
 				if(!activeChar.getAntiFlood().canTrade(_text))
 					return;
+				
+				L2MQ.chat(activeChar, _type, activeChar.getName(), _text);
 
 				if(Config.GLOBAL_TRADE_CHAT)
 				{
 					announce(activeChar, cs);
-					L2MQ.chat(activeChar, _type, activeChar.getName(), _text);
 				}
 				else
-					shout(activeChar, cs, _type, _text);
+					shout(activeChar, cs);
 
 				activeChar.sendPacket(cs);
 				break;
