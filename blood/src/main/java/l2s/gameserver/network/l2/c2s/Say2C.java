@@ -281,6 +281,8 @@ public class Say2C extends L2GameClientPacket
 				if(receiver != null && receiver.isFakePlayer())
 				{
 					L2MQ.chat(receiver, _type, activeChar.getName(), _text);
+					cs = new Say2(activeChar.getObjectId(), _type, "->" + receiver.getName(), _text);
+					activeChar.sendPacket(cs);
 					return;
 				}
 
@@ -322,7 +324,10 @@ public class Say2C extends L2GameClientPacket
 					return;
 
 				if(Config.GLOBAL_SHOUT)
-					announce(activeChar, cs, _type, _text);
+				{
+					L2MQ.chat(activeChar, _type, activeChar.getName(), _text);
+					announce(activeChar, cs);
+				}
 				else
 					shout(activeChar, cs, _type, _text);
 
@@ -344,7 +349,10 @@ public class Say2C extends L2GameClientPacket
 					return;
 
 				if(Config.GLOBAL_TRADE_CHAT)
-					announce(activeChar, cs, _type, _text);
+				{
+					announce(activeChar, cs);
+					L2MQ.chat(activeChar, _type, activeChar.getName(), _text);
+				}
 				else
 					shout(activeChar, cs, _type, _text);
 
@@ -544,20 +552,6 @@ public class Say2C extends L2GameClientPacket
 		}
 	}
 	
-	private static void announce(Player activeChar, Say2 cs, ChatType type, String msg)
-	{
-		for(Player player : GameObjectsStorage.getAllPlayersForIterate())
-		{
-			if(player == activeChar || activeChar.getReflection() != player.getReflection() || player.isBlockAll() || player.getBlockList().contains(activeChar))
-				continue;
-
-			if(player.isFakePlayer())
-				L2MQ.chat(player, type, activeChar.getName(), msg);
-			else
-				player.sendPacket(cs);
-		}
-	}
-
 	private static void announce(Player activeChar, Say2 cs)
 	{
 		for(Player player : GameObjectsStorage.getAllPlayersForIterate())

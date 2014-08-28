@@ -109,6 +109,8 @@ public class L2MQ
 		builder.append(";");
 		builder.append(msg);
 		
+		_log.info("PM to FPC:"+builder.toString());
+		
 		addBackgroundJob("chat", builder.toString());
 	}
 	
