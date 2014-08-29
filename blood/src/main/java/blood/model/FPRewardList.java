@@ -141,6 +141,8 @@ public class FPRewardList
 			if(_all_used_items.contains(item_id) && !allow_items.contains(item_id))
 				player.getInventory().removeItem(remove_item);
 		}
+		
+		player.getInventory().store();
 	}
 	
 	public static void distributeItem(Player player, int item_id, int amount)
