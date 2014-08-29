@@ -158,10 +158,12 @@ public class FPCInfo
 	
 	public void updateAI()
 	{
-		setAI(_role.getAI(getActor()));
+		Player player = getActor();
+		FPCDefaultAI newAI = _role.getAI(player);
+		setAI(newAI);
 		if(_role == FPCRole.NEXUS_EVENT)
 		{
-			if(ClassFunctions.canPveSolo(getActor()))
+			if(ClassFunctions.canPveSolo(player))
             {
 	        	_pveStyle = FPCPveStyle.SOLO;
             }
