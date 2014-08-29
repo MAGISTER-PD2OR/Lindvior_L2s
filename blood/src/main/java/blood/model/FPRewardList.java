@@ -51,6 +51,14 @@ public class FPRewardList
 		_class_ids.add(class_id);
 	}
 	
+	public HashSet<Integer> getClasses()
+	{
+		FPRewardList parent = FPItemHolder.get(_parent_id);
+		if(parent != null)
+			_class_ids.addAll(parent.getClasses());
+		return _class_ids;
+	}
+	
 	public boolean hasClass(int class_id){
 		return _class_ids.contains(class_id);
 	}
