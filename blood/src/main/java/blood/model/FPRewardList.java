@@ -111,7 +111,7 @@ public class FPRewardList
 			rewards.put(entry.getKey(), entry.getValue());
 		}
 		
-		return _reward_items;
+		return rewards;
 	}
 
 	public void addRemoveItem(int item_id) {
