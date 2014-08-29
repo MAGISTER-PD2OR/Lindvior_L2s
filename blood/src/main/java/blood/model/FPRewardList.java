@@ -85,7 +85,7 @@ public class FPRewardList
 	
 	public boolean isValid(Player player)
 	{
-		return isValidClass(player.getClassId().getId()) || isValidType(player.isMageClass());
+		return isValidSpec(player) || isValidCommon(player);
 	}
 	
 	public boolean isValidSpec(Player player)
