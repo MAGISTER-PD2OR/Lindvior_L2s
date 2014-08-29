@@ -1,13 +1,8 @@
 package blood;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import l2s.commons.dbutils.DbUtils;
 import l2s.commons.math.random.RndSelector;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
-import l2s.gameserver.database.DatabaseFactory;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.base.AcquireType;
@@ -19,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import blood.dao.FakeNameDAO;
+import blood.dao.FakePlayerDAO;
+import blood.model.FPReward;
+import blood.utils.ClassFunctions;
 import blood.utils.NameFunctions;
 
 public class FPCCreator
@@ -211,12 +209,6 @@ public class FPCCreator
     
 	public static void createNewChar(int _classId, String _name, String _account)
 	{
-		Connection con = null;
-		PreparedStatement statement = null;
-		
-//		_log.info("createNewChar:"+_name);
-		
-		//int _classId = Integer.parseInt(wordList[1]);
 		int _sex = Rnd.get(0,1);
 		if(_classId == 123 || NameFunctions.isMaleName(_name)){
 			_sex = 0;
@@ -229,8 +221,6 @@ public class FPCCreator
 		int _hairColor = Rnd.get(0,2);
 		int _face = Rnd.get(0,2);
 		
-		//String _account = wordList.length == 3 ? wordList[2] : "_mylove1412";
-		
 		Player newChar = Player.create(_classId, _sex, _account, _name, _hairStyle, _hairColor, _face);
 		
 		if(newChar == null)
@@ -238,21 +228,7 @@ public class FPCCreator
 		
 		FakeNameDAO.getInstance().useName(_name);
 		
-		try
-		{
-			con = DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("INSERT INTO fpc(obj_id) VALUES (?)");
-			statement.setInt(1, newChar.getObjectId());
-			statement.execute();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			DbUtils.closeQuietly(con, statement);
-		}
+		FakePlayerDAO.addFPC(newChar.getObjectId());
 		
 		_log.info("Create NewChar:"+_name+" in Account: "+_account+" Class: " + _classId + " Sex: " + _sex);
 		
@@ -261,7 +237,6 @@ public class FPCCreator
 		initNewChar(newChar);
 		
 		new FPCInfo(_obj_id);
-		
 	}
 	
 	public static void initNewChar(Player newChar)
@@ -285,15 +260,13 @@ public class FPCCreator
 		
     	Long exp_add = Experience.LEVEL[newLevel] - newChar.getExp();
     	newChar.addExpAndSp(exp_add, 0, true);
+    	
+    	ClassFunctions.upClass(newChar);
+    	FPReward.getInstance().giveReward(newChar);
 
 		newChar.store(false);
 		newChar.getInventory().store();
 		newChar.deleteMe();
-		
-	}
-	
-	public static void rearm(Player player)
-	{
 		
 	}
 }

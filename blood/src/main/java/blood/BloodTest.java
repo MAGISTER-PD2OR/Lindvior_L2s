@@ -1,8 +1,6 @@
 package blood;
 
-import java.lang.management.ManagementFactory;
-
-import l2mq.L2MQ;
+import blood.utils.PIDHelper;
 
 
 public class BloodTest
@@ -21,7 +19,7 @@ public class BloodTest
 	{
 		// TODO Auto-generated method stub
 //		L2MQ.getInstance();
-		System.out.println("pid:"+Blood.getPID());
+		System.out.println("pid:"+PIDHelper.getPID());
 			
 	}
 	

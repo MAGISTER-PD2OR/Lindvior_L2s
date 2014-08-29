@@ -14,7 +14,7 @@ import l2s.gameserver.utils.ItemFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import blood.Blood;
+import blood.BloodConfig;
 import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
 import blood.base.FPCParty;
@@ -65,15 +65,15 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				String mode = wordList[1];
 				
 				if(mode.equals("on")){
-					Blood.AI_ATTACK_ALLOW = true;
+					BloodConfig.AI_ATTACK_ALLOW = true;
 				}
 				else if(mode.equals("off")){
-					Blood.AI_ATTACK_ALLOW = false;
+					BloodConfig.AI_ATTACK_ALLOW = false;
 				}else{
-					Blood.AI_ATTACK_ALLOW = !Blood.AI_ATTACK_ALLOW;
+					BloodConfig.AI_ATTACK_ALLOW = !BloodConfig.AI_ATTACK_ALLOW;
 				}
 				
-				_log.info("AI status: "+Blood.AI_ATTACK_ALLOW);
+				_log.info("AI status: "+BloodConfig.AI_ATTACK_ALLOW);
 				
 				break;
 				

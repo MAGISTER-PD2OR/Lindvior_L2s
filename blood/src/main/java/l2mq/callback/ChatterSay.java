@@ -7,12 +7,11 @@ import l2s.gameserver.Config;
 import l2s.gameserver.model.GameObjectsStorage;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.World;
-import l2s.gameserver.model.entity.olympiad.OlympiadGame;
 import l2s.gameserver.model.pledge.Alliance;
 import l2s.gameserver.model.pledge.Clan;
 import l2s.gameserver.model.pledge.UnitMember;
-import l2s.gameserver.network.l2.s2c.Say2;
 import l2s.gameserver.network.l2.components.ChatType;
+import l2s.gameserver.network.l2.s2c.Say2;
 import l2s.gameserver.utils.MapUtils;
 
 import org.gearman.GearmanFunction;

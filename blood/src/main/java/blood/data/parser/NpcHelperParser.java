@@ -1,19 +1,14 @@
 package blood.data.parser;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import l2s.commons.data.xml.AbstractFileParser;
 import l2s.gameserver.Config;
 
 import org.dom4j.Element;
 
-import blood.data.holder.FPItemHolder;
 import blood.data.holder.NpcHelper;
-import blood.model.FPRewardData;
-import blood.model.FPRewardList;
 
 public final class NpcHelperParser extends AbstractFileParser<NpcHelper> 
 {

@@ -1,11 +1,6 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-
-import l2s.commons.util.Rnd;
-import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.tables.SkillTable;
 import blood.ai.EventFPC;
 
 public class TankerPC extends EventFPC

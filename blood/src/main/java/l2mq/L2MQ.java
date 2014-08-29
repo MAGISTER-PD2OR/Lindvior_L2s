@@ -12,11 +12,10 @@ import org.gearman.GearmanWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import blood.Blood;
+import blood.BloodConfig;
 
 public class L2MQ
 {
-	@SuppressWarnings("unused")
 	private static final Logger 		_log 			= LoggerFactory.getLogger(L2MQ.class);
 	private static L2MQ 				_instance;
 	
@@ -35,7 +34,7 @@ public class L2MQ
     }
 	
 	private L2MQ() {
-		if(!Blood.MQ_ENABLE)
+		if(!BloodConfig.MQ_ENABLE)
 			return;
 		getWorker(); // set worker
 	}
@@ -54,7 +53,7 @@ public class L2MQ
 	{
 		if(_server == null)
 		{
-			_server = getGearman().createGearmanServer(Blood.MQ_SERVER, Blood.MQ_PORT);
+			_server = getGearman().createGearmanServer(BloodConfig.MQ_SERVER, BloodConfig.MQ_PORT);
 		}
 		
 		return _server;
@@ -85,8 +84,8 @@ public class L2MQ
 	
 	public static void asignTaskForWorker(GearmanWorker worker)
 	{
-		worker.addFunction("gameMail_"+Blood.MQ_PREFIX, new MQMailer());
-		worker.addFunction("gameSay_"+Blood.MQ_PREFIX, new ChatterSay());
+		worker.addFunction("gameMail_"+BloodConfig.MQ_PREFIX, new MQMailer());
+		worker.addFunction("gameSay_"+BloodConfig.MQ_PREFIX, new ChatterSay());
 	}
 	
 	
@@ -116,9 +115,9 @@ public class L2MQ
 	
 	public static void addBackgroundJob(String jobName, String jobData)
 	{
-		if(!Blood.MQ_ENABLE)
+		if(!BloodConfig.MQ_ENABLE)
 			return;
-		jobData = Blood.MQ_PREFIX +";" + jobData;
+		jobData = BloodConfig.MQ_PREFIX +";" + jobData;
 		System.out.println(jobName+"|"+jobData);
 		getClient().submitBackgroundJob(jobName, jobData.getBytes());
 	}

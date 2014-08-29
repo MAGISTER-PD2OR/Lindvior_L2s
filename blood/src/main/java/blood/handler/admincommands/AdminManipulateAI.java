@@ -1,31 +1,20 @@
 package blood.handler.admincommands;
 
-import gnu.trove.map.TIntObjectMap;
 import l2s.gameserver.ai.PlayerAI;
-import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.base.RestartType;
-import l2s.gameserver.model.instances.NpcInstance;
-import l2s.gameserver.templates.TeleportLocation;
-import l2s.gameserver.utils.Location;
-import l2s.gameserver.utils.TeleportUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import blood.FPCInfo;
-import blood.ai.FPCDefaultAI;
 import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
-import blood.data.holder.FarmLocationHolder;
-import blood.data.holder.NpcHelper;
-//import l2s.gameserver.model.Effect;
-//import l2s.gameserver.tables.PetDataTable;
-//import l2s.gameserver.templates.item.ItemTemplate.Grade;
 
 public class AdminManipulateAI implements IAdminCommandHandler
 {
+	
+	@SuppressWarnings("unused")
 	private static final Logger _log = LoggerFactory.getLogger(AdminManipulateAI.class);
 	
 	private static enum Commands

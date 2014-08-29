@@ -1,9 +1,9 @@
 package blood.ai.impl;
 
-import blood.utils.ClassFunctions;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
+import blood.utils.ClassFunctions;
 
 public class FPCAeore extends HealerPC
 {
@@ -97,14 +97,17 @@ public class FPCAeore extends HealerPC
 		Party party = player.getParty();
 		
 		double lowestHpPercent = 100d;
+		@SuppressWarnings("unused")
 		Player lowestHpMember = null;
 		double lowestMpPercent = 100d;
 		Player lowestMpMember = null;
 		
 		int hp75 = 0;
+		@SuppressWarnings("unused")
 		int mp75 = 0;
 		int hp50 = 0;
 		int mp50 = 0;
+		@SuppressWarnings("unused")
 		int hp25 = 0;
 		int mp25 = 0;
 		

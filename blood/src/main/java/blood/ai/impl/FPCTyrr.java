@@ -63,9 +63,6 @@ public class FPCTyrr extends WarriorPC
 		Player player = getActor();
 		
 		double distance = player.getDistance(target);
-//		double targetHp = target.getCurrentHpPercents();
-//		double actorHp = actor.getCurrentHpPercents();
-		double actorMp = player.getCurrentMpPercents();
 		
 		/* charge task */
 		int maxCharge = player.getSkillLevel(10301) != -1 ? 15 : Charge.MAX_CHARGE;
@@ -78,9 +75,6 @@ public class FPCTyrr extends WarriorPC
 		
 		if(player.getIncreasedForce() == maxCharge && player.getEffectList().containsEffects(SKILL_Momentum_Charge))
 			player.getEffectList().stopEffects(SKILL_Momentum_Charge);
-		
-//		if(actorMp < 20)
-//			return chooseTaskAndTargets(null, target, distance);
 		
 		/* rush task */
 		

@@ -3,7 +3,7 @@ package blood.base;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassLevel;
-import blood.Blood;
+import blood.BloodConfig;
 import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
 import blood.ai.IdleFPC;
@@ -54,9 +54,9 @@ import blood.ai.impl.LowLevelFarming;
 import blood.ai.impl.MysticPC;
 
 public enum FPCRole {
-	IDLE("idle", Blood.FPC_IDLE),
-	NEXUS_EVENT("nexus", Blood.FPC_NEXUS),
-	MARKET("market", Blood.FPC_MARKET);
+	IDLE("idle", BloodConfig.FPC_IDLE),
+	NEXUS_EVENT("nexus", BloodConfig.FPC_NEXUS),
+	MARKET("market", BloodConfig.FPC_MARKET);
 	
 	private String _name;
 	private FPCBase _players = new FPCBase();

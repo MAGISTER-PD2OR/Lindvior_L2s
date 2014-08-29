@@ -2,7 +2,6 @@ package blood.ai.impl;
 
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.Skill;
 import l2s.gameserver.utils.Location;
 
 /**

@@ -1,8 +1,5 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import l2s.gameserver.model.Player;
 
 public class FPCGhostSentinel extends RangerPC
@@ -14,8 +11,6 @@ public class FPCGhostSentinel extends RangerPC
 
 	public void prepareSkillsSetup()
 	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
 		//skill 2nd
 		_allowSkills.add(19);	//Double Shot
 		_allowSkills.add(101);	//Stun Shot
@@ -34,8 +29,6 @@ public class FPCGhostSentinel extends RangerPC
 		_allowSkills.add(459);	//Symbol of the Sniper
 		_allowSkills.add(924);	//Seven Arrow
 		_allowSkills.add(773);	//God Piercing
-		
-		super.prepareSkillsSetup();
 	}
 	
 }

@@ -4,13 +4,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import l2mq.L2MQ;
 import l2s.gameserver.Config;
 import l2s.gameserver.cache.ItemInfoCache;
-import l2s.gameserver.data.xml.holder.FakePlayersHolder;
 import l2s.gameserver.dao.HidenItemsDAO;
 import l2s.gameserver.handler.voicecommands.IVoicedCommandHandler;
 import l2s.gameserver.handler.voicecommands.VoicedCommandHandler;
@@ -20,7 +16,6 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.World;
 import l2s.gameserver.model.entity.olympiad.OlympiadGame;
 import l2s.gameserver.model.instances.FakePlayerInstance;
-import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.model.matching.MatchingRoom;
 import l2s.gameserver.model.pledge.Alliance;
@@ -37,6 +32,8 @@ import l2s.gameserver.utils.MapUtils;
 import l2s.gameserver.utils.Strings;
 import l2s.gameserver.utils.Util;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

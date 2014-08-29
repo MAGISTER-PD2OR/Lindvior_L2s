@@ -1,7 +1,5 @@
 package blood.ai.impl;
 
-import java.util.ArrayList;
-
 import l2s.gameserver.model.Player;
 
 public class FPCSpectraDancer extends TankerPC
