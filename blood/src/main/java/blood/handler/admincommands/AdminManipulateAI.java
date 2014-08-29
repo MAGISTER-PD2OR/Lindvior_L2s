@@ -3,6 +3,7 @@ package blood.handler.admincommands;
 import l2s.gameserver.ai.PlayerAI;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.Skill;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,8 @@ public class AdminManipulateAI implements IAdminCommandHandler
 	{
 		admin_tryai_party, 
 		admin_tryai,
-		admin_stopai
+		admin_stopai,
+		admin_dump_skills
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -56,6 +58,13 @@ public class AdminManipulateAI implements IAdminCommandHandler
 			case admin_stopai:
 				activeChar.setAI(new PlayerAI(activeChar));
 				break;
+				
+			case admin_dump_skills:
+				for(Skill skill: activeChar.getAllSkillsArray())
+				{
+					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "");
+					System.out.println("SKILL_"+niceName+" = "+skill.getId()+",");
+				}
 			
 		}
 		return true;
