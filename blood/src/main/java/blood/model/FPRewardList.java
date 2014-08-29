@@ -13,7 +13,7 @@ import blood.data.holder.FPItemHolder;
 
 public class FPRewardList 
 {
-	public final static HashSet<Integer> _all_used_items 	= new HashSet<Integer>();
+	public final static HashSet<Integer> _all_used_items 		= new HashSet<Integer>();
 	public final static String PLAYER_VAR_SAVE 					= "_last_fpreward_list";
 	
 	public final HashSet<Integer> 			_class_ids 		= new HashSet<Integer>();
@@ -65,6 +65,7 @@ public class FPRewardList
 	
 	public void addItem(int item_id, int amount){
 		_reward_items.put(item_id, amount);
+		_all_used_items.add(item_id);
 	}
 	
 	public boolean isValidLevel(int level)
@@ -74,7 +75,7 @@ public class FPRewardList
 	
 	public boolean isValidClass(int class_id)
 	{
-		return _class_ids.contains(class_id);
+		return getClasses().contains(class_id);
 	}
 	
 	public boolean isValidType(boolean is_mage)
