@@ -11,7 +11,6 @@ import blood.ai.MarketFPC;
 import blood.ai.impl.FPCAdventurer;
 import blood.ai.impl.FPCAeore;
 import blood.ai.impl.FPCArcarnaLord;
-import blood.ai.impl.FPCArchmage;
 import blood.ai.impl.FPCBishop;
 import blood.ai.impl.FPCDominator;
 import blood.ai.impl.FPCDoomBringer;
@@ -31,17 +30,14 @@ import blood.ai.impl.FPCJudicator;
 import blood.ai.impl.FPCMaestro;
 import blood.ai.impl.FPCMaleSoulhound;
 import blood.ai.impl.FPCMoonlightSentinel;
-import blood.ai.impl.FPCMysticMuse;
 import blood.ai.impl.FPCOthell;
 import blood.ai.impl.FPCPhoenixKnight;
 import blood.ai.impl.FPCSagittarius;
 import blood.ai.impl.FPCShilenElder;
 import blood.ai.impl.FPCShillienTemplar;
 import blood.ai.impl.FPCSigel;
-import blood.ai.impl.FPCSoultaker;
 import blood.ai.impl.FPCSpectraDancer;
 import blood.ai.impl.FPCSpectraMaster;
-import blood.ai.impl.FPCStormScreamer;
 import blood.ai.impl.FPCSwordMuse;
 import blood.ai.impl.FPCTitan;
 import blood.ai.impl.FPCTrickster;
@@ -265,25 +261,12 @@ public enum FPCRole {
 	        	case SHILLEN_ELDER:
 	        		return new FPCShilenElder(player);
 	        	//Summoner
-	        	case NECROMANCER:
-	        	case SOULTAKER:
-	        		return new FPCSoultaker(player);
 	        	case WARLOCK:
 	        	case ARCANA_LORD:
 	        		return new FPCArcarnaLord(player);
 	        	case PHANTOM_SUMMONER:
 	        	case SPECTRAL_MASTER:
 	        		return new FPCSpectraMaster(player);
-	        	//Nuker
-	        	case SORCERER:
-	        	case ARCHMAGE:
-	        		return new FPCArchmage(player);
-	        	case SPELLSINGER:
-	        	case MYSTIC_MUSE:
-	        		return new FPCMysticMuse(player);
-	        	case SPELLHOWLER:
-	        	case STORM_SCREAMER:
-	        		return new FPCStormScreamer(player);
 	        	//Orcish Mystic
 	        	case WARCRYER:
 	        	case DOOMCRYER:
@@ -294,6 +277,14 @@ public enum FPCRole {
 	        	case WIZARD:
 	        	case ELVEN_WIZARD:
 	        	case DARK_WIZARD:
+	        	case NECROMANCER:
+	        	case SOULTAKER:
+	        	case SORCERER:
+	        	case ARCHMAGE:
+	        	case SPELLSINGER:
+	        	case MYSTIC_MUSE:
+	        	case SPELLHOWLER:
+	        	case STORM_SCREAMER:
 	        		return new FPCWizzard(player);
         		default:
         			return new MysticPC(player);
@@ -420,19 +411,10 @@ public enum FPCRole {
         	case "se":
         		return new FPCShilenElder(player);
         	//Summoner
-        	case "nec":
-        		return new FPCSoultaker(player);
         	case "wlock":
         		return new FPCArcarnaLord(player);
         	case "ps":
         		return new FPCSpectraMaster(player);
-        	//Nuker
-        	case "soc":
-        		return new FPCArchmage(player);
-        	case "sps":
-        		return new FPCMysticMuse(player);
-        	case "sh":
-        		return new FPCStormScreamer(player);
         	//Orcish Mystic
         	case "wc":
         		return new FPCDoomcryer(player);
