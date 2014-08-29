@@ -62,6 +62,8 @@ public class AdminManipulateAI implements IAdminCommandHandler
 			case admin_dump_skills:
 				for(Skill skill: activeChar.getAllSkillsArray())
 				{
+					if(skill.isPassive())
+						continue;
 					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "");
 					System.out.println("SKILL_"+niceName+" = "+skill.getId()+",");
 				}
