@@ -836,7 +836,12 @@ public class FPCDefaultAI extends PlayerAI
 	}
 	
 	private long _upClassLTS = 0L;
-	private final int _upClassInteval = 3*60*1000;
+	private final int _upClassInteval = 1*60*1000;
+	
+	protected boolean isAllowClass()
+	{
+		return true;
+	}
 	
 	private boolean thinkClass() {
 		
@@ -845,8 +850,13 @@ public class FPCDefaultAI extends PlayerAI
 		
 		_upClassLTS = System.currentTimeMillis() + _upClassInteval;
 		
-		ClassFunctions.upClass(getActor());
+		boolean hasNewClass = ClassFunctions.upClass(getActor());
 		rewardSkillsFPC();
+		if(hasNewClass && !isAllowClass())
+		{
+			getFPCInfo().updateAI();
+		}
+		
 		return true;
 	}
 	

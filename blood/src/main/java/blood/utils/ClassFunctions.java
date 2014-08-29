@@ -217,16 +217,21 @@ public class ClassFunctions {
 		return true;
 	}
 
-	public static void upClass(Player player)
+	public static boolean upClass(Player player)
 	{
 		if (player == null)
-			return;
+			return false;
 		
 		boolean tryUpClass = true;
+		int count = 0;
 		while(tryUpClass)
 		{
 			tryUpClass = tryUpClass(player);
+			if(tryUpClass)
+				count++;
 		}
+		
+		return count > 0;
 	}	
 
 	public static boolean canPveSolo(Player player)

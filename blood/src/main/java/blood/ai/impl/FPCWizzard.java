@@ -37,9 +37,22 @@ public class FPCWizzard extends MysticPC
 	}
 	
 	public void prepareSkillsSetup() {
-		_allowSkills.add(SKILL_SUMMON_KAT_THE_CAT);
-		_allowSkills.add(SKILL_SUMMON_BOXER_UNICORN);
-		_allowSkills.add(SKILL_SUMMON_SHADOW);
+	}
+	
+	protected boolean isAllowClass()
+	{
+		Player player = getActor();
+		switch(player.getClassId()){
+		case HUMAN_MAGE:
+		case WIZARD:
+		case ELVEN_MAGE:
+		case ELVEN_WIZARD:
+		case DARK_MAGE:
+		case DARK_WIZARD:
+			return true;
+		default:
+			return false;
+		}
 	}
 	
 	@Override

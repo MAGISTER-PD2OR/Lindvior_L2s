@@ -152,22 +152,24 @@ public class FPCInfo
 		
 		if(_role != null)
 		{
-			setAI(_role.getAI(getActor()));
-			if(_role == FPCRole.NEXUS_EVENT)
-			{
-				if(ClassFunctions.canPveSolo(getActor()))
-	            {
-		        	_pveStyle = FPCPveStyle.SOLO;
-		        	_log.info(getActor() + " going solo.");
-	            }
-	            else
-	            {
-	            	setParty();
-//	            	_log.info(_actor + " going to party, size:" + _party.getSize());
-	            }
+			updateAI();
+		}
+	}
+	
+	public void updateAI()
+	{
+		setAI(_role.getAI(getActor()));
+		if(_role == FPCRole.NEXUS_EVENT)
+		{
+			if(ClassFunctions.canPveSolo(getActor()))
+            {
+	        	_pveStyle = FPCPveStyle.SOLO;
+            }
+            else
+            {
+            	setParty();
+            }
 
-			}
-//			_log.info("SetRole: " + getActor().getAI());
 		}
 	}
 	
