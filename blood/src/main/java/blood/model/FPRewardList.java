@@ -166,7 +166,7 @@ public class FPRewardList
 	{
 		if(isGear(item) && !item.isEquipped())
 			player.useItem(item, false);
-		else if(isShot(item) && player.getAutoSoulShot().contains(item.getItemId()))
+		else if(isShot(item) && !player.getAutoSoulShot().contains(item.getItemId()))
 			player.addAutoSoulShot(item.getItemId());
 	}
 	
