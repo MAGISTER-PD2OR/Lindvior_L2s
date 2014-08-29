@@ -125,7 +125,7 @@ public class EventFPC extends FPCDefaultAI
 		
 		Player player = getActor();
 		
-		if(player.getServitors().length < getMaxSummon()  && player.getCurrentMp() > 300)
+		if(player.getLevel() > 40 && player.getServitors().length < getMaxSummon()  && player.getCurrentMp() > 300)
 		{
 			for(Skill skill: _sumSkills)
 			{
@@ -237,10 +237,10 @@ public class EventFPC extends FPCDefaultAI
 				superiorSkill = getSkill(9376, 1);
 
 			if(superiorSkill.getId() == 15649)
-				superiorSkill = getSkill(9377, 1);
+				superiorSkill = getSkill(9378, 1);
 			
 			if(superiorSkill.getId() == 15650)
-				superiorSkill = getSkill(9378, 1);
+				superiorSkill = getSkill(9377, 1);
 			
 			skills.add(superiorSkill);
 		}
