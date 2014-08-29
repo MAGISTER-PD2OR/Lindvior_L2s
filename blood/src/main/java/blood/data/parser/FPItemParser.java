@@ -71,12 +71,11 @@ public final class FPItemParser extends AbstractFileParser<FPItemHolder>
 			int min_level = Integer.parseInt(rewardElement.attributeValue("min_level"));
 			int max_level = Integer.parseInt(rewardElement.attributeValue("max_level"));
 			int weight = rewardElement.attributeValue("weight") != null ? Integer.parseInt(rewardElement.attributeValue("weight")) : 1;
-			String name = rewardElement.attributeValue("name");
 			boolean is_mage = rewardElement.attributeValue("is_mage") != null ? Boolean.parseBoolean(rewardElement.attributeValue("is_mage")) : false;
 			boolean is_abstract = rewardElement.attributeValue("is_abstract") != null ? Boolean.parseBoolean(rewardElement.attributeValue("is_abstract")) : false;
 			int parent_id = rewardElement.attributeValue("parent_id") != null ? Integer.parseInt(rewardElement.attributeValue("parent_id")) : 0;
 			
-			FPRewardList rewardList = new FPRewardList(reward_id, min_level, max_level, parent_id, weight, is_abstract, is_mage, name);
+			FPRewardList rewardList = new FPRewardList(reward_id, min_level, max_level, parent_id, weight, is_abstract, is_mage);
 			
 			for (Element subElement: rewardElement.elements())
 			{

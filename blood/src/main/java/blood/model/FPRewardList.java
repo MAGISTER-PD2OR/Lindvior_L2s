@@ -27,9 +27,8 @@ public class FPRewardList
 	public final int						_min_level;
 	public final int						_max_level;
 	public final int						_weight;
-	public final String						_name;
 		
-	public FPRewardList(int id, int min_level, int max_level, int parent_id, int weight, boolean is_abstract, boolean is_mage, String name)
+	public FPRewardList(int id, int min_level, int max_level, int parent_id, int weight, boolean is_abstract, boolean is_mage)
 	{
 		_id = id;
 		_min_level = min_level;
@@ -38,7 +37,6 @@ public class FPRewardList
 		_weight = weight;
 		_is_abstract = is_abstract;
 		_is_mage = is_mage;
-		_name = name;
 	}
 	
 	public int getId() {
