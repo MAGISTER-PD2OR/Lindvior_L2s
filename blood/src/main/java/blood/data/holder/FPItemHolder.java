@@ -66,8 +66,10 @@ public final class FPItemHolder extends AbstractHolder
 				
 		if(count == 0)
 			for(FPRewardList reward_list: _rewards.values())
-				if(reward_list.isValidCommon(player))
-					return reward_list;
+				if(reward_list.isValidCommon(player)){
+					rndFactor.add(reward_list, reward_list.getWeight());
+					count++;
+				}
 		
 		return rndFactor.select();
 	}
