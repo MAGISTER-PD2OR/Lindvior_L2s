@@ -65,7 +65,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				{
 					if(skill.isPassive())
 						continue;
-					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "");
+					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "").replace(":", "");
 					System.out.println("SKILL_"+niceName+" = "+skill.getId()+",");
 				}
 				System.out.println("======= End Skill list of "+activeChar.getClassId()+" =======");
