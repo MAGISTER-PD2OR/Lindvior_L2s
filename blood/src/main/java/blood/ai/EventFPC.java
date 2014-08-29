@@ -21,8 +21,9 @@ import l2s.gameserver.utils.Location;
 import l2s.gameserver.utils.PositionUtils;
 import blood.FPCInfo;
 import blood.base.FPCPveStyle;
+import blood.data.holder.FPItemHolder;
 import blood.data.holder.FarmLocationHolder;
-import blood.model.FPReward;
+import blood.model.FPRewardList;
 import blood.model.FarmLocation;
 
 public class EventFPC extends FPCDefaultAI
@@ -34,13 +35,18 @@ public class EventFPC extends FPCDefaultAI
 			_nextBuffRound 		= 0, 
 			_nextSummonRound 	= 0, 
 			_nextSumCubicRound 	= 0, 
-			_nextEquipRound 	= 0;
+			_nextEquipRound 	= 0,
+			_equipInterval		= 30*1000;
+	
+	protected FPRewardList _reward_list = null;
 	
 	
 	
 	public EventFPC(Player actor)
 	{
 		super(actor);
+		
+		_equipInterval = Rnd.get(30000L, 40000L);
 		//_is_debug = false;
 	}
 	
@@ -65,8 +71,14 @@ public class EventFPC extends FPCDefaultAI
 		if(_nextEquipRound > System.currentTimeMillis())
 			return false;
 		
-		_nextEquipRound = System.currentTimeMillis() + 30000;
-		FPReward.getInstance().giveReward(getActor());
+		_nextEquipRound = System.currentTimeMillis() + _equipInterval;
+		
+		Player player = getActor();
+		
+		if(_reward_list == null || !_reward_list.isValid(player))
+			_reward_list = FPItemHolder.getRewardList(player, true);
+		
+		_reward_list.distributeAll(player);
 		return true;
 	}
 

@@ -20,7 +20,7 @@ import blood.ai.FPCDefaultAI;
 import blood.base.FPCParty;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
-import blood.model.FPReward;
+import blood.data.holder.FPItemHolder;
 import blood.table.FPCMerchantTable;
 import blood.utils.ClassFunctions;
 
@@ -220,7 +220,7 @@ public class AdminFakePlayers implements IAdminCommandHandler
 //				World.getPlayer(char_name);
 			break;
 			case admin_fp_equip:
-				FPReward.getInstance().giveReward(activeChar);
+				FPItemHolder.equip(activeChar, false);
 			break;
 			case admin_fp_class:
 				ClassFunctions.upClass(activeChar);

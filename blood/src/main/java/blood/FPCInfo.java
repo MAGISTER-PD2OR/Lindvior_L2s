@@ -25,8 +25,8 @@ import blood.base.FPCParty;
 import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
+import blood.data.holder.FPItemHolder;
 import blood.data.holder.FarmLocationHolder;
-import blood.model.FPReward;
 import blood.table.MerchantItem;
 import blood.utils.ClassFunctions;
 import blood.utils.MerchantFunctions;
@@ -289,7 +289,7 @@ public class FPCInfo
             _isMage = player.isMageClass();
             _classId = player.getClassId();
             
-            FPReward.getInstance().giveReward(player);
+            FPItemHolder.equip(player, true);
             
             player.broadcastCharInfo();
             

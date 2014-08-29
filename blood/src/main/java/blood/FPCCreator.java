@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import blood.dao.FakeNameDAO;
 import blood.dao.FakePlayerDAO;
-import blood.model.FPReward;
+import blood.data.holder.FPItemHolder;
 import blood.utils.ClassFunctions;
 import blood.utils.NameFunctions;
 
@@ -262,7 +262,7 @@ public class FPCCreator
     	newChar.addExpAndSp(exp_add, 0, true);
     	
     	ClassFunctions.upClass(newChar);
-    	FPReward.getInstance().giveReward(newChar);
+    	FPItemHolder.equip(newChar, true);
 
 		newChar.store(false);
 		newChar.getInventory().store();

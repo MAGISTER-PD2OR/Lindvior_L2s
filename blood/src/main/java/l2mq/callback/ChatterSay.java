@@ -81,6 +81,8 @@ public class ChatterSay implements GearmanFunction {
 							member.sendPacket(cs);
 					}
 				
+				break;
+				
 			case CLAN:
 				if(activeChar.getClan() != null)
 					for(UnitMember member : activeChar.getClan())
