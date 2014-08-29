@@ -58,7 +58,6 @@ public class FPCInfo
 		_obj_id = obj_id;
 		setStatus(FPCSpawnStatus.OFFLINE);
 		_instances.addInfo(this);
-		
 	}
 	
 	public FPCInfo(Player player)
@@ -159,7 +158,7 @@ public class FPCInfo
 	public void updateAI()
 	{
 		Player player = getActor();
-		FPCDefaultAI newAI = _role.getAI(player);
+		FPCDefaultAI newAI = _role != null ? _role.getAI(player) : FPCRole.NEXUS_EVENT.getAI(player);
 		setAI(newAI);
 		if(_role == FPCRole.NEXUS_EVENT)
 		{

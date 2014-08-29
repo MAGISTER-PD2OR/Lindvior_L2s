@@ -2209,9 +2209,6 @@ public class FPCDefaultAI extends PlayerAI
 		return 10000;
 	}
 	
-	protected FPCParty _fpcParty = null;
-	
-	
 	public FPCInfo getFPCInfo() {
 		return FPCInfo.getInstance(getActor());
 	}
