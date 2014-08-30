@@ -7,9 +7,11 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.base.AcquireType;
+import l2s.gameserver.model.base.ClassId;
 import l2s.gameserver.tables.SkillTable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +67,21 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				break;
 				
 			case admin_dump_skills:
-				System.out.println("//======= Start Skill list of "+activeChar.getClassId()+" =======");
+				
+				ClassId activeClass = activeChar.getClassId();
+				String className = WordUtils.capitalize(activeClass.toString());
+				
+				if(activeChar.getClassLevel() > 0)
+				{
+					ClassId parentClass = activeClass.getParent(activeChar.getSex().ordinal());
+					String parentName = WordUtils.capitalize(parentClass.toString());
+					System.out.println("\tpublic class "+className+" extends "+parentName+" {");
+				}
+				else
+					System.out.println("\tpublic class "+className+" {");
+				
+				System.out.println("\t\tpublic static final int");
+				System.out.println("\t\t//======= Start Skill list of "+className+" =======");
 				for(SkillLearn sl : SkillAcquireHolder.getInstance().getAvailableMaxLvlSkills(activeChar, AcquireType.NORMAL))
 				{
 					if(sl.getMinLevel() < 20 && activeChar.getClassLevel() > 0)
@@ -87,11 +103,14 @@ public class AdminManipulateAI implements IAdminCommandHandler
 					
 					
 					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "").replace(":", "");
-					String tabs = StringUtils.repeat("\t", (40 - niceName.length())/4);
-					System.out.println("SKILL_"+niceName+tabs+"= "+skill.getId()+", // Lv."+skill.getLevel());
+					double tab_repeat = Math.floor((40 - niceName.length())/4.);
+					String tabs = StringUtils.repeat("\t", (int) tab_repeat);
+					System.out.println("\t\tSKILL_"+niceName+tabs+"= "+skill.getId()+", // Lv."+skill.getLevel());
 					
 				}
-				System.out.println("//======= End Skill list of "+activeChar.getClassId()+" =======");
+				System.out.println("\t\t//======= End Skill list of "+className+" =======");
+				System.out.println("\t\tSKILL_DUMMY = 1;");
+				System.out.println("\t};");
 			
 		}
 		return true;
