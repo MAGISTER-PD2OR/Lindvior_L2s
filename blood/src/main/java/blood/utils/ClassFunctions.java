@@ -234,51 +234,44 @@ public class ClassFunctions {
 		return count > 0;
 	}	
 
-	public static boolean canPveSolo(Player player)
-		{
-			if(player == null)
-				return false;
-			
-			switch(player.getClassId())
-			{
-				case FEOH_ARCHMAGE:
-				case FEOH_MYSTIC_MUSE:
-				case FEOH_SOUL_HOUND:
-				case FEOH_SOULTAKER:
-				case FEOH_STORM_SCREAMER:
-				case FEOH_WIZARD:
-				case WYNN_ARCANA_LORD:
-				case WYNN_ELEMENTAL_MASTER:
-				case WYNN_SPECTRAL_MASTER:
-				case WYNN_SUMMONER:
-	//			case ISS_DOMINATOR:
-	//			case ISS_DOOMCRYER:
-	//			case ISS_ENCHANTER:
-	//			case ISS_HIEROPHANT:
-	//			case ISS_SPECTRAL_DANCER:
-	//			case ISS_SWORD_MUSE:
-					return player.getLevel() < 91 && Rnd.chance(30);
-					
-				default:
-					return false;
-			}
-		}
+	public static boolean canPveSolo(Player player){
+		// reject null
+		if(player == null)
+			return false;
+		
+		// we can solo until 3rd
+		if(player.getClassLevel() < 3)
+			return true;
+		
+		// we can't solo after level 90
+		if(player.getLevel() > 90)
+			return false;
+		
+		// 30% damage dealer go solo
+		if(isDamageDealer(player))
+			return Rnd.chance(30);
+		
+		return false;
+	}
 
 	public static boolean isTanker(Player player){
 		if(player == null)
 			return false;
 		
-		switch(player.getClassId())
-		{
-			case SIGEL_PHOENIX_KNIGHT:
-			case SIGEL_HELL_KNIGHT:
-			case SIGEL_EVAS_TEMPLAR:
-			case SIGEL_SHILLIEN_TEMPLAR:
-			case SIGEL_KNIGHT:
-				return true;
-			
-			default:
-				return false;
+		switch(player.getClassId()){
+		case PHOENIX_KNIGHT:
+		case HELL_KNIGHT:
+		case EVAS_TEMPLAR:
+		case SHILLIEN_TEMPLAR:
+		case SIGEL_PHOENIX_KNIGHT:
+		case SIGEL_HELL_KNIGHT:
+		case SIGEL_EVAS_TEMPLAR:
+		case SIGEL_SHILLIEN_TEMPLAR:
+		case SIGEL_KNIGHT:
+			return true;
+		
+		default:
+			return false;
 		}
 	}
 
@@ -286,18 +279,22 @@ public class ClassFunctions {
 		if(player == null)
 			return false;
 		
-		switch(player.getClassId())
-		{
-			case ISS_HIEROPHANT:
-			case ISS_SWORD_MUSE:
-			case ISS_SPECTRAL_DANCER:
-			case ISS_DOOMCRYER:
-			case ISS_DOMINATOR:
-			case ISS_ENCHANTER:
-				return true;
-			
-			default:
-				return false;
+		switch(player.getClassId()){
+		case HIEROPHANT:
+		case SWORD_MUSE:
+		case SPECTRAL_DANCER:
+		case DOOMCRYER:
+		case DOMINATOR:
+		case ISS_HIEROPHANT:
+		case ISS_SWORD_MUSE:
+		case ISS_SPECTRAL_DANCER:
+		case ISS_DOOMCRYER:
+		case ISS_DOMINATOR:
+		case ISS_ENCHANTER:
+			return true;
+		
+		default:
+			return false;
 		}
 	}
 
@@ -305,15 +302,17 @@ public class ClassFunctions {
 		if(player == null)
 			return false;
 		
-		switch(player.getClassId())
-		{
-			case AEORE_CARDINAL:
-			case AEORE_EVAS_SAINT:
-			case AEORE_SHILLIEN_SAINT:
-				return true;
-			
-			default:
-				return false;
+		switch(player.getClassId()){
+		case CARDINAL:
+		case EVAS_SAINT:
+		case SHILLIEN_SAINT:
+		case AEORE_CARDINAL:
+		case AEORE_EVAS_SAINT:
+		case AEORE_SHILLIEN_SAINT:
+			return true;
+		
+		default:
+			return false;
 		}
 	}
 
@@ -321,7 +320,16 @@ public class ClassFunctions {
 		if(player == null)
 			return false;
 		
-		return player.getClassId().isOfLevel(ClassLevel.AWAKED) && !isTanker(player) && !isIss(player) && !isHealer(player);
+		if(isTanker(player))
+			return false;
+		
+		if(isIss(player))
+			return false;
+		
+		if(isHealer(player))
+			return false;
+		
+		return true;
 	}
 
 }
