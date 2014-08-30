@@ -69,19 +69,19 @@ public class AdminManipulateAI implements IAdminCommandHandler
 			case admin_dump_skills:
 				
 				ClassId activeClass = activeChar.getClassId();
-				String className = WordUtils.capitalize(activeClass.toString());
+				String className = getClassName(activeClass);
 				
 				if(activeChar.getClassLevel() > 0)
 				{
 					ClassId parentClass = activeClass.getParent(activeChar.getSex().ordinal());
-					String parentName = WordUtils.capitalize(parentClass.toString());
+					String parentName = getClassName(parentClass);
 					System.out.println("\tpublic class "+className+" extends "+parentName+" {");
 				}
 				else
 					System.out.println("\tpublic class "+className+" {");
 				
 				System.out.println("\t\tpublic static final int");
-				System.out.println("\t\t//======= Start Skill list of "+className+" =======");
+				System.out.println("\t\t//======= Start Skill list of "+className+" ID:"+activeClass.ordinal()+"=======");
 				for(SkillLearn sl : SkillAcquireHolder.getInstance().getAvailableMaxLvlSkills(activeChar, AcquireType.NORMAL))
 				{
 					if(sl.getMinLevel() < 20 && activeChar.getClassLevel() > 0)
@@ -108,12 +108,17 @@ public class AdminManipulateAI implements IAdminCommandHandler
 					System.out.println("\t\tSKILL_"+niceName+tabs+"= "+skill.getId()+", // Lv."+skill.getLevel());
 					
 				}
-				System.out.println("\t\t//======= End Skill list of "+className+" =======");
-				System.out.println("\t\tSKILL_DUMMY = 1;");
+				System.out.println("\t\t//======= End Skill list of "+className+" ID:"+activeClass.ordinal()+"=======");
+				System.out.println("\t\t;");
 				System.out.println("\t};");
 			
 		}
 		return true;
+	}
+	
+	public String getClassName(ClassId classId)
+	{
+		return WordUtils.capitalize(classId.toString().toLowerCase().replace("_", " ")).replace(" ", "");
 	}
 	
 
