@@ -261,7 +261,7 @@ public class FPCCreator
     	Long exp_add = Experience.LEVEL[newLevel] - newChar.getExp();
     	newChar.addExpAndSp(exp_add, 0, true);
     	
-    	ClassFunctions.upClass(newChar);
+//    	ClassFunctions.upClass(newChar);
     	FPItemHolder.equip(newChar, true);
 
 		newChar.store(false);

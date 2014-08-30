@@ -4,6 +4,7 @@ import blood.ai.impl.FPSkills.*;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
+import l2s.gameserver.model.base.ClassId;
 import l2s.gameserver.templates.item.WeaponTemplate;
 import l2s.gameserver.templates.item.WeaponTemplate.WeaponType;
 
@@ -82,6 +83,7 @@ public class FPCWizzard extends MysticPC
 		Player player = getActor();
 		double distance = player.getDistance(target);
 		double playerHP = player.getCurrentHpPercents();
+		double playerMP = player.getCurrentMpPercents();
 		
 		for(Servitor summon: player.getServitors())
 		{
@@ -97,7 +99,7 @@ public class FPCWizzard extends MysticPC
 				return tryCastSkill(StormScreamer.SKILL_VAMPIRIC_CLAW, target, distance);
 		}
 		
-		if(playerHP > 50 && canUseSkill(StormScreamer.SKILL_BODY_TO_MIND, player))
+		if(playerHP > 50 && playerMP < 80 && canUseSkill(StormScreamer.SKILL_BODY_TO_MIND, player))
 			return tryCastSkill(StormScreamer.SKILL_BODY_TO_MIND, player);
 		
 		if(canUseSkill(Soultaker.SKILL_CURSE_GLOOM, target, distance))
@@ -109,7 +111,7 @@ public class FPCWizzard extends MysticPC
 		if(canUseSkill(MysticMuse.SKILL_SURRENDER_TO_WATER, target, distance))
 			return tryCastSkill(MysticMuse.SKILL_SURRENDER_TO_WATER, target, distance);
 		
-		if(canUseSkill(StormScreamer.SKILL_SURRENDER_TO_WIND, target, distance))
+		if(canUseSkill(StormScreamer.SKILL_SURRENDER_TO_WIND, target, distance) && !player.getClassId().equalsOrChildOf(ClassId.NECROMANCER))
 			return tryCastSkill(StormScreamer.SKILL_SURRENDER_TO_WIND, target, distance);
 		
 		if(player.getLevel() < 40)
