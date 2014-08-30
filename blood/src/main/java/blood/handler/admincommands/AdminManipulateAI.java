@@ -68,12 +68,23 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				System.out.println("//======= Start Skill list of "+activeChar.getClassId()+" =======");
 				for(SkillLearn sl : SkillAcquireHolder.getInstance().getAvailableMaxLvlSkills(activeChar, AcquireType.NORMAL))
 				{
+					if(sl.getMinLevel() < 20 && activeChar.getClassLevel() > 0)
+						continue;
+					
+					if(sl.getMinLevel() < 40 && activeChar.getClassLevel() > 1)
+						continue;
+					
+					if(sl.getMinLevel() < 76 && activeChar.getClassLevel() > 2)
+						continue;
+					
 					Skill skill = SkillTable.getInstance().getInfo(sl.getId(), sl.getLevel());
 					if(skill == null)
 						continue;
 					
 					if(skill.isPassive())
 						continue;
+					
+					
 					
 					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "").replace(":", "");
 					String tabs = StringUtils.repeat("\t", (40 - niceName.length())/4);
