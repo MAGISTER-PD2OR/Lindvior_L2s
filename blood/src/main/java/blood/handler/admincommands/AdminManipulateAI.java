@@ -64,7 +64,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				break;
 				
 			case admin_dump_skills:
-				System.out.println("======= Start Skill list of "+activeChar.getClassId()+" =======");
+				System.out.println("//======= Start Skill list of "+activeChar.getClassId()+" =======");
 				for(SkillLearn sl : SkillAcquireHolder.getInstance().getAvailableMaxLvlSkills(activeChar, AcquireType.NORMAL))
 				{
 					Skill skill = SkillTable.getInstance().getInfo(sl.getId(), sl.getLevel());
@@ -75,10 +75,10 @@ public class AdminManipulateAI implements IAdminCommandHandler
 						continue;
 					
 					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "").replace(":", "");
-					System.out.println("SKILL_"+niceName+" = "+skill.getId()+",");
+					System.out.println("SKILL_"+niceName+" = "+skill.getId()+", // Lv."+skill.getLevel());
 					
 				}
-				System.out.println("======= End Skill list of "+activeChar.getClassId()+" =======");
+				System.out.println("//======= End Skill list of "+activeChar.getClassId()+" =======");
 			
 		}
 		return true;
