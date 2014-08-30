@@ -43,7 +43,8 @@ public class FPCWizzard extends MysticPC
 		_allowSelfBuffSkills.add(StormScreamer.SKILL_SEED_OF_WIND);
 		_allowSelfBuffSkills.add(StormScreamer.SKILL_EMPOWERING_ECHO);
 		
-		_allowSkills.add(Soultaker.SKILL_SUMMON_CORRUPTED_MAN);
+		_allowSkills.add(Soultaker.SKILL_SUMMON_CURSED_MAN);
+		_allowSkills.add(Soultaker.SKILL_SUMMON_REANIMATED_MAN);
 	}
 	
 	protected boolean isAllowClass()

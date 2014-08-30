@@ -274,6 +274,10 @@ public enum FPCRole {
 	        	case OVERLORD:
 	        	case DOMINATOR:
 	        		return new FPCDominator(player);
+	        	case CLERIC:
+	        	case ORACLE:
+	        	case SHILLEN_ORACLE:
+	        		return new LowLevelFarming(player);
 	        	case WIZARD:
 	        	case ELVEN_WIZARD:
 	        	case DARK_WIZARD:
