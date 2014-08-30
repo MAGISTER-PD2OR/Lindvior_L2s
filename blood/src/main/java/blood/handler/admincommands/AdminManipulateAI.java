@@ -9,6 +9,7 @@ import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.base.AcquireType;
 import l2s.gameserver.tables.SkillTable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,8 @@ public class AdminManipulateAI implements IAdminCommandHandler
 						continue;
 					
 					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "").replace(":", "");
-					System.out.println("SKILL_"+niceName+" = "+skill.getId()+", // Lv."+skill.getLevel());
+					String tabs = StringUtils.repeat("\t", (40 - niceName.length())/4);
+					System.out.println("SKILL_"+niceName+tabs+" = "+skill.getId()+", // Lv."+skill.getLevel());
 					
 				}
 				System.out.println("//======= End Skill list of "+activeChar.getClassId()+" =======");
