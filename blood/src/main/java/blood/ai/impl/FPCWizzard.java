@@ -228,7 +228,7 @@ public class FPCWizzard extends MysticPC
 				return tryCastSkill(SKILL_VAMPIRIC_CLAW, target, distance);
 		}
 		
-		if(canUseSkill(SKILL_BODY_TO_MIND, player))
+		if(playerHP > 50 && canUseSkill(SKILL_BODY_TO_MIND, player))
 			return tryCastSkill(SKILL_BODY_TO_MIND, player);
 		
 		if(canUseSkill(SKILL_CURSE_GLOOM, target, distance))

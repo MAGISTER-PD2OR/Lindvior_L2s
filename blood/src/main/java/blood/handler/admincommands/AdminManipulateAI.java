@@ -1,9 +1,13 @@
 package blood.handler.admincommands;
 
 import l2s.gameserver.ai.PlayerAI;
+import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.SkillLearn;
+import l2s.gameserver.model.base.AcquireType;
+import l2s.gameserver.tables.SkillTable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,12 +65,18 @@ public class AdminManipulateAI implements IAdminCommandHandler
 				
 			case admin_dump_skills:
 				System.out.println("======= Start Skill list of "+activeChar.getClassId()+" =======");
-				for(Skill skill: activeChar.getAllSkillsArray())
+				for(SkillLearn sl : SkillAcquireHolder.getInstance().getAvailableMaxLvlSkills(activeChar, AcquireType.NORMAL))
 				{
+					Skill skill = SkillTable.getInstance().getInfo(sl.getId(), sl.getLevel());
+					if(skill == null)
+						continue;
+					
 					if(skill.isPassive())
 						continue;
+					
 					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "").replace(":", "");
 					System.out.println("SKILL_"+niceName+" = "+skill.getId()+",");
+					
 				}
 				System.out.println("======= End Skill list of "+activeChar.getClassId()+" =======");
 			
