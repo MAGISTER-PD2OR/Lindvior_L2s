@@ -467,9 +467,355 @@ public class FPSkills {
 		SKILL_DUMMY = 1;
 	}	
 
-	public class Dummy extends Rogue {
+	public class ElvenFighter {
 		public static final int
+		//======= Start Skill list of ElvenFighter ID:18=======
+		SKILL_POWER_STRIKE							= 3, // Lv.9
+		SKILL_MORTAL_BLOW							= 16, // Lv.9
+		SKILL_POWER_SHOT							= 56, // Lv.9
+		SKILL_ELEMENTAL_HEAL						= 58, // Lv.3
+		SKILL_ATTACK_AURA							= 77, // Lv.1
+		SKILL_DEFENSE_AURA							= 91, // Lv.1
+		//======= End Skill list of ElvenFighter ID:18=======
 		SKILL_DUMMY = 1;
-	}
+	};
+
+	public class ElvenKnight extends ElvenFighter {
+		public static final int
+		//======= Start Skill list of ElvenKnight ID:19=======
+		SKILL_CHARM									= 15, // Lv.15
+		SKILL_POISON_RECOVERY						= 21, // Lv.1
+		SKILL_AGGRESSION							= 28, // Lv.12
+		SKILL_ELEMENTAL_HEAL						= 58, // Lv.18
+		SKILL_CURE_BLEEDING							= 61, // Lv.1
+		SKILL_ATTACK_AURA							= 77, // Lv.2
+		SKILL_DEFENSE_AURA							= 91, // Lv.2
+		SKILL_ENTANGLE								= 102, // Lv.1
+		SKILL_ULTIMATE_DEFENSE						= 110, // Lv.1
+		SKILL_DEFLECT_ARROW							= 112, // Lv.2
+		SKILL_SPRINT								= 230, // Lv.1
+		//======= End Skill list of ElvenKnight ID:19=======
+		SKILL_DUMMY = 1;
+	};
+
+	public class TempleKnight extends ElvenKnight {
+		public static final int
+		//======= Start Skill list of TempleKnight ID:20=======
+		SKILL_SUMMON_STORM_CUBIC					= 10, // Lv.8
+		SKILL_CHARM								= 15, // Lv.52
+		SKILL_AURA_OF_HATE							= 18, // Lv.37
+		SKILL_POISON_RECOVERY						= 21, // Lv.3
+		SKILL_AGGRESSION							= 28, // Lv.49
+		SKILL_ELEMENTAL_HEAL						= 58, // Lv.55
+		SKILL_CURE_BLEEDING						= 61, // Lv.3
+		SKILL_SUMMON_LIFE_CUBIC					= 67, // Lv.7
+		SKILL_ENTANGLE								= 102, // Lv.16
+		SKILL_HOLY_AURA							= 107, // Lv.9
+		SKILL_ULTIMATE_DEFENSE						= 110, // Lv.2
+		SKILL_DEFLECT_ARROW						= 112, // Lv.4
+		SKILL_SPIRIT_BARRIER						= 123, // Lv.3
+		SKILL_HOLY_ARMOR							= 197, // Lv.2
+		SKILL_SPRINT								= 230, // Lv.2
+		SKILL_GUARD_STANCE							= 288, // Lv.4
+		SKILL_SHIELD_FORTRESS						= 322, // Lv.6
+		SKILL_TRIBUNAL								= 400, // Lv.10
+		SKILL_ARREST								= 402, // Lv.10
+		SKILL_SUMMON_ATTRACTIVE_CUBIC				= 449, // Lv.4
+		SKILL_VANGUARD								= 812, // Lv.1
+		SKILL_SHIELD_DEFLECT_MAGIC					= 916, // Lv.4
+		SKILL_COMBAT_AURA							= 982, // Lv.3
+		SKILL_SHIELD_STRIKE						= 984, // Lv.15
+		//======= End Skill list of TempleKnight ID:20=======
+		SKILL_DUMMY = 1;
+	};
+
+	public class Swordsinger extends ElvenKnight {
+		public static final int
+		//======= Start Skill list of Swordsinger ID:21=======
+		SKILL_CHARM								= 15, // Lv.52
+		SKILL_POISON_RECOVERY						= 21, // Lv.3
+		SKILL_ELEMENTAL_HEAL						= 58, // Lv.55
+		SKILL_CURE_BLEEDING						= 61, // Lv.3
+		SKILL_SWORD_SYMPHONY						= 98, // Lv.5
+		SKILL_ENTANGLE								= 102, // Lv.16
+		SKILL_SPIRIT_BARRIER						= 123, // Lv.3
+		SKILL_HOLY_BLADE							= 196, // Lv.1
+		SKILL_SPRINT								= 230, // Lv.2
+		SKILL_SONG_OF_EARTH						= 264, // Lv.1
+		SKILL_SONG_OF_LIFE							= 265, // Lv.1
+		SKILL_SONG_OF_WATER						= 266, // Lv.1
+		SKILL_SONG_OF_WARDING						= 267, // Lv.1
+		SKILL_SONG_OF_WIND							= 268, // Lv.1
+		SKILL_SONG_OF_HUNTER						= 269, // Lv.1
+		SKILL_SONG_OF_INVOCATION					= 270, // Lv.1
+		SKILL_SONG_OF_VITALITY						= 304, // Lv.1
+		SKILL_SONG_OF_VENGEANCE					= 305, // Lv.1
+		SKILL_SONG_OF_FLAME_GUARD					= 306, // Lv.1
+		SKILL_SONG_OF_STORM_GUARD					= 308, // Lv.1
+		SKILL_SONG_OF_MEDITATION					= 363, // Lv.1
+		SKILL_ARREST								= 402, // Lv.10
+		SKILL_PSYCHO_SYMPHONY						= 407, // Lv.10
+		SKILL_DEADLY_STRIKE						= 986, // Lv.15
+		SKILL_BATTLE_WHISPER						= 988, // Lv.3
+		SKILL_РИТМ_КРИТИЧЕСКОГО_УДАРА				= 1586, // Lv.1
+		SKILL_РИТМ_МАГИИ							= 1588, // Lv.1
+		SKILL_РИТМ_СРАЖЕНИЯ						= 1590, // Lv.1
+		SKILL_РИТМ_БОЙЦА							= 1592, // Lv.1
+		SKILL_РИТМ_МАГА							= 1599, // Lv.1
+		//======= End Skill list of Swordsinger ID:21=======
+		SKILL_DUMMY = 1;
+	};
+	public class ElvenScout extends ElvenFighter {
+		public static final int
+		//======= Start Skill list of ElvenScout ID:22=======
+		SKILL_CHARM								= 15, // Lv.15
+		SKILL_MORTAL_BLOW							= 16, // Lv.24
+		SKILL_POISON_RECOVERY						= 21, // Lv.1
+		SKILL_UNLOCK								= 27, // Lv.5
+		SKILL_POWER_SHOT							= 56, // Lv.24
+		SKILL_ELEMENTAL_HEAL						= 58, // Lv.18
+		SKILL_CURE_BLEEDING						= 61, // Lv.1
+		SKILL_ATTACK_AURA							= 77, // Lv.2
+		SKILL_DEFENSE_AURA							= 91, // Lv.2
+		SKILL_BLEED								= 96, // Lv.2
+		SKILL_RAPID_SHOT							= 99, // Lv.1
+		SKILL_STUNNING_SHOT						= 101, // Lv.3
+		SKILL_ENTANGLE								= 102, // Lv.1
+		SKILL_ULTIMATE_EVASION						= 111, // Lv.1
+		SKILL_SPRINT								= 230, // Lv.1
+		SKILL_ACCURACY								= 256, // Lv.1
+		SKILL_VICIOUS_STANCE						= 312, // Lv.5
+		//======= End Skill list of ElvenScout ID:22=======
+		SKILL_DUMMY = 1;
+	};
+
+	public class PlainWalker extends ElvenScout {
+		public static final int
+		//======= Start Skill list of PlainWalker ID:23=======
+		SKILL_SWITCH								= 12, // Lv.14
+		SKILL_CHARM								= 15, // Lv.52
+		SKILL_POISON_RECOVERY						= 21, // Lv.3
+		SKILL_UNLOCK								= 27, // Lv.14
+		SKILL_BACKSTAB								= 30, // Lv.37
+		SKILL_LURE									= 51, // Lv.1
+		SKILL_ELEMENTAL_HEAL						= 58, // Lv.55
+		SKILL_FAKE_DEATH							= 60, // Lv.1
+		SKILL_CURE_BLEEDING						= 61, // Lv.3
+		SKILL_BLEED								= 96, // Lv.6
+		SKILL_ENTANGLE								= 102, // Lv.16
+		SKILL_ULTIMATE_EVASION						= 111, // Lv.2
+		SKILL_SPIRIT_BARRIER						= 123, // Lv.3
+		SKILL_SILENT_MOVE							= 221, // Lv.1
+		SKILL_SPRINT								= 230, // Lv.2
+		SKILL_DEADLY_BLOW							= 263, // Lv.37
+		SKILL_CHAMELEON_REST						= 296, // Lv.1
+		SKILL_VICIOUS_STANCE						= 312, // Lv.20
+		SKILL_BLINDING_BLOW						= 321, // Lv.10
+		SKILL_MORTAL_STRIKE						= 410, // Lv.3
+		SKILL_SAND_BOMB							= 412, // Lv.10
+		SKILL_SUMMON_TREASURE_KEY					= 419, // Lv.4
+		SKILL_ESCAPE_SHACKLE						= 453, // Lv.1
+		SKILL_FIND_TRAP							= 623, // Lv.1
+		SKILL_REMOVE_TRAP							= 624, // Lv.1
+		SKILL_SHADOW_STEP							= 821, // Lv.1
+		//======= End Skill list of PlainWalker ID:23=======
+		SKILL_DUMMY = 1;
+	};
+	public class SilverRanger extends ElvenScout {
+		public static final int
+		//======= Start Skill list of SilverRanger ID:24=======
+		SKILL_CHARM								= 15, // Lv.52
+		SKILL_DOUBLE_SHOT							= 19, // Lv.37
+		SKILL_POISON_RECOVERY						= 21, // Lv.3
+		SKILL_BURST_SHOT							= 24, // Lv.31
+		SKILL_ELEMENTAL_HEAL						= 58, // Lv.55
+		SKILL_CURE_BLEEDING						= 61, // Lv.3
+		SKILL_RAPID_SHOT							= 99, // Lv.2
+		SKILL_STUNNING_SHOT						= 101, // Lv.40
+		SKILL_ENTANGLE								= 102, // Lv.16
+		SKILL_SPIRIT_BARRIER						= 123, // Lv.3
+		SKILL_SPRINT								= 230, // Lv.2
+		SKILL_SOUL_OF_SAGITTARIUS					= 303, // Lv.4
+		SKILL_VICIOUS_STANCE						= 312, // Lv.20
+		SKILL_QUIVER_OF_ARROW_GRADE_A				= 323, // Lv.1
+		SKILL_QUIVER_OF_ARROW_GRADE_S				= 324, // Lv.1
+		SKILL_RAPID_FIRE							= 413, // Lv.8
+		SKILL_SPIRIT_OF_SAGITTARIUS				= 415, // Lv.3
+		SKILL_BLESSING_OF_SAGITTARIUS				= 416, // Lv.3
+		SKILL_DETECTION							= 933, // Lv.1
+		//======= End Skill list of SilverRanger ID:24=======
+		SKILL_DUMMY = 1;
+	};
+
+	public class ElvenMage {
+		public static final int
+		//======= Start Skill list of ElvenMage ID:25=======
+		SKILL_HEAL									= 1011, // Lv.6
+		SKILL_CURE_POISON							= 1012, // Lv.1
+		SKILL_BATTLE_HEAL							= 1015, // Lv.3
+		SKILL_GROUP_HEAL							= 1027, // Lv.3
+		SKILL_SHIELD								= 1040, // Lv.1
+		SKILL_MIGHT								= 1068, // Lv.1
+		SKILL_CURSE_WEAKNESS						= 1164, // Lv.1
+		SKILL_WIND_STRIKE							= 1177, // Lv.5
+		SKILL_ICE_BOLT								= 1184, // Lv.4
+		SKILL_WIND_SHACKLE							= 1206, // Lv.1
+		//======= End Skill list of ElvenMage ID:25=======
+		SKILL_DUMMY = 1;
+	};
+	public class ElvenWizard extends ElvenMage {
+		public static final int
+		//======= Start Skill list of ElvenWizard ID:26=======
+		SKILL_SLEEP								= 1069, // Lv.9
+		SKILL_CONCENTRATION						= 1078, // Lv.2
+		SKILL_SERVITOR_RECHARGE					= 1126, // Lv.6
+		SKILL_SERVITOR_HEAL						= 1127, // Lv.12
+		SKILL_BRIGHT_SERVITOR						= 1145, // Lv.1
+		SKILL_CURSE_WEAKNESS						= 1164, // Lv.5
+		SKILL_AURA_BURN							= 1172, // Lv.8
+		SKILL_AQUA_SWIRL							= 1175, // Lv.8
+		SKILL_FLAME_STRIKE							= 1181, // Lv.3
+		SKILL_RESIST_AQUA							= 1182, // Lv.1
+		SKILL_ICE_BOLT								= 1184, // Lv.6
+		SKILL_WIND_SHACKLE							= 1206, // Lv.5
+		SKILL_SURRENDER_TO_EARTH					= 1223, // Lv.1
+		SKILL_SUMMON_BOXER_THE_UNICORN				= 1226, // Lv.4
+		SKILL_SUMMON_MIRAGE_THE_UNICORN			= 1227, // Lv.4
+		SKILL_SOLAR_SPARK							= 1264, // Lv.3
+		SKILL_ENERGY_BOLT							= 1274, // Lv.4
+		//======= End Skill list of ElvenWizard ID:26=======
+		SKILL_DUMMY = 1;
+	};
+	public class Spellsinger extends ElvenWizard {
+		public static final int
+		//======= Start Skill list of Spellsinger ID:27=======
+		SKILL_MANA_REGENERATION					= 1047, // Lv.4
+		SKILL_CANCELLATION							= 1056, // Lv.12
+		SKILL_SLEEP								= 1069, // Lv.42
+		SKILL_SURRENDER_TO_WATER					= 1071, // Lv.14
+		SKILL_SLEEPING_CLOUD						= 1072, // Lv.5
+		SKILL_CURSE_WEAKNESS						= 1164, // Lv.19
+		SKILL_CURSE_FEAR							= 1169, // Lv.14
+		SKILL_FROST_WALL							= 1174, // Lv.22
+		SKILL_RESIST_AQUA							= 1182, // Lv.3
+		SKILL_FREEZING_SHACKLE						= 1183, // Lv.4
+		SKILL_SURRENDER_TO_EARTH					= 1223, // Lv.15
+		SKILL_AURA_FLARE							= 1231, // Lv.28
+		SKILL_HYDRO_BLAST							= 1235, // Lv.28
+		SKILL_FROST_BOLT							= 1236, // Lv.19
+		SKILL_ICE_DAGGER							= 1237, // Lv.17
+		SKILL_FREEZING_SKIN						= 1238, // Lv.3
+		SKILL_SOLAR_FLARE							= 1265, // Lv.14
+		SKILL_AURA_BOLT							= 1275, // Lv.14
+		SKILL_SEED_OF_WATER						= 1286, // Lv.1
+		SKILL_AURA_SYMPHONY						= 1288, // Lv.1
+		SKILL_BLIZZARD								= 1290, // Lv.1
+		SKILL_ELEMENTAL_SYMPHONY					= 1293, // Lv.1
+		SKILL_AQUA_SPLASH							= 1295, // Lv.9
+		SKILL_AURA_FLASH							= 1417, // Lv.5
+		//======= End Skill list of Spellsinger ID:27=======
+		SKILL_DUMMY = 1;
+	};
+	public class ElementalSummoner extends ElvenWizard {
+		public static final int
+		//======= Start Skill list of ElementalSummoner ID:28=======
+		SKILL_SUMMON_LIFE_CUBIC					= 67, // Lv.7
+		SKILL_SERVITOR_RECHARGE					= 1126, // Lv.34
+		SKILL_SERVITOR_HEAL						= 1127, // Lv.45
+		SKILL_SERVITOR_MAGIC_SHIELD				= 1139, // Lv.2
+		SKILL_SERVITOR_PHYSICAL_SHIELD				= 1140, // Lv.3
+		SKILL_SERVITOR_HASTE						= 1141, // Lv.2
+		SKILL_BRIGHT_SERVITOR						= 1145, // Lv.3
+		SKILL_WIND_SHACKLE							= 1206, // Lv.19
+		SKILL_SUMMON_BOXER_THE_UNICORN				= 1226, // Lv.18
+		SKILL_SUMMON_MIRAGE_THE_UNICORN			= 1227, // Lv.18
+		SKILL_TRANSFER_PAIN						= 1262, // Lv.5
+		SKILL_SUMMON_MERROW_THE_UNICORN			= 1277, // Lv.14
+		SKILL_SUMMON_AQUA_CUBIC					= 1280, // Lv.9
+		SKILL_SERVITOR_EMPOWERMENT					= 1299, // Lv.2
+		SKILL_SERVITOR_CURE						= 1300, // Lv.3
+		SKILL_SERVITOR_BLESSING					= 1301, // Lv.1
+		SKILL_MASS_SUMMON_AQUA_CUBIC				= 1329, // Lv.9
+		SKILL_SUMMON_UNICORN_SERAPHIM				= 1332, // Lv.10
+		SKILL_BETRAY								= 1380, // Lv.10
+		SKILL_MASS_SURRENDER_TO_WATER				= 1384, // Lv.5
+		SKILL_SUMMON_FRIEND						= 1403, // Lv.1
+		SKILL_SPIRIT_SHARING						= 1547, // Lv.3
+		SKILL_DIMENSION_SPIRAL						= 1558, // Lv.14
+		//======= End Skill list of ElementalSummoner ID:28=======
+		SKILL_DUMMY = 1;
+	};
+	public class Oracle extends ElvenMage {
+		public static final int
+		//======= Start Skill list of Oracle ID:29=======
+		SKILL_HEAL									= 1011, // Lv.18
+		SKILL_CURE_POISON							= 1012, // Lv.2
+		SKILL_RECHARGE								= 1013, // Lv.4
+		SKILL_BATTLE_HEAL							= 1015, // Lv.15
+		SKILL_RESURRECTION							= 1016, // Lv.2
+		SKILL_GROUP_HEAL							= 1027, // Lv.15
+		SKILL_DISRUPT_UNDEAD						= 1031, // Lv.8
+		SKILL_RESIST_POISON						= 1033, // Lv.1
+		SKILL_MENTAL_SHIELD						= 1035, // Lv.1
+		SKILL_SHIELD								= 1040, // Lv.2
+		SKILL_HOLY_WEAPON							= 1043, // Lv.1
+		SKILL_REGENERATION							= 1044, // Lv.1
+		SKILL_MIGHT								= 1068, // Lv.2
+		SKILL_SLEEP								= 1069, // Lv.9
+		SKILL_KISS_OF_EVA							= 1073, // Lv.1
+		SKILL_CONCENTRATION						= 1078, // Lv.2
+		SKILL_AGILITY								= 1087, // Lv.1
+		SKILL_DRYAD_ROOT							= 1201, // Lv.9
+		SKILL_WIND_WALK							= 1204, // Lv.2
+		SKILL_WIND_SHACKLE							= 1206, // Lv.5
+		SKILL_DECREASE_WEIGHT						= 1257, // Lv.1
+		//======= End Skill list of Oracle ID:29=======
+		SKILL_DUMMY = 1;
+	};
+	public class Elder extends Oracle {
+		public static final int
+		//======= Start Skill list of Elder ID:30=======
+		SKILL_CURE_POISON							= 1012, // Lv.3
+		SKILL_RECHARGE								= 1013, // Lv.32
+		SKILL_RESURRECTION							= 1016, // Lv.7
+		SKILL_VITALIZE								= 1020, // Lv.27
+		SKILL_MIGHT_OF_HEAVEN						= 1028, // Lv.19
+		SKILL_RESIST_POISON							= 1033, // Lv.3
+		SKILL_MENTAL_SHIELD							= 1035, // Lv.4
+		SKILL_SHIELD								= 1040, // Lv.3
+		SKILL_REGENERATION							= 1044, // Lv.3
+		SKILL_RETURN								= 1050, // Lv.2
+		SKILL_MIGHT									= 1068, // Lv.3
+		SKILL_SLEEP									= 1069, // Lv.42
+		SKILL_KISS_OF_EVA							= 1073, // Lv.2
+		SKILL_CONCENTRATION							= 1078, // Lv.6
+		SKILL_AGILITY								= 1087, // Lv.3
+		SKILL_WIND_SHACKLE							= 1206, // Lv.19
+		SKILL_GREATER_HEAL							= 1217, // Lv.33
+		SKILL_GREATER_GROUP_HEAL					= 1219, // Lv.29
+		SKILL_BLESS_SHIELD							= 1243, // Lv.6
+		SKILL_PARTY_RECALL							= 1255, // Lv.2
+		SKILL_DECREASE_WEIGHT						= 1257, // Lv.3
+		SKILL_RESIST_SHOCK							= 1259, // Lv.4
+		SKILL_SERENADE_OF_EVA						= 1273, // Lv.13
+		SKILL_WILD_MAGIC							= 1303, // Lv.2
+		SKILL_ADVANCED_BLOCK						= 1304, // Lv.3
+		SKILL_UNHOLY_RESISTANCE						= 1393, // Lv.3
+		SKILL_TRANCE								= 1394, // Lv.10
+		SKILL_ERASE									= 1395, // Lv.10
+		SKILL_CLARITY								= 1397, // Lv.3
+		SKILL_MANA_BURN								= 1398, // Lv.10
+		SKILL_TURN_UNDEAD							= 1400, // Lv.10
+		SKILL_MAJOR_HEAL							= 1401, // Lv.11
+		SKILL_INVOCATION							= 1430, // Lv.5
+		SKILL_IMPROVED_SHIELD_DEFENSE				= 1503, // Lv.1
+		SKILL_IMPROVED_MOVEMENT						= 1504, // Lv.1
+		SKILL_DIVINE_PUNISHMENT						= 1523, // Lv.13
+		SKILL_SURRENDER_TO_THE_HOLY					= 1524, // Lv.42
+		SKILL_DIVINE_CURSE							= 1525, // Lv.13
+		SKILL_DIVINE_FLASH							= 1528, // Lv.13
+		//======= End Skill list of Elder ID:30=======
+		SKILL_DUMMY = 1;
+	};
 	
 }

@@ -109,8 +109,9 @@ public class AdminManipulateAI implements IAdminCommandHandler
 					
 				}
 				System.out.println("\t\t//======= End Skill list of "+className+" ID:"+activeClass.ordinal()+"=======");
-				System.out.println("\t\t;");
+				System.out.println("\t\tSKILL_DUMMY = 1;");
 				System.out.println("\t};");
+				System.out.println("");
 			
 		}
 		return true;
