@@ -77,7 +77,7 @@ public class AdminManipulateAI implements IAdminCommandHandler
 					
 					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "").replace(":", "");
 					String tabs = StringUtils.repeat("\t", (40 - niceName.length())/4);
-					System.out.println("SKILL_"+niceName+tabs+" = "+skill.getId()+", // Lv."+skill.getLevel());
+					System.out.println("SKILL_"+niceName+tabs+"= "+skill.getId()+", // Lv."+skill.getLevel());
 					
 				}
 				System.out.println("//======= End Skill list of "+activeChar.getClassId()+" =======");
