@@ -760,9 +760,6 @@ public class FPCDefaultAI extends PlayerAI
 		
 		_checkAggroTimestamp = now + Rnd.get(2000, 5000);
 		
-		if(!Rnd.chance(10))
-			return false;
-		
 		List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
 //		CollectionUtils.eqSort(chars, _nearestTargetComparator);
 		long seed = System.nanoTime();
