@@ -1,11 +1,13 @@
 package blood.ai;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
+import java.util.Random;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ScheduledFuture;
 
@@ -753,13 +755,18 @@ public class FPCDefaultAI extends PlayerAI
 		
 		// New madness
 		long now = System.currentTimeMillis();
-		if ((now - _checkAggroTimestamp) < Config.AGGRO_CHECK_INTERVAL)
+		if (now < _checkAggroTimestamp)
 			return false;
 		
-		_checkAggroTimestamp = now;
+		_checkAggroTimestamp = now + Rnd.get(2000, 5000);
+		
+		if(!Rnd.chance(10))
+			return false;
 		
 		List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
-		CollectionUtils.eqSort(chars, _nearestTargetComparator);
+//		CollectionUtils.eqSort(chars, _nearestTargetComparator);
+		long seed = System.nanoTime();
+		Collections.shuffle(chars, new Random(seed));
 		for (Creature cha : chars)
 		{	
 			// preventing ks
@@ -2071,6 +2078,7 @@ public class FPCDefaultAI extends PlayerAI
 		if ((target = prepareTarget()) == null)
 		{
 			setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+			_checkAggroTimestamp = System.currentTimeMillis() + Rnd.get(2000, 5000);
 			return false;
 		}
 		

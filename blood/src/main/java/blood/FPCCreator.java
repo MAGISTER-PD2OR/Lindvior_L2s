@@ -262,7 +262,7 @@ public class FPCCreator
     	newChar.addExpAndSp(exp_add, 0, true);
     	
 //    	ClassFunctions.upClass(newChar);
-    	FPItemHolder.equip(newChar, true);
+//    	FPItemHolder.equip(newChar, true);
 
 		newChar.store(false);
 		newChar.getInventory().store();

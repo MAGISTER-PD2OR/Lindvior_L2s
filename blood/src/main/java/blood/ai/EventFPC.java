@@ -40,8 +40,6 @@ public class EventFPC extends FPCDefaultAI
 	
 	protected FPRewardList _reward_list = null;
 	
-	
-	
 	public EventFPC(Player actor)
 	{
 		super(actor);
