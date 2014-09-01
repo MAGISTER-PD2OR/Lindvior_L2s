@@ -66,6 +66,11 @@ public class FPCWizzard extends MysticPC
 		case DARK_WIZARD:
 		case SPELLHOWLER:
 		case STORM_SCREAMER:
+		case ORC_SHAMAN:
+		case WARCRYER:
+		case OVERLORD:
+		case DOOMCRYER:
+		case DOMINATOR:
 			return true;
 		default:
 			return false;
@@ -130,6 +135,9 @@ public class FPCWizzard extends MysticPC
 			
 			if(canUseSkill(DarkWizard.SKILL_SHADOW_SPARK, target, distance))
 				return tryCastSkill(DarkWizard.SKILL_SHADOW_SPARK, target, distance);
+			
+			if(canUseSkill(OrcShaman.SKILL_LIFE_DRAIN, target, distance))
+				return tryCastSkill(OrcShaman.SKILL_LIFE_DRAIN, target, distance);
 		}
 		
 		if(canUseSkill(StormScreamer.SKILL_DEATH_SPIKE, target, distance))
@@ -143,6 +151,9 @@ public class FPCWizzard extends MysticPC
 		
 		if(canUseSkill(StormScreamer.SKILL_HURRICANE, target, distance))
 			return tryCastSkill(StormScreamer.SKILL_HURRICANE, target, distance);
+		
+		if(canUseSkill(Dominator.SKILL_STEAL_ESSENCE, target, distance))
+			return tryCastSkill(Dominator.SKILL_STEAL_ESSENCE, target, distance);
 		
 		tryMoveToTarget(target, 600);
 		return false;

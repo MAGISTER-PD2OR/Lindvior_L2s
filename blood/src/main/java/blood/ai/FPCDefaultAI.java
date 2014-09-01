@@ -52,8 +52,10 @@ import org.slf4j.LoggerFactory;
 import blood.FPCInfo;
 import blood.base.FPCParty;
 import blood.base.FPCPveStyle;
+import blood.data.holder.FPItemHolder;
 import blood.data.holder.NpcHelper;
 import blood.model.AggroListPC;
+import blood.model.FPRewardList;
 import blood.model.AggroListPC.AggroInfoPC;
 import blood.model.FarmLocation;
 import blood.utils.ClassFunctions;
@@ -338,6 +340,8 @@ public class FPCDefaultAI extends PlayerAI
 		_selfBuffSkills 		= new HashSet<Skill>(),
 		_servitorBuffSkills		= new HashSet<Skill>(),
 		_partyBuffSkills 		= new HashSet<Skill>(); 
+	
+	protected FPRewardList _reward_list = null;
 	
 	public FPCDefaultAI(Player actor) {
 		super(actor);
@@ -854,8 +858,14 @@ public class FPCDefaultAI extends PlayerAI
 		
 		_upClassLTS = System.currentTimeMillis() + _upClassInteval;
 		
-		boolean hasNewClass = ClassFunctions.upClass(getActor());
+		Player player = getActor();
+		
+		boolean hasNewClass = ClassFunctions.upClass(player);
 		rewardSkillsFPC();
+		
+		if(hasNewClass)
+			_reward_list = FPItemHolder.getRewardList(player, false);
+		
 		if(hasNewClass && !isAllowClass())
 		{
 			getFPCInfo().updateAI();

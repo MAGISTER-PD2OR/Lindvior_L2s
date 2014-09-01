@@ -17,6 +17,8 @@ import l2s.gameserver.utils.MapUtils;
 import org.gearman.GearmanFunction;
 import org.gearman.GearmanFunctionCallback;
 
+import blood.BloodConfig;
+
 
 /**
  * The echo worker polls jobs from a job server and execute the echo function.
@@ -51,6 +53,19 @@ public class ChatterSay implements GearmanFunction {
 				_type = _chatType;
 				break;
 			}
+		}
+		
+		if(_type == ChatType.TELL && senderName == BloodConfig.SUPPORTER_NAME)
+		{
+			Player receiver = GameObjectsStorage.getPlayer(receiverName);
+			
+			if(receiver == null)
+				return "error".getBytes();
+			
+			if(receiver != null)
+				receiver.sendPacket(new Say2(1, _type, senderName, _text));
+			
+			return result.getBytes();
 		}
 		
 		Player activeChar = GameObjectsStorage.getPlayer(senderName);

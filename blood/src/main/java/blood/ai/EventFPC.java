@@ -38,8 +38,6 @@ public class EventFPC extends FPCDefaultAI
 			_nextEquipRound 	= 0,
 			_equipInterval		= 30*1000;
 	
-	protected FPRewardList _reward_list = null;
-	
 	public EventFPC(Player actor)
 	{
 		super(actor);

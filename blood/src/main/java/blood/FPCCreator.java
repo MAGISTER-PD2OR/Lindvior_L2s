@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import blood.dao.FakeNameDAO;
 import blood.dao.FakePlayerDAO;
-import blood.data.holder.FPItemHolder;
-import blood.utils.ClassFunctions;
 import blood.utils.NameFunctions;
 
 public class FPCCreator

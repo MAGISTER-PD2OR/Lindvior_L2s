@@ -97,10 +97,15 @@ public class L2MQ
 	
 	public static void chat(Player receiver, ChatType chat_type, String sender, String msg)
 	{
+		chat(receiver.getName(), receiver.getAccountName(), chat_type, sender, msg);
+	}
+	
+	public static void chat(String receiver, String receiver_account, ChatType chat_type, String sender, String msg)
+	{
 		StringBuilder builder = new StringBuilder();
-		builder.append(receiver.getAccountName());
+		builder.append(receiver_account);
 		builder.append(";");
-		builder.append(receiver.getName());
+		builder.append(receiver);
 		builder.append(";");
 		builder.append(chat_type.ordinal());
 		builder.append(";");

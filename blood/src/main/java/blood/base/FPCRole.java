@@ -268,12 +268,6 @@ public enum FPCRole {
 	        	case SPECTRAL_MASTER:
 	        		return new FPCSpectraMaster(player);
 	        	//Orcish Mystic
-	        	case WARCRYER:
-	        	case DOOMCRYER:
-	        		return new FPCDoomcryer(player);
-	        	case OVERLORD:
-	        	case DOMINATOR:
-	        		return new FPCDominator(player);
 	        	case CLERIC:
 	        	case ORACLE:
 	        	case SHILLEN_ORACLE:
@@ -289,6 +283,11 @@ public enum FPCRole {
 	        	case MYSTIC_MUSE:
 	        	case SPELLHOWLER:
 	        	case STORM_SCREAMER:
+	        	case ORC_SHAMAN:
+	        	case WARCRYER:
+	        	case OVERLORD:
+	        	case DOOMCRYER:
+	        	case DOMINATOR:
 	        		return new FPCWizzard(player);
         		default:
         			return new MysticPC(player);

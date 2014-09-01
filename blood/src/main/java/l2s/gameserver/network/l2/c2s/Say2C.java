@@ -37,6 +37,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import blood.BloodConfig;
+
 import com.graphbuilder.math.Expression;
 import com.graphbuilder.math.ExpressionParseException;
 import com.graphbuilder.math.ExpressionTree;
@@ -263,6 +265,15 @@ public class Say2C extends L2GameClientPacket
 		switch(_type)
 		{
 			case TELL:
+				
+				if(_target.equalsIgnoreCase(BloodConfig.SUPPORTER_NAME))
+				{
+					L2MQ.chat(BloodConfig.SUPPORTER_NAME, BloodConfig.SUPPORTER_NAME, _type, activeChar.getName(), _text);
+					cs = new Say2(activeChar.getObjectId(), _type, "->" + BloodConfig.SUPPORTER_NAME, _text);
+					activeChar.sendPacket(cs);
+					return;
+				}
+				
 				Player receiver = World.getPlayer(_target);
 				if(receiver == null)
 				{
