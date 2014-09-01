@@ -55,7 +55,7 @@ public class ChatterSay implements GearmanFunction {
 			}
 		}
 		
-		if(_type == ChatType.TELL && senderName == BloodConfig.SUPPORTER_NAME)
+		if(_type == ChatType.TELL && senderName.equalsIgnoreCase(BloodConfig.SUPPORTER_NAME))
 		{
 			Player receiver = GameObjectsStorage.getPlayer(receiverName);
 			
