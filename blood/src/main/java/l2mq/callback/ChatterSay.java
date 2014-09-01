@@ -1,14 +1,23 @@
 package l2mq.callback;
 
+import java.util.List;
+
+import l2mq.L2MQ;
 import l2s.gameserver.Config;
 import l2s.gameserver.model.GameObjectsStorage;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.network.l2.s2c.Say2;
+import l2s.gameserver.model.World;
+import l2s.gameserver.model.pledge.Alliance;
+import l2s.gameserver.model.pledge.Clan;
+import l2s.gameserver.model.pledge.UnitMember;
 import l2s.gameserver.network.l2.components.ChatType;
+import l2s.gameserver.network.l2.s2c.Say2;
 import l2s.gameserver.utils.MapUtils;
 
 import org.gearman.GearmanFunction;
 import org.gearman.GearmanFunctionCallback;
+
+import blood.BloodConfig;
 
 
 /**
@@ -30,52 +39,135 @@ public class ChatterSay implements GearmanFunction {
 			return "error".getBytes();
 		
 		String 	senderName 		= wordList[0];
-//		int		senderId		= Integer.parseInt(wordList[1]);
 		String	receiverName 	= wordList[1];
 		int		chatTypeOrd		= Integer.parseInt(wordList[2]);
-		String	msg				= wordList[3];
-//		int		receiverId		= Integer.parseInt(wordList[4]);
+		String	_text				= wordList[3];
 		
 		
-		ChatType chatType = ChatType.TELL;
+		ChatType _type = ChatType.TELL;
 		
 		for(ChatType _chatType: ChatType.VALUES)
 		{
 			if(_chatType.ordinal() == chatTypeOrd)
 			{
-				chatType = _chatType;
+				_type = _chatType;
 				break;
 			}
 		}
 		
-		Player sender = GameObjectsStorage.getPlayer(senderName);
-		Player receiver = GameObjectsStorage.getPlayer(receiverName);
-		
-		if(sender == null || receiver == null){
-			return "error".getBytes();
+		if(_type == ChatType.TELL && senderName.equalsIgnoreCase(BloodConfig.SUPPORTER_NAME))
+		{
+			Player receiver = GameObjectsStorage.getPlayer(receiverName);
+			
+			if(receiver == null)
+				return "error".getBytes();
+			
+			if(receiver != null)
+				receiver.sendPacket(new Say2(1, _type, senderName, _text));
+			
+			return result.getBytes();
 		}
 		
-		Say2 cs = new Say2(sender.getObjectId(), chatType, senderName, msg);
+		Player activeChar = GameObjectsStorage.getPlayer(senderName);
 		
-		switch(chatType)
+		if(activeChar == null)
+			return "error".getBytes();
+		
+		Say2 cs = new Say2(activeChar.getObjectId(), _type, senderName, _text);
+		
+		switch(_type)
 		{
 			case TELL:
-//				Player receiver = GameObjectsStorage.getPlayer(receiverId);
+				Player receiver = GameObjectsStorage.getPlayer(receiverName);
+				if(receiver == null)
+					return "error".getBytes();
+				
 				if(receiver != null)
 					receiver.sendPacket(cs);
 				break;
 				
-			case SHOUT:
-//				Player sender = GameObjectsStorage.getPlayer(senderId);
+			case PARTY:
+				if(activeChar.isInParty())
+					for(Player member : activeChar.getParty().getPartyMembers())
+					{
+						if(member.isFakePlayer())
+							L2MQ.chat(member, _type, activeChar.getName(), _text);
+						else
+							member.sendPacket(cs);
+					}
 				
-				if(sender != null)
+				break;
+				
+			case CLAN:
+				if(activeChar.getClan() != null)
+					for(UnitMember member : activeChar.getClan())
+						if(member.isOnline())
+						{
+							if(member.getPlayer().isFakePlayer())
+								L2MQ.chat(member.getPlayer(), _type, activeChar.getName(), _text);
+							else
+								member.getPlayer().sendPacket(cs);
+						}
+				break;
+				
+			case ALLIANCE:
+				if(activeChar.getClan() != null && activeChar.getClan().getAlliance() != null)
+				{
+					Alliance ally = activeChar.getClan().getAlliance(); 
+					for(Clan clan_member : ally.getMembers())
+						if(clan_member != null)
+							for(UnitMember member : clan_member)
+								if(member.isOnline())
+								{
+									if(member.getPlayer().isFakePlayer())
+										L2MQ.chat(member.getPlayer(), _type, activeChar.getName(), _text);
+									else
+										member.getPlayer().sendPacket(cs);
+								}
+//					activeChar.getClan().getAlliance().broadcastToOnlineMembers(cs);
+				}
+				break;
+				
+			case TRADE:
+				if(activeChar != null)
 				{
 					if(Config.GLOBAL_TRADE_CHAT)
-						announce(sender, cs);
+						announce(activeChar, cs);
 					else
-						shout(sender, cs);
+						shout(activeChar, cs);
 				}
 				
+				break;
+				
+			case SHOUT:
+				if(activeChar != null)
+				{
+					if(Config.GLOBAL_SHOUT)
+						announce(activeChar, cs);
+					else
+						shout(activeChar, cs);
+				}
+				
+				break;
+			case ALL:
+
+				List<Player> list = World.getAroundPlayers(activeChar);
+
+				if(list != null)
+				{
+					for(Player player : list)
+					{
+						if(player == activeChar || player.getReflection() != activeChar.getReflection() || player.isBlockAll() || player.getBlockList().contains(activeChar))
+							continue;
+
+						cs.setCharName(activeChar.getVisibleName(player));
+						if(player.isFakePlayer())
+							L2MQ.chat(player, _type, activeChar.getName(), _text);
+						else
+							player.sendPacket(cs);
+					}
+				}
+
 				break;
 			
 			default:
@@ -92,7 +184,7 @@ public class ChatterSay implements GearmanFunction {
 
 		for(Player player : GameObjectsStorage.getAllPlayersForIterate())
 		{
-			if(player == activeChar || activeChar.getReflection() != player.getReflection() || player.isBlockAll()) /* TODO fix block people */
+			if(player == activeChar || activeChar.getReflection() != player.getReflection() || player.isBlockAll() || player.getBlockList().contains(activeChar))
 				continue;
 
 			int tx = MapUtils.regionX(player);
@@ -102,12 +194,12 @@ public class ChatterSay implements GearmanFunction {
 				player.sendPacket(cs);
 		}
 	}
-
+	
 	private static void announce(Player activeChar, Say2 cs)
 	{
 		for(Player player : GameObjectsStorage.getAllPlayersForIterate())
 		{
-			if(player == activeChar || activeChar.getReflection() != player.getReflection() || player.isBlockAll())
+			if(player == activeChar || activeChar.getReflection() != player.getReflection() || player.isBlockAll() || player.getBlockList().contains(activeChar))
 				continue;
 
 			player.sendPacket(cs);

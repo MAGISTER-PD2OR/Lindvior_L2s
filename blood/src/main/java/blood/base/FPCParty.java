@@ -8,7 +8,9 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.utils.Location;
 import blood.FPCInfo;
 import blood.FPCPartyManager;
-import blood.data.holder.FarmZoneHolder;
+import blood.ai.FPCDefaultAI.FPCIntention;
+import blood.data.holder.FarmLocationHolder;
+import blood.model.FarmLocation;
 import blood.utils.ClassFunctions;
 
 public class FPCParty {
@@ -31,7 +33,7 @@ public class FPCParty {
 	protected ArrayList<Player> _dds = new ArrayList<Player>();
 	protected int _averageLevel = 0;
 	protected Party _party = null;
-	protected Location _beginLoc = null;
+	protected FarmLocation _farmLoc = null;
 	protected Location _centerLoc = null;
 	protected Location _nextLoc = null;
 	protected PartyIntention _intention = null;
@@ -108,10 +110,7 @@ public class FPCParty {
 		
 		// check level
 		if(!isValidLevel(player.getLevel()))
-		{
-			System.out.println("not valid level "+player);
 			return false;
-		}
 		
 		if(isDamageDealerAvaialble(player) && getParty().addPartyMember(player))
 			_dds.add(player);
@@ -122,17 +121,15 @@ public class FPCParty {
 		else if(isSupportAvailable(player) && getParty().addPartyMember(player))
 			_iss = player;
 		else
-		{
-			System.out.println("not valid class "+player);
 			return false;
-		}
 		
 		// join party in middle of active
 		switch(_intention){
 		case ATTACK:
 		case ACTIVE:
 		case MOVING:
-			player.teleToLocation(_leader.getLoc());
+			player.teleToLocation(getBeginLoc());
+			FPCInfo.getInstance(player).getAI().setFPCIntention(FPCIntention.FARMING);
 			break;
 		default:
 			break;
@@ -146,17 +143,36 @@ public class FPCParty {
 	}
 
 	public void setIntention(PartyIntention intention) {
-		_intention = intention;
+		if(_intention != intention)
+		{
+			_intention = intention;
+			onEvtChangeIntention(_intention);
+		}
 	}
 	
-	public Location getBeginLoc()
+	public void onEvtChangeIntention(PartyIntention intention)
 	{
-		return _beginLoc;
+		switch(intention){
+		case ATTACK:
+			for(Player player: getParty().getPartyMembers())
+			{
+				FPCInfo.getInstance(player).getAI().setFPCIntention(FPCIntention.FARMING);
+			}
+			break;
+		default:
+			break;
+			
+		}
+	}
+	
+	public FarmLocation getBeginLoc()
+	{
+		return _farmLoc;
 	}
 	
 	public void setBeginLoc()
 	{
-		_beginLoc = FarmZoneHolder.getInstance().getPartyLocation(_averageLevel);
+		_farmLoc = FarmLocationHolder.getInstance().getPartyLocation(_averageLevel, _leader.getGeoIndex());
 	}
 	
 	public Location getCenterLoc()
@@ -172,7 +188,6 @@ public class FPCParty {
 		
 		int size = 0;
 		
-		// TODO should try to use dd only
 		for(Player player: _dds)
 		{
 			x += player.getX();
@@ -207,38 +222,48 @@ public class FPCParty {
 		
 		setBeginLoc();
 		_centerLoc = getBeginLoc();
-		// TODO should move
-		teleportPartyMember(getBeginLoc());
+		for(Player player: getParty().getPartyMembers())
+		{
+			FPCInfo.fullRestore(player);
+			FPCInfo.getInstance(player).getAI().setFarmLocation(_farmLoc);
+			FPCInfo.getInstance(player).getAI().tryMoveLongAwayToLocation(_farmLoc);
+		}
 		// change leader to dd
 		setLeader(_dds.get(0));
 		// change party intension
-		setIntention(PartyIntention.ACTIVE);
+		setIntention(PartyIntention.MOVING);
 	}
 	
 	public void thinkActive()
 	{
-		tryReopen();
 		updateCenterLoc();
 	}
 	
 	public void thinkMoving()
 	{
-		tryReopen();
-		if(_nextLoc == null)
+		double minDistance = Double.MAX_VALUE;
+		for(Player member: getParty().getPartyMembers())
 		{
-			setIntention(PartyIntention.ACTIVE);
+			double memberDistance = member.getDistance(_farmLoc);
+			minDistance = Math.min(minDistance, memberDistance);
 		}
+		
+		if(minDistance < 500)
+			setIntention(PartyIntention.ATTACK);
 	}
 	
 	public void thinkActtack()
 	{
-		tryReopen();
 		updateCenterLoc();
+		// FIXME should remove carefully
+		for(Player player: getParty().getPartyMembers())
+		{
+			FPCInfo.getInstance(player).getAI().setFPCIntention(FPCIntention.FARMING);
+		}
 	}
 	
 	public void onEvtThing()
 	{
-		System.out.println("party heartbeat:"+_leader);
 		switch (getIntention()) {
 		case IDLE:
 			thinkIdle();
@@ -259,7 +284,6 @@ public class FPCParty {
 	}
 
 	public void debug() {
-		// TODO Auto-generated method stub
 		System.out.println("=====Party DEBUG=====");
 		System.out.println("leader:"+_leader);
 		System.out.println("tanker:"+_tanker);
@@ -288,6 +312,34 @@ public class FPCParty {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void kick(Player player) {
+		for(Player dd: _dds)
+		{
+			if(player.equals(dd))
+			{
+				_dds.remove(dd);
+				break;
+			}
+		}
+		
+		// TODO - add case all dd out
+		
+		if(_tanker != null && _tanker.equals(player))
+			_tanker = null;
+		
+		if(_iss != null && _iss.equals(player))
+			_iss = null;
+		
+		if(_healer != null && _healer.equals(player))
+			_healer = null;
+		
+		if(_leader.equals(player))
+			setLeader(_dds.get(0));
+		
+		tryReopen();
+		
 	}
 
 }

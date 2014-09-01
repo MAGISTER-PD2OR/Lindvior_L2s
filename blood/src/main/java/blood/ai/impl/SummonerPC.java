@@ -1,7 +1,7 @@
 package blood.ai.impl;
 
-import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.Skill;
 import blood.ai.EventFPC;
 
 public class SummonerPC extends EventFPC
@@ -9,27 +9,16 @@ public class SummonerPC extends EventFPC
 	public SummonerPC(Player actor)
 	{
 		super(actor);
+		_allowSkills.add(1281);
 	}
 	
-	@Override
-	protected void makeNpcBuffs()
+	protected Skill getNpcSuperiorBuff()
 	{
-		npcBuff( 15649, 1 ); // Warrior Harmony
-		basicNpcBuffs();
-	}
-
-	
-	@Override
-	protected void onEvtAttacked(Creature attacker, int damage)
-	{
-		super.onEvtAttacked(attacker, damage);
-		
-		runAwayFromTarget(attacker);
-	
+		return getSkill(15649, 1); //warrior
 	}
 
 	@Override
-	protected boolean createNewTask()
+	protected boolean createFightTask()
 	{
 		return defaultFightTask();
 	}

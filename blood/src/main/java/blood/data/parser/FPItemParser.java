@@ -1,9 +1,7 @@
 package blood.data.parser;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import l2s.commons.data.xml.AbstractFileParser;
 import l2s.gameserver.Config;
@@ -11,7 +9,6 @@ import l2s.gameserver.Config;
 import org.dom4j.Element;
 
 import blood.data.holder.FPItemHolder;
-import blood.model.FPRewardData;
 import blood.model.FPRewardList;
 
 public final class FPItemParser extends AbstractFileParser<FPItemHolder> 
@@ -69,30 +66,36 @@ public final class FPItemParser extends AbstractFileParser<FPItemHolder>
 		for (Iterator<Element> iterator = rootElement.elementIterator(); iterator.hasNext();)
 		{
 			Element rewardElement = iterator.next();
-			int lvl = Integer.parseInt(rewardElement.attributeValue("level"));
-			List<FPRewardList> levelList = new ArrayList<FPRewardList>(); 
-			for (Element classElement : rewardElement.elements())
+			
+			int reward_id = Integer.parseInt(rewardElement.attributeValue("id"));
+			int min_level = Integer.parseInt(rewardElement.attributeValue("min_level"));
+			int max_level = Integer.parseInt(rewardElement.attributeValue("max_level"));
+			int weight = rewardElement.attributeValue("weight") != null ? Integer.parseInt(rewardElement.attributeValue("weight")) : 1;
+			boolean is_mage = rewardElement.attributeValue("is_mage") != null ? Boolean.parseBoolean(rewardElement.attributeValue("is_mage")) : false;
+			boolean is_abstract = rewardElement.attributeValue("is_abstract") != null ? Boolean.parseBoolean(rewardElement.attributeValue("is_abstract")) : false;
+			int parent_id = rewardElement.attributeValue("parent_id") != null ? Integer.parseInt(rewardElement.attributeValue("parent_id")) : 0;
+			
+			FPRewardList rewardList = new FPRewardList(reward_id, min_level, max_level, parent_id, weight, is_abstract, is_mage);
+			
+			for (Element subElement: rewardElement.elements())
 			{
-				boolean is_mage = Boolean.parseBoolean(classElement.attributeValue("is_mage"));
+				int sub_id = Integer.parseInt(subElement.attributeValue("id"));
 				
-				FPRewardList rewardList = new FPRewardList(is_mage);
-				String[] class_ids_str = classElement.attributeValue("ids").split(",");
-				
-				for(int i = 0;i < class_ids_str.length;i++)
-				{
-					rewardList.addClass(Integer.parseInt(class_ids_str[i]));
+				if(subElement.getName().equalsIgnoreCase("remove_item")){
+					rewardList.addRemoveItem(sub_id);
 				}
 				
-				for (Element itemElement: classElement.elements())
-				{
-					int item_id = Integer.parseInt(itemElement.attributeValue("id"));
-					int item_count = Integer.parseInt(itemElement.attributeValue("count"));
-					rewardList.addItem(new FPRewardData(item_id, item_count));
+				if(subElement.getName().equalsIgnoreCase("classid")){
+					rewardList.addClass(sub_id);
 				}
 				
-				levelList.add(rewardList);
+				if(subElement.getName().equalsIgnoreCase("item")){
+					int item_count = Integer.parseInt(subElement.attributeValue("count"));
+					rewardList.addItem(sub_id, item_count);
+				}
 			}
-			getHolder().addLevelBonus(lvl, levelList);
+			
+			getHolder().add(reward_id, rewardList);
 		}
 	}
 }

@@ -12,24 +12,24 @@ public class FPCFortuneSeeker extends WarriorPC
 		super(actor);
 	}
 
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		SkillList.add(30);	//Back stab
-		SkillList.add(263);	//Deadly Blow
-		SkillList.add(998);	//Blazing Boost
+		_allowSkills.add(30);	//Back stab
+		_allowSkills.add(263);	//Deadly Blow
+		_allowSkills.add(998);	//Blazing Boost
 		
 		//skill 3rd
-		SkillList.add(348);	//Spoil Crush
-		SkillList.add(362);	//Armor Crush
-		SkillList.add(347);	//Earthquake
-		SkillList.add(440);	//Brave Heart
-		SkillList.add(357);	//Spoil Bomb
-		SkillList.add(456);	//Symbol of Resistance
-		SkillList.add(917);	//Final Secret
-		SkillList.add(947);	//Lucky Strike
+		_allowSkills.add(348);	//Spoil Crush
+		_allowSkills.add(362);	//Armor Crush
+		_allowSkills.add(347);	//Earthquake
+		_allowSkills.add(440);	//Brave Heart
+		_allowSkills.add(357);	//Spoil Bomb
+		_allowSkills.add(456);	//Symbol of Resistance
+		_allowSkills.add(917);	//Final Secret
+		_allowSkills.add(947);	//Lucky Strike
 		
 		return SkillList;
 	}

@@ -1,36 +1,26 @@
 package blood.handler.admincommands;
 
-import gnu.trove.map.TIntObjectMap;
-import l2s.gameserver.ai.PlayerAI;
 import l2s.gameserver.dao.CharacterDAO;
-import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
 //import l2s.gameserver.model.Effect;
 import l2s.gameserver.model.GameObject;
 import l2s.gameserver.model.GameObjectsStorage;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.base.RestartType;
-import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.model.items.ItemInstance;
-import l2s.gameserver.templates.TeleportLocation;
 //import l2s.gameserver.tables.PetDataTable;
 //import l2s.gameserver.templates.item.ItemTemplate.Grade;
 import l2s.gameserver.utils.ItemFunctions;
-import l2s.gameserver.utils.Location;
-import l2s.gameserver.utils.TeleportUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import blood.Blood;
+import blood.BloodConfig;
 import blood.FPCInfo;
 import blood.ai.FPCDefaultAI;
 import blood.base.FPCParty;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
-import blood.data.holder.FarmZoneHolder;
-import blood.data.holder.NpcHelper;
-import blood.model.FPReward;
+import blood.data.holder.FPItemHolder;
 import blood.table.FPCMerchantTable;
 import blood.utils.ClassFunctions;
 
@@ -48,14 +38,9 @@ public class AdminFakePlayers implements IAdminCommandHandler
 		admin_fp_padding,
 		admin_reload_merchant,
 		admin_clear_inv,
-		admin_add_ai,
-		admin_check_ring,
 		admin_fp_spawn,
 		admin_fp_equip,
-		admin_fp_loc,
-		admin_set_level2,
 		admin_fp_class, 
-		admin_tryai,
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -80,15 +65,15 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				String mode = wordList[1];
 				
 				if(mode.equals("on")){
-					Blood.AI_ATTACK_ALLOW = true;
+					BloodConfig.AI_ATTACK_ALLOW = true;
 				}
 				else if(mode.equals("off")){
-					Blood.AI_ATTACK_ALLOW = false;
+					BloodConfig.AI_ATTACK_ALLOW = false;
 				}else{
-					Blood.AI_ATTACK_ALLOW = !Blood.AI_ATTACK_ALLOW;
+					BloodConfig.AI_ATTACK_ALLOW = !BloodConfig.AI_ATTACK_ALLOW;
 				}
 				
-				_log.info("AI status: "+Blood.AI_ATTACK_ALLOW);
+				_log.info("AI status: "+BloodConfig.AI_ATTACK_ALLOW);
 				
 				break;
 				
@@ -218,13 +203,6 @@ public class AdminFakePlayers implements IAdminCommandHandler
 				activeChar.sendMessage("Clear Inventory.");
 			break;
 			
-			case admin_add_ai:
-				activeChar.sendMessage("Current Player AI: " + activeChar.getAI());
-				FPCDefaultAI ai = FPCRole.getAggresiveAI(activeChar, wordList[1]);
-				if(ai != null) 
-					activeChar.setAI(ai);
-				else activeChar.setAI(new PlayerAI(activeChar));
-			break;
 			case admin_fp_spawn:
 				if(wordList.length < 2)
 				{
@@ -242,16 +220,10 @@ public class AdminFakePlayers implements IAdminCommandHandler
 //				World.getPlayer(char_name);
 			break;
 			case admin_fp_equip:
-				System.out.println("admin_fp_equip");
-				FPReward.getInstance().giveReward(activeChar);
+				FPItemHolder.equip(activeChar, false);
 			break;
 			case admin_fp_class:
 				ClassFunctions.upClass(activeChar);
-			break;
-			case admin_fp_loc:
-				FPCInfo.getInstance(activeChar).teleToNextFarmZone();
-			break;
-			default:
 			break;
 		}
 		return true;

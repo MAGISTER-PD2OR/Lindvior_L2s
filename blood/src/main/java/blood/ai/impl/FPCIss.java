@@ -2,7 +2,6 @@ package blood.ai.impl;
 
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
-import blood.utils.ClassFunctions;
 
 public class FPCIss extends WarriorPC
 {
@@ -50,29 +49,23 @@ public class FPCIss extends WarriorPC
 	public final int SKILL_SHADOW_BLADE				= 11510; // Lv.1 	debuff 	50 	0 	10000 	40 	- 	Attacks the target with 9133 Power added to P. Atk. For 20 seconds, P. Atk. and M. Atk. - 40%. Requires a sword, dualsword or dual blunt to be equipped. Over-hit. Critical.
 	public final int SKILL_GIANT_ROOT				= 11561; // Lv.1 	debuff 	126 	0 	10000 	900 	- 	Inflicts Hold on the enemy for 15 seconds.
 	public final int SKILL_TRANSFORM				= 11537; // Lv.1 	debuff 	126 	0 	10000 	900 	- 	Transforms the target into a harmless creature and decrease its Speed by 20% for 15 seconds. The effect is canceled if the transformed target is attacked.
-
-
 	
 	public FPCIss(Player actor)
 	{
 		super(actor);
 	}
 	
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(getActor().getLevel() < 91)
-			return false;
+	public void prepareSkillsSetup() {
+		_allowSelfBuffSkills.add(SKILL_ELEMENTAL_RESISTANCE);
+		_allowSelfBuffSkills.add(SKILL_HOLY_ATTACK_RESISTANCE);
+		_allowSelfBuffSkills.add(SKILL_MENTAL_ATTACK_RESISTANCE);
 		
-		if(thinkBuff(new int[] {
-			SKILL_HORN_MELODY
-		}))
-			return true;
-		
-		return super.thinkBuff();
+		_allowPartyBuffSkills.add(SKILL_ELEMENTAL_RESISTANCE);
+		_allowPartyBuffSkills.add(SKILL_HOLY_ATTACK_RESISTANCE);
+		_allowPartyBuffSkills.add(SKILL_MENTAL_ATTACK_RESISTANCE);
 	}
 	
-	protected boolean fightTaskByClass(Creature target)
+	protected boolean defaultSubFightTask(Creature target)
 	{
 		issFightTask(target);
 		return true;
@@ -88,26 +81,32 @@ public class FPCIss extends WarriorPC
 	
 	protected boolean issFightTask(Creature target)
 	{
-		Player actor = getActor();
+		Player player = getActor();
 		
-		double distance = actor.getDistance(target);
-		double actorHp = actor.getCurrentHpPercents();
+		double distance = player.getDistance(target);
 		
-		if(actorHp < 30)
-		{
-			if(canUseSkill(SKILL_QUICK_ESCAPE, actor, distance))
-				tryCastSkill(SKILL_QUICK_ESCAPE, actor, distance);
-			if(canUseSkill(SKILL_POLYMORPH, actor, distance))
-				tryCastSkill(SKILL_POLYMORPH, actor, distance);
-		}
-		
-		if(canUseSkill(SKILL_ASSAULT_RUSH, target, distance))
+		if(distance > 300 && canUseSkill(SKILL_ASSAULT_RUSH, target, distance))
 			tryCastSkill(SKILL_ASSAULT_RUSH, target, distance);
 		
-		if(!hasEffect(target, SKILL_SHADOW_BLADE) && canUseSkill(SKILL_SHADOW_BLADE, target, distance))
+		if(target.getAroundNpc(200, 200).size() > 3)
+		{
+			if(canUseSkill(SKILL_MASS_GIANT_ROOT, target, distance))
+				tryCastSkill(SKILL_MASS_GIANT_ROOT, target, distance);
+			
+			if(canUseSkill(SKILL_ULTIMATE_SUSPENSION, target, distance))
+				tryCastSkill(SKILL_ULTIMATE_SUSPENSION, target, distance);
+			
+			if(canUseSkill(SKILL_MASS_SHADOW_BLADE, target, distance))
+				tryCastSkill(SKILL_MASS_SHADOW_BLADE, target, distance);
+			
+			if(canUseSkill(SKILL_MASS_CRIPPLING_ATTACK, target, distance))
+				tryCastSkill(SKILL_MASS_CRIPPLING_ATTACK, target, distance);
+		}
+		
+		if(canUseSkill(SKILL_SHADOW_BLADE, target, distance))
 			tryCastSkill(SKILL_SHADOW_BLADE, target, distance);
 		
-		if(!hasEffect(target, SKILL_CRIPPLING_ATTACK) && canUseSkill(SKILL_CRIPPLING_ATTACK, target, distance))
+		if(canUseSkill(SKILL_CRIPPLING_ATTACK, target, distance))
 			tryCastSkill(SKILL_CRIPPLING_ATTACK, target, distance);
 		
 		if(canUseSkill(SKILL_DEATH_STRIKE, target, distance))
@@ -119,15 +118,40 @@ public class FPCIss extends WarriorPC
 		return false;
 	}
 	
+	@Override 
+	protected void onEvtAttacked(Creature attacker, int damage)
+	{
+		super.onEvtAttacked(attacker, damage);
+		
+		Player player = getActor();
+		
+		// TODO should move to evt attacked
+		if(player.getCurrentHpPercents() < 30)
+		{
+			if(canUseSkill(SKILL_QUICK_ESCAPE, player, 0))
+				tryCastSkill(SKILL_QUICK_ESCAPE, player, 0);
+			if(canUseSkill(SKILL_POLYMORPH, player, 0))
+				tryCastSkill(SKILL_POLYMORPH, player, 0);
+		}
+	}
+	
 	@Override
 	protected void onEvtClanAttacked(Creature attacked, Creature attacker, int damage)
 	{
+		super.onEvtClanAttacked(attacked, attacker, damage);
 		if(!attacked.isPlayer())
 			return;
 		
+		Player player = getActor();
 		Player member = attacked.getPlayer();
 		
-		if(ClassFunctions.isHealer(member) || member.getCurrentHpPercents() < 50)
+		if(member.getCurrentHpPercents() < 20)
+		{
+			if(canUseSkill(SKILL_CELESTIAL_AEGIS, player) && tryCastSkill(SKILL_CELESTIAL_AEGIS, player))
+				return;
+		}
+		
+		if(member.getCurrentHpPercents() < 50)
 		{
 			criticalFight(attacker);
 		}
