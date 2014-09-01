@@ -443,7 +443,8 @@ public class MonsterInstance extends NpcInstance
 				reward.addDamage(info.damage);
 		}
 
-		if(topDamager != null && topDamager.isPlayable())
+		int levelDiff = topDamager.getLevel() - this.getLevel();
+		if(topDamager != null && topDamager.isPlayable() && levelDiff < 9 && levelDiff > -9)
 		{
 			for(Map.Entry<RewardType, RewardList> entry : getTemplate().getRewards().entrySet())
 				rollRewards(entry, lastAttacker, topDamager);
