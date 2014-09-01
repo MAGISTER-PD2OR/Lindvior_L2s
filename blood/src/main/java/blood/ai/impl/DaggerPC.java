@@ -2,6 +2,7 @@ package blood.ai.impl;
 
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.Skill;
 import blood.ai.EventFPC;
 
 public class DaggerPC extends EventFPC
@@ -10,9 +11,16 @@ public class DaggerPC extends EventFPC
 	{
 		super(actor);
 	}
+	
+	protected Skill getNpcSuperiorBuff()
+	{
+//		return getSkill(15648, 1); //tank
+		return getSkill(15649, 1); //warrior
+//		return getSkill(15650, 1); //wizzard
+	}
 
 	@Override
-	protected boolean createNewTask()
+	protected boolean createFightTask()
 	{
 		return defaultFightTask();
 	}
@@ -78,7 +86,7 @@ public class DaggerPC extends EventFPC
 			try
 			{
 				//cast Ultimate Evasion
-				thinkBuff(111);
+				tryCastSkill(111, actor);
 				
 				//cast Switch
 				tryCastSkill(12, attacker);

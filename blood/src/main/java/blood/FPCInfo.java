@@ -8,7 +8,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassId;
-import l2s.gameserver.model.base.Experience;
 //import l2s.gameserver.model.entity.events.impl.DominionSiegeEvent;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.model.items.TradeItem;
@@ -26,11 +25,10 @@ import blood.base.FPCParty;
 import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
-import blood.data.holder.FarmZoneHolder;
-import blood.model.FPReward;
+import blood.data.holder.FPItemHolder;
+import blood.data.holder.FarmLocationHolder;
 import blood.table.MerchantItem;
 import blood.utils.ClassFunctions;
-import blood.utils.LocationFunctions;
 import blood.utils.MerchantFunctions;
 
 
@@ -60,7 +58,6 @@ public class FPCInfo
 		_obj_id = obj_id;
 		setStatus(FPCSpawnStatus.OFFLINE);
 		_instances.addInfo(this);
-		
 	}
 	
 	public FPCInfo(Player player)
@@ -154,22 +151,26 @@ public class FPCInfo
 		
 		if(_role != null)
 		{
-			setAI(_role.getAI(getActor()));
-			if(_role == FPCRole.NEXUS_EVENT)
-			{
-				if(ClassFunctions.canPveSolo(getActor()))
-	            {
-		        	_pveStyle = FPCPveStyle.SOLO;
-		        	_log.info(getActor() + " going solo.");
-	            }
-	            else
-	            {
-	            	setParty();
-//	            	_log.info(_actor + " going to party, size:" + _party.getSize());
-	            }
+			updateAI();
+		}
+	}
+	
+	public void updateAI()
+	{
+		Player player = getActor();
+		FPCDefaultAI newAI = _role != null ? _role.getAI(player) : FPCRole.NEXUS_EVENT.getAI(player);
+		setAI(newAI);
+		if(_role == FPCRole.NEXUS_EVENT)
+		{
+			if(ClassFunctions.canPveSolo(player))
+            {
+	        	_pveStyle = FPCPveStyle.SOLO;
+            }
+            else
+            {
+            	setParty();
+            }
 
-			}
-//			_log.info("SetRole: " + getActor().getAI());
 		}
 	}
 	
@@ -191,7 +192,6 @@ public class FPCInfo
 	public void setParty()
 	{
 		_party = FPCPartyManager.getInstance().getParty(this);;
-		_ai.set_fpcParty(_party);
 	}
 	
 	public FPCParty getParty()
@@ -213,7 +213,7 @@ public class FPCInfo
 		
 		Player player = getActor();
 		Location nextLoc;
-		nextLoc = FarmZoneHolder.getInstance().getLocation(player);
+		nextLoc = FarmLocationHolder.getInstance().getLocation(player);
 		if(nextLoc != null)
 			player.teleToLocation(nextLoc);
 	}
@@ -287,21 +287,12 @@ public class FPCInfo
     		player.setHeading(Rnd.get(0, 9000));
             player.setOnlineStatus(true);
             player.restoreExp();
-            LocationFunctions.randomTown(player);
+//            LocationFunctions.randomTown(player);
             
             _isMage = player.isMageClass();
             _classId = player.getClassId();
             
-            // TODO should not up level character here
-            if(player.getLevel() < 85)
-            {
-            	Long exp_add = Experience.LEVEL[85] - player.getExp();
-    			player.addExpAndSp(exp_add, 0, true);
-            }
-            
-            ClassFunctions.upClass(player);
-            
-            FPReward.getInstance().giveReward(player);
+            FPItemHolder.equip(player, true);
             
             player.broadcastCharInfo();
             
@@ -345,7 +336,7 @@ public class FPCInfo
 		
 		if(actor.isInParty())
 		{
-			_log.info(actor +": kicked <--- Party");
+			getParty().kick(actor);
 		}
 		
 		_log.info(actor +": kicked");

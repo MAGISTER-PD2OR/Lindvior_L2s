@@ -3,13 +3,14 @@ package blood.base;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassLevel;
-import blood.Blood;
+import blood.BloodConfig;
 import blood.FPCInfo;
-import blood.ai.*;
+import blood.ai.FPCDefaultAI;
+import blood.ai.IdleFPC;
+import blood.ai.MarketFPC;
+import blood.ai.impl.FPCAdventurer;
 import blood.ai.impl.FPCAeore;
 import blood.ai.impl.FPCArcarnaLord;
-import blood.ai.impl.FPCAdventurer;
-import blood.ai.impl.FPCArchmage;
 import blood.ai.impl.FPCBishop;
 import blood.ai.impl.FPCDominator;
 import blood.ai.impl.FPCDoomBringer;
@@ -21,6 +22,7 @@ import blood.ai.impl.FPCEvaTemplar;
 import blood.ai.impl.FPCFeoh;
 import blood.ai.impl.FPCFortuneSeeker;
 import blood.ai.impl.FPCGhostHunter;
+import blood.ai.impl.FPCGhostSentinel;
 import blood.ai.impl.FPCGrandKhauatari;
 import blood.ai.impl.FPCHellKnight;
 import blood.ai.impl.FPCIss;
@@ -28,32 +30,29 @@ import blood.ai.impl.FPCJudicator;
 import blood.ai.impl.FPCMaestro;
 import blood.ai.impl.FPCMaleSoulhound;
 import blood.ai.impl.FPCMoonlightSentinel;
-import blood.ai.impl.FPCGhostSentinel;
-import blood.ai.impl.FPCMysticMuse;
 import blood.ai.impl.FPCOthell;
 import blood.ai.impl.FPCPhoenixKnight;
 import blood.ai.impl.FPCSagittarius;
 import blood.ai.impl.FPCShilenElder;
 import blood.ai.impl.FPCShillienTemplar;
 import blood.ai.impl.FPCSigel;
-import blood.ai.impl.FPCSoultaker;
 import blood.ai.impl.FPCSpectraDancer;
 import blood.ai.impl.FPCSpectraMaster;
-import blood.ai.impl.FPCStormScreamer;
 import blood.ai.impl.FPCSwordMuse;
 import blood.ai.impl.FPCTitan;
 import blood.ai.impl.FPCTrickster;
-import blood.ai.impl.FPCTyr;
+import blood.ai.impl.FPCTyrr;
 import blood.ai.impl.FPCWindRider;
+import blood.ai.impl.FPCWizzard;
 import blood.ai.impl.FPCWynn;
 import blood.ai.impl.FPCYul;
-import blood.ai.impl.FighterPC;
+import blood.ai.impl.LowLevelFarming;
 import blood.ai.impl.MysticPC;
 
 public enum FPCRole {
-	IDLE("idle", Blood.FPC_IDLE),
-	NEXUS_EVENT("nexus", Blood.FPC_NEXUS),
-	MARKET("market", Blood.FPC_MARKET);
+	IDLE("idle", BloodConfig.FPC_IDLE),
+	NEXUS_EVENT("nexus", BloodConfig.FPC_NEXUS),
+	MARKET("market", BloodConfig.FPC_MARKET);
 	
 	private String _name;
 	private FPCBase _players = new FPCBase();
@@ -182,7 +181,8 @@ public enum FPCRole {
 	
 	private FPCDefaultAI getAggresiveAI(Player player)
 	{
-		if(player.getClassId().isOfLevel(ClassLevel.AWAKED)){
+		if(player.getClassId().isOfLevel(ClassLevel.AWAKED))
+		{
 			switch (player.getClassId()) {
 			case FEOH_ARCHMAGE:
 			case FEOH_SOULTAKER:
@@ -239,12 +239,13 @@ public enum FPCRole {
 			case TYR_MAESTRO:
 			case TYR_DOOMBRINGER:
 			case TYR_WARRIOR:
-				return new FPCTyr(player);
+				return new FPCTyrr(player);
 				
 			default:
 				break;
 			}
 		}
+		
 		if(player.isMageClass())
         {
         	switch(player.getClassId())
@@ -260,32 +261,34 @@ public enum FPCRole {
 	        	case SHILLEN_ELDER:
 	        		return new FPCShilenElder(player);
 	        	//Summoner
-	        	case NECROMANCER:
-	        	case SOULTAKER:
-	        		return new FPCSoultaker(player);
 	        	case WARLOCK:
 	        	case ARCANA_LORD:
 	        		return new FPCArcarnaLord(player);
 	        	case PHANTOM_SUMMONER:
 	        	case SPECTRAL_MASTER:
 	        		return new FPCSpectraMaster(player);
-	        	//Nuker
+	        	//Orcish Mystic
+	        	case CLERIC:
+	        	case ORACLE:
+	        	case SHILLEN_ORACLE:
+	        		return new LowLevelFarming(player);
+	        	case WIZARD:
+	        	case ELVEN_WIZARD:
+	        	case DARK_WIZARD:
+	        	case NECROMANCER:
+	        	case SOULTAKER:
 	        	case SORCERER:
 	        	case ARCHMAGE:
-	        		return new FPCArchmage(player);
 	        	case SPELLSINGER:
 	        	case MYSTIC_MUSE:
-	        		return new FPCMysticMuse(player);
 	        	case SPELLHOWLER:
 	        	case STORM_SCREAMER:
-	        		return new FPCStormScreamer(player);
-	        	//Orcish Mystic
+	        	case ORC_SHAMAN:
 	        	case WARCRYER:
-	        	case DOOMCRYER:
-	        		return new FPCDoomcryer(player);
 	        	case OVERLORD:
+	        	case DOOMCRYER:
 	        	case DOMINATOR:
-	        		return new FPCDominator(player);
+	        		return new FPCWizzard(player);
         		default:
         			return new MysticPC(player);
         	}
@@ -372,7 +375,8 @@ public enum FPCRole {
 	        	case JUDICATOR:
 	        		return new FPCJudicator(player);
 	    		default:
-	            	return new FighterPC(player);
+//	            	return new FighterPC(player);
+	    			return new LowLevelFarming(player);
         	}
         }
 		
@@ -393,7 +397,7 @@ public enum FPCRole {
 			case "sigel":
 				return new FPCSigel(player);
 			case "tyr":
-				return new FPCTyr(player);
+				return new FPCTyrr(player);
 			case "othell":
 				return new FPCOthell(player);
 			case "feoh":
@@ -410,19 +414,10 @@ public enum FPCRole {
         	case "se":
         		return new FPCShilenElder(player);
         	//Summoner
-        	case "nec":
-        		return new FPCSoultaker(player);
         	case "wlock":
         		return new FPCArcarnaLord(player);
         	case "ps":
         		return new FPCSpectraMaster(player);
-        	//Nuker
-        	case "soc":
-        		return new FPCArchmage(player);
-        	case "sps":
-        		return new FPCMysticMuse(player);
-        	case "sh":
-        		return new FPCStormScreamer(player);
         	//Orcish Mystic
         	case "wc":
         		return new FPCDoomcryer(player);

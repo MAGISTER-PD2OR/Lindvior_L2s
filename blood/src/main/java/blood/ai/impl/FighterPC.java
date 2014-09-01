@@ -11,12 +11,6 @@ public class FighterPC extends EventFPC
 	}
 
 	@Override
-	protected boolean createNewTask()
-	{
-		return defaultFightTask();
-	}
-
-	@Override
 	public int getRatePHYS()
 	{
 		return 30;

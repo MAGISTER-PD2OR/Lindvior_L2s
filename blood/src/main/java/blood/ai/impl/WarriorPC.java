@@ -1,6 +1,7 @@
 package blood.ai.impl;
 
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.Skill;
 import blood.ai.EventFPC;
 
 public class WarriorPC extends EventFPC
@@ -10,15 +11,21 @@ public class WarriorPC extends EventFPC
 		super(actor);
 	}
 	
-	@Override
-	protected void makeNpcBuffs()
+	public void prepareSkillsSetup() {
+		_allowSelfBuffSkills.add(FPCDreadnought.SKILL_WARCRY);
+		_allowSelfBuffSkills.add(FPCDuelist.SKILL_DEFKECT_ARROW);
+		_allowSelfBuffSkills.add(FPCDuelist.SKILL_MAJESTY);
+	}
+	
+	protected Skill getNpcSuperiorBuff()
 	{
-		npcBuff( 15649, 1 ); // Warriors Harmony
-		basicNpcBuffs();
+//		return getSkill(15648, 1); //tank
+		return getSkill(15649, 1); //warrior
+//		return getSkill(15650, 1); //wizzard
 	}
 
 	@Override
-	protected boolean createNewTask()
+	protected boolean createFightTask()
 	{
 		return defaultFightTask();
 	}

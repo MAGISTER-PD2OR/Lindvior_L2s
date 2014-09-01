@@ -1,34 +1,36 @@
 package blood.handler.admincommands;
 
-import gnu.trove.map.TIntObjectMap;
-import l2s.gameserver.geodata.GeoEngine;
+import l2s.gameserver.ai.PlayerAI;
+import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.handler.admincommands.IAdminCommandHandler;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.base.RestartType;
-import l2s.gameserver.model.instances.NpcInstance;
-import l2s.gameserver.templates.TeleportLocation;
-import l2s.gameserver.utils.Location;
-import l2s.gameserver.utils.TeleportUtils;
+import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.SkillLearn;
+import l2s.gameserver.model.base.AcquireType;
+import l2s.gameserver.model.base.ClassId;
+import l2s.gameserver.tables.SkillTable;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import blood.FPCInfo;
-import blood.ai.FPCDefaultAI;
+import blood.base.FPCPveStyle;
 import blood.base.FPCRole;
-import blood.data.holder.FarmZoneHolder;
-import blood.data.holder.NpcHelper;
-//import l2s.gameserver.model.Effect;
-//import l2s.gameserver.tables.PetDataTable;
-//import l2s.gameserver.templates.item.ItemTemplate.Grade;
 
 public class AdminManipulateAI implements IAdminCommandHandler
 {
+	
+	@SuppressWarnings("unused")
 	private static final Logger _log = LoggerFactory.getLogger(AdminManipulateAI.class);
 	
 	private static enum Commands
 	{
-		admin_find_path, admin_tryai
+		admin_tryai_party, 
+		admin_tryai,
+		admin_stopai,
+		admin_dump_skills
 		}
 
 	@SuppressWarnings("rawtypes")
@@ -39,84 +41,85 @@ public class AdminManipulateAI implements IAdminCommandHandler
 
 		if(!activeChar.getPlayerAccess().CanEditNPC)
 			return false;
+		
+		FPCInfo newInfo;
 
 		switch(command)
 		{
 			case admin_tryai:
-				FPCInfo newInfo = new FPCInfo(activeChar);
+				newInfo = new FPCInfo(activeChar);
+				newInfo.setPVEStyle(FPCPveStyle.SOLO);
 				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
 				newInfo.getAI().toggleDebug();
-	//			newInfo.setPVEStyle(FPCPveStyle.PARTY);
 	//			newInfo.setParty();
 			break;
-			case admin_find_path:
-				FPCDefaultAI ai = FPCInfo.getInstance(activeChar).getAI();
-				Player player = activeChar;
+			
+			case admin_tryai_party:
+				newInfo = new FPCInfo(activeChar);
+				newInfo.setPVEStyle(FPCPveStyle.PARTY);
+				newInfo.setAI(FPCRole.NEXUS_EVENT.getAI(activeChar));
+				newInfo.getAI().toggleDebug();
+				newInfo.setParty();
+				break;
 				
-				Location myRestartLocation = TeleportUtils.getRestartLocation(player, RestartType.TO_VILLAGE);
-				NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
-				NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
+			case admin_stopai:
+				activeChar.setAI(new PlayerAI(activeChar));
+				break;
 				
-				_log.info("Where am i?");
+			case admin_dump_skills:
 				
-				ai.addTaskTele(myRestartLocation);
+				ClassId activeClass = activeChar.getClassId();
+				String className = getClassName(activeClass);
 				
-				_log.info("Teleportto restart loc:"+myRestartLocation);
-				if(myRestartLocation.distance(buffer.getLoc()) < 4000)
-					_log.info("Move to next buffer:"+buffer);
-				else
-					_log.info("Can't move to next buffer:"+buffer+" distance:"+myRestartLocation.distance(buffer.getLoc()));
-				
-				_log.info("Move to next GK:"+gk);
-				ai.addTaskMove(gk.getLoc(), true);
-				
-				Location targetLocation = FarmZoneHolder.getInstance().getLocation(player);
-				
-				_log.info("Target location:"+targetLocation);
-				if(targetLocation == null)
-					return false;
-				
-				Location middleRestartLocation = TeleportUtils.getRestartLocation(player, targetLocation, RestartType.TO_VILLAGE);
-				NpcInstance middleGK = NpcHelper.getClosestGatekeeper(middleRestartLocation);
-				
-				if(gk.getObjectId() != middleGK.getObjectId())
+				if(activeChar.getClassLevel() > 0)
 				{
-					_log.info("=>Tele to middle GK:"+middleGK);
-					gk = middleGK;
-					ai.addTaskTele(gk.getLoc());
-				}
-				
-				_log.info("find spawn zone");
-				TIntObjectMap<TeleportLocation> teleMap = gk.getTemplate().getTeleportList(1);
-				double minDistance = Double.MAX_VALUE;
-				Location spawnLocation = null;
-				for(TeleportLocation teleLoc: teleMap.valueCollection())
-				{
-					double distanceFromSpawnLoc = teleLoc.distance(targetLocation);
-					if(distanceFromSpawnLoc < minDistance && GeoEngine.canMoveToCoord(teleLoc.x, teleLoc.y, teleLoc.z, targetLocation.x, targetLocation.y, targetLocation.z, player.getGeoIndex()))
-					{
-						minDistance = distanceFromSpawnLoc;
-						spawnLocation = teleLoc;
-					}
-				}
-				
-				if(spawnLocation != null)
-				{
-					_log.info("Teleport to farm zone entrance:"+spawnLocation);
-					_log.info("Move to farm spot:"+targetLocation);
-					ai.addTaskTele(spawnLocation);
-					ai.addTaskMove(targetLocation, true);
+					ClassId parentClass = activeClass.getParent(activeChar.getSex().ordinal());
+					String parentName = getClassName(parentClass);
+					System.out.println("\tpublic class "+className+" extends "+parentName+" {");
 				}
 				else
+					System.out.println("\tpublic class "+className+" {");
+				
+				System.out.println("\t\tpublic static final int");
+				System.out.println("\t\t//======= Start Skill list of "+className+" ID:"+activeClass.ordinal()+"=======");
+				for(SkillLearn sl : SkillAcquireHolder.getInstance().getAvailableMaxLvlSkills(activeChar, AcquireType.NORMAL))
 				{
-					_log.info("Teleporto direct to farm spot:"+targetLocation);
-					ai.addTaskTele(targetLocation);
+					if(sl.getMinLevel() < 20 && activeChar.getClassLevel() > 0)
+						continue;
+					
+					if(sl.getMinLevel() < 40 && activeChar.getClassLevel() > 1)
+						continue;
+					
+					if(sl.getMinLevel() < 76 && activeChar.getClassLevel() > 2)
+						continue;
+					
+					Skill skill = SkillTable.getInstance().getInfo(sl.getId(), sl.getLevel());
+					if(skill == null)
+						continue;
+					
+					if(skill.isPassive())
+						continue;
+					
+					
+					
+					String niceName = skill.getName().toUpperCase().replace(" ", "_").replace("'", "").replace(":", "");
+					double tab_repeat = Math.floor((40 - niceName.length())/4.);
+					String tabs = StringUtils.repeat("\t", (int) tab_repeat);
+					System.out.println("\t\tSKILL_"+niceName+tabs+"= "+skill.getId()+", // Lv."+skill.getLevel());
+					
 				}
-			break;
-			default:
-			break;
+				System.out.println("\t\t//======= End Skill list of "+className+" ID:"+activeClass.ordinal()+"=======");
+				System.out.println("\t\tSKILL_DUMMY = 1;");
+				System.out.println("\t};");
+				System.out.println("");
+			
 		}
 		return true;
+	}
+	
+	public String getClassName(ClassId classId)
+	{
+		return WordUtils.capitalize(classId.toString().toLowerCase().replace("_", " ")).replace(" ", "");
 	}
 	
 

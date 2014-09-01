@@ -12,16 +12,12 @@ import org.gearman.GearmanWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import blood.Blood;
+import blood.BloodConfig;
 
 public class L2MQ
 {
-	@SuppressWarnings("unused")
 	private static final Logger 		_log 			= LoggerFactory.getLogger(L2MQ.class);
 	private static L2MQ 				_instance;
-	
-	private static String 				_mqServerIP		= "125.212.219.44";
-	private static Integer 				_mqServerPort	= 4730;
 	
 	private static Gearman 				_gearman;
 	private static GearmanClient 		_client;
@@ -38,7 +34,7 @@ public class L2MQ
     }
 	
 	private L2MQ() {
-		if(!Blood.MQ_ENABLE)
+		if(!BloodConfig.MQ_ENABLE)
 			return;
 		getWorker(); // set worker
 	}
@@ -57,7 +53,7 @@ public class L2MQ
 	{
 		if(_server == null)
 		{
-			_server = getGearman().createGearmanServer(_mqServerIP, _mqServerPort);
+			_server = getGearman().createGearmanServer(BloodConfig.MQ_SERVER, BloodConfig.MQ_PORT);
 		}
 		
 		return _server;
@@ -88,8 +84,8 @@ public class L2MQ
 	
 	public static void asignTaskForWorker(GearmanWorker worker)
 	{
-		worker.addFunction("gameMail_Kain", new MQMailer());
-		worker.addFunction("gameSay_Kain", new ChatterSay());
+		worker.addFunction("gameMail_"+BloodConfig.MQ_PREFIX, new MQMailer());
+		worker.addFunction("gameSay_"+BloodConfig.MQ_PREFIX, new ChatterSay());
 	}
 	
 	
@@ -99,28 +95,36 @@ public class L2MQ
 		public String msg;
 	}
 	
-	public static void addFacebookStatus(Player player, String msg)
+	public static void chat(Player receiver, ChatType chat_type, String sender, String msg)
 	{
-		addBackgroundJob("newStatus", player.getAccountName()+";"+player.getObjectId()+";"+msg);
+		chat(receiver.getName(), receiver.getAccountName(), chat_type, sender, msg);
 	}
 	
-	public void addChat(Player receiver, String msg, ChatType chatType, Player sender)
+	public static void chat(String receiver, String receiver_account, ChatType chat_type, String sender, String msg)
 	{
-//		if(receiver.isFakePlayer())
-//			addBackgroundJob("chat", receiver.getAccountName()+";"+receiver.getName()+";"+sender.getName()+";"+chatType.ordinal()+";"+msg);
-	}
-	
-	public static void requestAnswer(Player player, String msg)
-	{
-		addBackgroundJob("chatFromGame", player.getName()+";"+player.getObjectId()+";"+msg);
+		StringBuilder builder = new StringBuilder();
+		builder.append(receiver_account);
+		builder.append(";");
+		builder.append(receiver);
+		builder.append(";");
+		builder.append(chat_type.ordinal());
+		builder.append(";");
+		builder.append(sender);
+		builder.append(";");
+		builder.append(msg);
+		
+		_log.info("PM to FPC:"+builder.toString());
+		
+		addBackgroundJob("chat", builder.toString());
 	}
 	
 	public static void addBackgroundJob(String jobName, String jobData)
 	{
-		if(!Blood.MQ_ENABLE)
+		if(!BloodConfig.MQ_ENABLE)
 			return;
-		jobData = "Kain;" + jobData;
+		jobData = BloodConfig.MQ_PREFIX +";" + jobData;
 		System.out.println(jobName+"|"+jobData);
 		getClient().submitBackgroundJob(jobName, jobData.getBytes());
 	}
+	
 }

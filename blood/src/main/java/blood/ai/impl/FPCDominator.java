@@ -36,31 +36,31 @@ public class FPCDominator extends MysticPC
 		return 10;
 	}
 
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		//SkillList.add(927);		//Burning Chop
-		SkillList.add(1245);	//Steal Essence
-		//SkillList.add(1092);	//Fear
-		//SkillList.add(1097);	//Dreaming Spirit
-		//SkillList.add(260);		//Hammer Crush
-		//SkillList.add(1208);	//Seal of Binding
-		//SkillList.add(1096);	//Seal of Chaos
-		//SkillList.add(1099);	//Seal of Slow
-		//SkillList.add(1104);	//Seal of Winter
-		//SkillList.add(1210);	//Seal of Gloom
-		SkillList.add(1108);	//Seal of Flame
-		//SkillList.add(1246);	//Seal of Silence
-		//SkillList.add(1248);	//Seal of Suspension
-		//SkillList.add(306);		//Ritual of Life
+		//_allowSkills.add(927);		//Burning Chop
+		_allowSkills.add(1245);	//Steal Essence
+		//_allowSkills.add(1092);	//Fear
+		//_allowSkills.add(1097);	//Dreaming Spirit
+		//_allowSkills.add(260);		//Hammer Crush
+		//_allowSkills.add(1208);	//Seal of Binding
+		//_allowSkills.add(1096);	//Seal of Chaos
+		//_allowSkills.add(1099);	//Seal of Slow
+		//_allowSkills.add(1104);	//Seal of Winter
+		//_allowSkills.add(1210);	//Seal of Gloom
+		_allowSkills.add(1108);	//Seal of Flame
+		//_allowSkills.add(1246);	//Seal of Silence
+		//_allowSkills.add(1248);	//Seal of Suspension
+		//_allowSkills.add(306);		//Ritual of Life
 						
 		//skill 3rd
-		SkillList.add(1367);	//Seal of Disease
-		SkillList.add(1462);	//Seal of Blockage
-		SkillList.add(1416);	//Pa'agrio's Fist
-		SkillList.add(1427);	//Flames of Invincibility
+		_allowSkills.add(1367);	//Seal of Disease
+		_allowSkills.add(1462);	//Seal of Blockage
+		_allowSkills.add(1416);	//Pa'agrio's Fist
+		_allowSkills.add(1427);	//Flames of Invincibility
 		
 		return SkillList;
 	}

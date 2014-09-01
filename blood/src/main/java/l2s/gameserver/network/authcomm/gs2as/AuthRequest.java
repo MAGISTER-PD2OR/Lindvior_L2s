@@ -1,6 +1,6 @@
 package l2s.gameserver.network.authcomm.gs2as;
 
-import blood.Blood;
+import blood.BloodConfig;
 import jonelo.jacksum.algorithm.Union;
 import l2s.gameserver.Config;
 import l2s.gameserver.GameServer;
@@ -25,6 +25,6 @@ public class AuthRequest extends SendablePacket
 		for(int PORT_GAME : Config.PORTS_GAME)
 			writeH(PORT_GAME);
 		writeD(Config.MAXIMUM_ONLINE_USERS);
-		writeD(Blood.FENCE_PARENT_ID);
+		writeD(BloodConfig.FENCE_PARENT_ID);
 	}
 }

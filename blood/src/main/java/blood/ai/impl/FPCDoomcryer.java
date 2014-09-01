@@ -30,17 +30,17 @@ public class FPCDoomcryer extends MysticPC
 		return 10;
 	}
 
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		//SkillList.add(927);		//Burning Chop
-		SkillList.add(1245);	//Steal Essence
-		//SkillList.add(1092);	//Fear
-		//SkillList.add(1097);	//Dreaming Spirit
-		//SkillList.add(260);		//Hammer Crush
-		SkillList.add(1244);	//Freezing Flame
+		//_allowSkills.add(927);		//Burning Chop
+		_allowSkills.add(1245);	//Steal Essence
+		//_allowSkills.add(1092);	//Fear
+		//_allowSkills.add(1097);	//Dreaming Spirit
+		//_allowSkills.add(260);		//Hammer Crush
+		_allowSkills.add(1244);	//Freezing Flame
 						
 		//skill 3rd
 		

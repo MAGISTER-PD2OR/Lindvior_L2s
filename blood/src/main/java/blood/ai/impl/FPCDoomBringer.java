@@ -1,7 +1,6 @@
 package blood.ai.impl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Creature;
@@ -14,6 +13,30 @@ public class FPCDoomBringer extends WarriorPC
 	public FPCDoomBringer(Player actor)
 	{
 		super(actor);
+		//skill 2nd
+		_allowSkills.add(477);	//Dark Smash
+		_allowSkills.add(494);	//Shoulder Charge
+		_allowSkills.add(485);	//Disarm
+		//_allowSkills.add(503);	//Scorn
+		_allowSkills.add(496);	//Slashing Blade
+		_allowSkills.add(493);	//Storm Assault
+		_allowSkills.add(492);	//Spead Wing
+		//_allowSkills.add(483);	//Sword Shield
+		_allowSkills.add(501);	//Violent Temper
+		_allowSkills.add(495);	//Blade Rush
+		_allowSkills.add(497);	//Crushing Pain
+		_allowSkills.add(498);	//Contagion
+		
+		
+		//skill 3rd
+		_allowSkills.add(939);	//Soul Rage
+		_allowSkills.add(526);	//Enuma Elish
+		_allowSkills.add(793);	//Rush Impact
+		_allowSkills.add(358);	//Final Form
+		_allowSkills.add(794);	//Mass Disarm
+		_allowSkills.add(917);	//Final Secret
+		_allowSkills.add(948);	//Eye for Eye
+		
 	}
 
 	@Override
@@ -67,37 +90,6 @@ public class FPCDoomBringer extends WarriorPC
 			
 			actor.doCast(SkillList.get(Rnd.get(SkillList.size())), attacked, false);
 		}
-	}
-	
-	@Override public List<Integer> getAllowSkill()
-	{
-		List<Integer> SkillList = new ArrayList<Integer>();
-		
-		//skill 2nd
-		SkillList.add(477);	//Dark Smash
-		SkillList.add(494);	//Shoulder Charge
-		SkillList.add(485);	//Disarm
-		//SkillList.add(503);	//Scorn
-		SkillList.add(496);	//Slashing Blade
-		SkillList.add(493);	//Storm Assault
-		SkillList.add(492);	//Spead Wing
-		//SkillList.add(483);	//Sword Shield
-		SkillList.add(501);	//Violent Temper
-		SkillList.add(495);	//Blade Rush
-		SkillList.add(497);	//Crushing Pain
-		SkillList.add(498);	//Contagion
-		
-		
-		//skill 3rd
-		SkillList.add(939);	//Soul Rage
-		SkillList.add(526);	//Enuma Elish
-		SkillList.add(793);	//Rush Impact
-		SkillList.add(358);	//Final Form
-		SkillList.add(794);	//Mass Disarm
-		SkillList.add(917);	//Final Secret
-		SkillList.add(948);	//Eye for Eye
-		
-		return SkillList;
 	}
 	
 	protected ArrayList<Skill> getDrawTargetSkill()
