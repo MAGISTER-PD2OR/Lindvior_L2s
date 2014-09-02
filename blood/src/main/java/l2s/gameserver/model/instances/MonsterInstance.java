@@ -443,12 +443,17 @@ public class MonsterInstance extends NpcInstance
 				reward.addDamage(info.damage);
 		}
 
-		int levelDiff = topDamager.getLevel() - this.getLevel();
-		if(topDamager != null && topDamager.isPlayable() && levelDiff < 9 && levelDiff > -9)
-		{
-			for(Map.Entry<RewardType, RewardList> entry : getTemplate().getRewards().entrySet())
-				rollRewards(entry, lastAttacker, topDamager);
-		}
+        if(topDamager != null)
+        {
+            int levelDiff = topDamager.getLevel() - this.getLevel();
+            if(topDamager.isPlayable() && levelDiff < 9 && levelDiff > -9)
+            {
+                for(Map.Entry<RewardType, RewardList> entry : getTemplate().getRewards().entrySet())
+                {
+                    rollRewards(entry, lastAttacker, topDamager);
+                }
+            }
+        }
 
 		Player[] attackers = rewards.keySet().toArray(new Player[rewards.size()]);
 		double[] xpsp = new double[2];
