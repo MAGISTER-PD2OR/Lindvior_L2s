@@ -2,6 +2,7 @@ package blood;
 
 import l2s.commons.configuration.ExProperties;
 import l2s.gameserver.Config;
+import l2s.gameserver.utils.Location;
 
 public class BloodConfig {
 
@@ -19,6 +20,7 @@ public class BloodConfig {
 	public static int	MAX_MOVE_ROLE		= 50;
 	public static long 	FPC_DISCONNECT_INTERVAL	= 10*60*1000L;  //every 60 minutes
 	public static long 	FPC_POPULATION_CONTROLL_INVERTAL = 30*1000L; // every 30s
+	public static Location FPC_CREATE_LOC = Location.parseLoc("-116059, -251145, -2992");
 	public static String SUPPORTER_NAME = "[L2VH]HoTro";
 	
 	public static void loadConfig()

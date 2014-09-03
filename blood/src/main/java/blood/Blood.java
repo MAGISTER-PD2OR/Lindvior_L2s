@@ -1,8 +1,5 @@
 package blood;
 
-
-
-//import l2s.gameserver.network.loginservercon.LoginServerCommunication;
 import l2mq.L2MQ;
 import l2s.gameserver.Config;
 import l2s.gameserver.GameServer;
@@ -16,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import blood.base.FPCRole;
 import blood.base.FPCSpawnStatus;
 import blood.dao.FakePlayerDAO;
-import blood.data.holder.NamePatternHolder;
 import blood.data.parser.FPItemParser;
 import blood.data.parser.FarmLocationParser;
 import blood.data.parser.NamePatternParser;

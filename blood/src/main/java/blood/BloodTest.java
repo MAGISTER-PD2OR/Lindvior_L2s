@@ -1,12 +1,6 @@
 package blood;
 
-import l2s.gameserver.model.base.ClassId;
-import l2s.gameserver.model.base.ClassType;
-import l2s.gameserver.model.base.ClassType2;
-import l2s.gameserver.model.base.Race;
-import l2s.gameserver.model.base.Sex;
 import blood.data.holder.NamePatternHolder;
-import blood.utils.PIDHelper;
 
 
 public class BloodTest

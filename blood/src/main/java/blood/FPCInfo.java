@@ -8,6 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassId;
+import l2s.gameserver.model.base.Experience;
 //import l2s.gameserver.model.entity.events.impl.DominionSiegeEvent;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.model.items.TradeItem;
@@ -29,6 +30,7 @@ import blood.data.holder.FPItemHolder;
 import blood.data.holder.FarmLocationHolder;
 import blood.table.MerchantItem;
 import blood.utils.ClassFunctions;
+import blood.utils.LocationFunctions;
 import blood.utils.MerchantFunctions;
 
 
@@ -285,23 +287,32 @@ public class FPCInfo
             player.spawnMe();
     		player.setRunning();
     		player.setHeading(Rnd.get(0, 9000));
-            player.setOnlineStatus(true);
             player.restoreExp();
-//            LocationFunctions.randomTown(player);
             
             _isMage = player.isMageClass();
             _classId = player.getClassId();
             
-            boolean hasNewClass = ClassFunctions.upClass(player);
-            if(hasNewClass)
+            if(player.getLevel() < 20)
+            {
+            	int newLevel = Rnd.get(20, 85);
+        		
+            	Long exp_add = Experience.LEVEL[newLevel] - player.getExp();
+            	player.addExpAndSp(exp_add, 0, true);
+            	
+            	ClassFunctions.upClass(player);
             	player.rewardSkills(false, false, true, false);
+            }
             
-            FPItemHolder.equip(player, !hasNewClass);
+            FPItemHolder.equip(player, true);
             
-            player.broadcastCharInfo();
+            if(player.isInRange(BloodConfig.FPC_CREATE_LOC, 500))
+            	LocationFunctions.randomTown(player);
             
             // bind player to actor
             _actor = player;
+            
+            player.setOnlineStatus(true);
+            player.broadcastCharInfo();
             
 //            cancelShop();
             

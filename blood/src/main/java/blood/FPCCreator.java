@@ -6,10 +6,8 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.base.AcquireType;
 import l2s.gameserver.model.base.ClassId;
-import l2s.gameserver.model.base.Experience;
 import l2s.gameserver.model.base.Sex;
 import l2s.gameserver.tables.SkillTable;
-import l2s.gameserver.templates.player.PlayerTemplate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +35,7 @@ public class FPCCreator
 		}
 		
 		try{
+			_log.info("Create NewChar:"+name+" Class: " + newClass);
 			createNewChar(newClass.getId(), name, "_fake_account");
 		}catch(Exception e){
 			_log.error("create char name:"+name, e);
@@ -79,11 +78,11 @@ public class FPCCreator
 	
 	public static void initNewChar(Player newChar)
 	{
-		PlayerTemplate template = newChar.getTemplate();
+//		PlayerTemplate template = newChar.getTemplate();
 
 		newChar.getSubClassList().restore();
 
-       	newChar.setLoc(template.getStartLocation());
+       	newChar.setLoc(BloodConfig.FPC_CREATE_LOC);
 
 		newChar.setHeading(Rnd.get(0, 90000));
 		
@@ -93,14 +92,6 @@ public class FPCCreator
 		newChar.setCurrentHpMp(newChar.getMaxHp(), newChar.getMaxMp());
 		newChar.setCurrentCp(0); // retail
 		newChar.setOnlineStatus(false);
-		
-		int newLevel = Rnd.chance(20) ? 85 : 20;
-		
-    	Long exp_add = Experience.LEVEL[newLevel] - newChar.getExp();
-    	newChar.addExpAndSp(exp_add, 0, true);
-    	
-//    	ClassFunctions.upClass(newChar);
-//    	FPItemHolder.equip(newChar, true);
 
 		newChar.store(false);
 		newChar.getInventory().store();
