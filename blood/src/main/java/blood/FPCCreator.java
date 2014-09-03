@@ -41,7 +41,7 @@ public class FPCCreator
 		if(validClass.size() == 0)
 			for(ClassId classid: ClassId.VALUES)
 			{
-				if(meaningRace != null && !classid.getRace().equals(meaningRace))
+				if(meaningRace != null && !classid.isOfRace(meaningRace))
 					continue;
 				
 				if(NamePatternHolder.checkName(name, classid) || NamePatternHolder.checkName(name, classid.getType2()) || NamePatternHolder.checkName(name, classid.getType()))
@@ -51,10 +51,10 @@ public class FPCCreator
 		if(validClass.size() == 0)
 			for(ClassId classid: ClassId.VALUES)
 			{
-				if(meaningRace != null && !classid.getRace().equals(meaningRace))
+				if(meaningRace != null && !classid.isOfRace(meaningRace))
 					continue;
 				
-				if(!classid.getClassLevel().equals(ClassLevel.NONE))
+				if(!classid.isOfLevel(ClassLevel.NONE))
 					continue;
 				
 				validClass.add(classid.getFirstParent(meaningSex == null ? 0 : meaningSex.ordinal()));
