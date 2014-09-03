@@ -52,7 +52,7 @@ public class ClassFunctions {
 			if(classid.getId() > 138 && classid.getId() < 147) // remove old GOD 4th class
 				continue;
 			
-			if(NamePatternHolder.checkName(name, classid) || NamePatternHolder.checkName(name, classid.getType2()) || NamePatternHolder.checkName(name, classid.getType()))
+			if(NamePatternHolder.checkName(name, classid))
 				dreamList.add(classid);
 			
 			classList.add(classid);

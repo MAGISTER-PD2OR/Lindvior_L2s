@@ -91,7 +91,7 @@ public final class NamePatternHolder  extends AbstractHolder{
 	
 	public static boolean checkName(String name, ClassId classid)
 	{
-		return checkName(name, classid.toString());
+		return checkName(name, classid.toString()) || NamePatternHolder.checkName(name, classid.getType2()) || NamePatternHolder.checkName(name, classid.getType());
 	}
 	
 	public static boolean checkChildrenClassName(String name, ClassId classid)
@@ -140,7 +140,7 @@ public final class NamePatternHolder  extends AbstractHolder{
 				if(meaningRace != null && !classid.isOfRace(meaningRace))
 					continue;
 				
-				if(NamePatternHolder.checkName(name, classid) || NamePatternHolder.checkName(name, classid.getType2()) || NamePatternHolder.checkName(name, classid.getType()))
+				if(NamePatternHolder.checkName(name, classid))
 					validClass.add(classid.getFirstParent(meaningSex == null ? 0 : meaningSex.ordinal()));
 			}
 		
