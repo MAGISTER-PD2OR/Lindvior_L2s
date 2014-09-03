@@ -292,7 +292,11 @@ public class FPCInfo
             _isMage = player.isMageClass();
             _classId = player.getClassId();
             
-            FPItemHolder.equip(player, true);
+            boolean hasNewClass = ClassFunctions.upClass(player);
+            if(hasNewClass)
+            	player.rewardSkills(false, false, true, false);
+            
+            FPItemHolder.equip(player, !hasNewClass);
             
             player.broadcastCharInfo();
             
