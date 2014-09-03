@@ -1,17 +1,12 @@
 package blood;
 
-import java.util.HashSet;
-
-import l2s.commons.math.random.RndSelector;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.base.AcquireType;
 import l2s.gameserver.model.base.ClassId;
-import l2s.gameserver.model.base.ClassLevel;
 import l2s.gameserver.model.base.Experience;
-import l2s.gameserver.model.base.Race;
 import l2s.gameserver.model.base.Sex;
 import l2s.gameserver.tables.SkillTable;
 import l2s.gameserver.templates.player.PlayerTemplate;
@@ -31,46 +26,18 @@ public class FPCCreator
 	
 	public static void createNewChar()
 	{
-		RndSelector<Integer> _randomFactor = new RndSelector<Integer>();
-		HashSet<ClassId> validClass = new HashSet<ClassId>();
 		String name = FakeNameDAO.getInstance().getName();
 		
-		Race meaningRace = NamePatternHolder.getRaceByName(name);
-		Sex meaningSex = NamePatternHolder.getSexByName(name);
+		ClassId newClass = NamePatternHolder.getStartClass(name);
 		
-		if(validClass.size() == 0)
-			for(ClassId classid: ClassId.VALUES)
-			{
-				if(meaningRace != null && !classid.isOfRace(meaningRace))
-					continue;
-				
-				if(NamePatternHolder.checkName(name, classid) || NamePatternHolder.checkName(name, classid.getType2()) || NamePatternHolder.checkName(name, classid.getType()))
-					validClass.add(classid.getFirstParent(meaningSex == null ? 0 : meaningSex.ordinal()));
-			}
-		
-		if(validClass.size() == 0)
-			for(ClassId classid: ClassId.VALUES)
-			{
-				if(meaningRace != null && !classid.isOfRace(meaningRace))
-					continue;
-				
-				if(!classid.isOfLevel(ClassLevel.NONE))
-					continue;
-				
-				validClass.add(classid.getFirstParent(meaningSex == null ? 0 : meaningSex.ordinal()));
-			}
-		
-		if(validClass.size() == 0){
-			_log.info("cant find any class with that name:"+name);
+		if(newClass == null)
+		{
+			_log.info("new char bad name:"+name);
 			return;
 		}
 		
-		for(ClassId classid: validClass)
-			_randomFactor.add(classid.getId(), 1);
-		
 		try{
-			int selectedClass = _randomFactor.select();
-			createNewChar(selectedClass, name, "_fake_account");
+			createNewChar(newClass.getId(), name, "_fake_account");
 		}catch(Exception e){
 			_log.error("create char name:"+name, e);
 		}

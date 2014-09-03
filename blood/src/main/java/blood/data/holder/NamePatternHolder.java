@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import l2s.commons.data.xml.AbstractHolder;
+import l2s.commons.math.random.RndSelector;
 import l2s.gameserver.model.base.ClassId;
+import l2s.gameserver.model.base.ClassLevel;
 import l2s.gameserver.model.base.ClassType;
 import l2s.gameserver.model.base.ClassType2;
 import l2s.gameserver.model.base.Race;
@@ -121,6 +123,47 @@ public final class NamePatternHolder  extends AbstractHolder{
 				return sex;
 		
 		return null;
+	}
+	
+	public static ClassId getStartClass(String name)
+	{
+		RndSelector<ClassId> randomFactor = new RndSelector<ClassId>();
+		HashSet<ClassId> validClass = new HashSet<ClassId>();
+		
+		
+		Race meaningRace = NamePatternHolder.getRaceByName(name);
+		Sex meaningSex = NamePatternHolder.getSexByName(name);
+		
+		if(validClass.size() == 0)
+			for(ClassId classid: ClassId.VALUES)
+			{
+				if(meaningRace != null && !classid.isOfRace(meaningRace))
+					continue;
+				
+				if(NamePatternHolder.checkName(name, classid) || NamePatternHolder.checkName(name, classid.getType2()) || NamePatternHolder.checkName(name, classid.getType()))
+					validClass.add(classid.getFirstParent(meaningSex == null ? 0 : meaningSex.ordinal()));
+			}
+		
+		if(validClass.size() == 0)
+			for(ClassId classid: ClassId.VALUES)
+			{
+				if(meaningRace != null && !classid.isOfRace(meaningRace))
+					continue;
+				
+				if(!classid.isOfLevel(ClassLevel.NONE))
+					continue;
+				
+				validClass.add(classid.getFirstParent(meaningSex == null ? 0 : meaningSex.ordinal()));
+			}
+		
+		if(validClass.size() == 0){
+			return null;
+		}
+		
+		for(ClassId classid: validClass)
+			randomFactor.add(classid, 1);
+		
+		return randomFactor.select();
 	}
 
 	@Override
