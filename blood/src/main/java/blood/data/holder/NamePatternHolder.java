@@ -71,7 +71,7 @@ public final class NamePatternHolder  extends AbstractHolder{
 			return true;
 		
 		for(ClassId classid: ClassId.VALUES)
-			if(classid.getRace().equals(race) && checkName(name, classid))
+			if(classid.getRace() != null && classid.getRace().equals(race) && checkName(name, classid))
 				return true;
 		
 		return false;
