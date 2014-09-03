@@ -2,6 +2,7 @@ package blood.utils;
 
 import java.util.ArrayList;
 
+import blood.data.holder.NamePatternHolder;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassId;
@@ -15,6 +16,7 @@ public class ClassFunctions {
 			return false;
 		
 		ArrayList<ClassId> classList = new ArrayList<ClassId>();
+		ArrayList<ClassId> dreamList = new ArrayList<ClassId>();
 		
 		ClassLevel nextClassLevel = null;
 		ClassId currentClassId = player.getClassId();
@@ -36,21 +38,24 @@ public class ClassFunctions {
 		if(nextClassLevel == null)
 			return false;
 		
-		for(ClassId classId: ClassId.VALUES)
+		for(ClassId classid: ClassId.VALUES)
 		{
-			if(!classId.isOfLevel(nextClassLevel))
+			if(!classid.isOfLevel(nextClassLevel))
 				continue;
 			
-			if(!classId.childOf(currentClassId))
+			if(!classid.childOf(currentClassId))
 				continue;
 			
-			if(classId == ClassId.JUDICATOR || classId == ClassId.INSPECTOR)
+			if(classid == ClassId.JUDICATOR || classid == ClassId.INSPECTOR)
 				continue;
 			
-			if(classId.getId() > 138 && classId.getId() < 147) // remove old GOD 4th class
+			if(classid.getId() > 138 && classid.getId() < 147) // remove old GOD 4th class
 				continue;
 			
-			classList.add(classId);
+			if(NamePatternHolder.checkName(name, classid) || NamePatternHolder.checkName(name, classid.getType2()) || NamePatternHolder.checkName(name, classid.getType()))
+				dreamList.add(classid);
+			
+			classList.add(classid);
 		}
 		
 		if(classList.size() <= 0)
@@ -61,153 +66,17 @@ public class ClassFunctions {
 			// look like we have no choice
 			nextClassId = classList.get(0);
 		}
+		else if(dreamList.size() == 1)
+		{
+			nextClassId = dreamList.get(0);
+		}
+		else if(dreamList.size() > 1)
+		{
+			nextClassId = dreamList.get(Rnd.get(dreamList.size()));
+		}
 		else
 		{
-			switch (currentClassId) {
-			case HUMAN_FIGHTER:
-				if(NameFunctions.isTankerName(name))
-					nextClassId = ClassId.KNIGHT;
-				else if(NameFunctions.isWarriorName(name))
-					nextClassId = ClassId.WARRIOR;
-				else if(NameFunctions.isDaggerName(name) || NameFunctions.isRangerName(name))
-					nextClassId = ClassId.ROGUE;
-				break;
-			case HUMAN_MAGE:
-				if(NameFunctions.isNukerName(name) || NameFunctions.isSummonerName(name))
-					nextClassId = ClassId.WIZARD;
-				else if(NameFunctions.isHealerName(name) || NameFunctions.isBufferName(name))
-					nextClassId = ClassId.CLERIC;
-				break;
-			case ELVEN_FIGHTER:
-				if(NameFunctions.isTankerName(name) || NameFunctions.isBufferName(name))
-					nextClassId = ClassId.ELVEN_KNIGHT;
-				else if(NameFunctions.isDaggerName(name) || NameFunctions.isRangerName(name))
-					nextClassId = ClassId.ELVEN_SCOUT;
-				break;
-			case ELVEN_MAGE:
-				if(NameFunctions.isNukerName(name) || NameFunctions.isSummonerName(name))
-					nextClassId = ClassId.ELVEN_WIZARD;
-				else if(NameFunctions.isHealerName(name))
-					nextClassId = ClassId.ORACLE;
-				break;
-			case DARK_FIGHTER:
-				if(NameFunctions.isTankerName(name) || NameFunctions.isBufferName(name))
-					nextClassId = ClassId.PALUS_KNIGHT;
-				else if(NameFunctions.isDaggerName(name) || NameFunctions.isRangerName(name))
-					nextClassId = ClassId.ASSASIN;
-				break;
-			case DARK_MAGE:
-				if(NameFunctions.isNukerName(name) || NameFunctions.isSummonerName(name))
-					nextClassId = ClassId.DARK_WIZARD;
-				else if(NameFunctions.isHealerName(name))
-					nextClassId = ClassId.SHILLEN_ORACLE;
-				break;
-			case ORC_FIGHTER:
-				if(NameFunctions.isDestroyerName(name))
-					nextClassId = ClassId.ORC_RAIDER;
-				else if(NameFunctions.isTyrantName(name))
-					nextClassId = ClassId.ORC_MONK;
-				break;
-			case DWARVEN_FIGHTER:
-				if(NameFunctions.isWarriorName(name))
-					nextClassId = ClassId.ARTISAN;
-				else if(NameFunctions.isDaggerName(name))
-					nextClassId = ClassId.SCAVENGER;
-				break;
-			// 2nd
-			case WARRIOR:
-				if(NameFunctions.isWarlordName(name))
-					nextClassId = ClassId.WARLORD;
-				else if(NameFunctions.isGladiatorName(name))
-					nextClassId = ClassId.GLADIATOR;
-				break;
-			case KNIGHT:
-				if(NameFunctions.isPaladinName(name))
-					nextClassId = ClassId.PALADIN;
-				else if(NameFunctions.isDarkAvengerName(name))
-					nextClassId = ClassId.DARK_AVENGER;
-				break;
-			case ROGUE:
-				if(NameFunctions.isTreasureHunterName(name))
-					nextClassId = ClassId.TREASURE_HUNTER;
-				else if(NameFunctions.isHawkeyeName(name))
-					nextClassId = ClassId.HAWKEYE;
-				break;
-			case WIZARD:
-				if(NameFunctions.isSummonerName(name))
-					nextClassId = ClassId.WARLOCK;
-				else if(NameFunctions.isNecromancerName(name))
-					nextClassId = ClassId.NECROMANCER;
-				else if(NameFunctions.isSorcererName(name))
-					nextClassId = ClassId.SORCERER;
-				break;
-			case CLERIC:
-				if(NameFunctions.isHealerName(name))
-					nextClassId = ClassId.BISHOP;
-				else if(NameFunctions.isBufferName(name))
-					nextClassId = ClassId.PROPHET;
-				break;
-			case ELVEN_KNIGHT:
-				if(NameFunctions.isTankerName(name))
-					nextClassId = ClassId.TEMPLE_KNIGHT;
-				else if(NameFunctions.isBufferName(name))
-					nextClassId = ClassId.SWORDSINGER;
-				break;
-			case ELVEN_SCOUT:
-				if(NameFunctions.isRangerName(name))
-					nextClassId = ClassId.SILVER_RANGER;
-				else if(NameFunctions.isDaggerName(name))
-					nextClassId = ClassId.PLAIN_WALKER;
-				break;
-			case ELVEN_WIZARD:
-				if(NameFunctions.isSummonerName(name))
-					nextClassId = ClassId.ELEMENTAL_SUMMONER;
-				else if(NameFunctions.isNukerName(name))
-					nextClassId = ClassId.SPELLSINGER;
-				break;
-			case PALUS_KNIGHT:
-				if(NameFunctions.isTankerName(name))
-					nextClassId = ClassId.SHILLEN_KNIGHT;
-				else if(NameFunctions.isBufferName(name))
-					nextClassId = ClassId.BLADEDANCER;
-				break;
-			case ASSASIN:
-				if(NameFunctions.isRangerName(name))
-					nextClassId = ClassId.PHANTOM_RANGER;
-				else if(NameFunctions.isDaggerName(name))
-					nextClassId = ClassId.ABYSS_WALKER;
-				break;
-			case DARK_WIZARD:
-				if(NameFunctions.isSummonerName(name))
-					nextClassId = ClassId.PHANTOM_SUMMONER;
-				else if(NameFunctions.isNukerName(name))
-					nextClassId = ClassId.SPELLHOWLER;
-				break;
-			case ORC_SHAMAN:
-				if(NameFunctions.isOverlordName(name))
-					nextClassId = ClassId.OVERLORD;
-				else if(NameFunctions.isWarcryerName(name))
-					nextClassId = ClassId.WARCRYER;
-				break;
-			case TROOPER:
-				if(NameFunctions.isNukerName(name))
-					nextClassId = ClassId.M_SOUL_BREAKER;
-				else if(NameFunctions.isWarriorName(name))
-					nextClassId = ClassId.BERSERKER;
-				break;
-			case WARDER:
-				if(NameFunctions.isNukerName(name))
-					nextClassId = ClassId.F_SOUL_BREAKER;
-				else if(NameFunctions.isRangerName(name))
-					nextClassId = ClassId.ARBALESTER;
-				break;
-	
-			default:
-				break;
-			}
-			
-			if(nextClassId == null || !classList.contains(nextClassId))
-				nextClassId = classList.get(Rnd.get(classList.size()));
+			nextClassId = classList.get(Rnd.get(classList.size()));
 		}
 		
 		if(nextClassId == null)

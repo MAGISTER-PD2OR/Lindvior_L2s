@@ -1,12 +1,18 @@
 package blood;
 
+import java.util.HashSet;
+
 import l2s.commons.math.random.RndSelector;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.base.AcquireType;
+import l2s.gameserver.model.base.ClassId;
+import l2s.gameserver.model.base.ClassLevel;
 import l2s.gameserver.model.base.Experience;
+import l2s.gameserver.model.base.Race;
+import l2s.gameserver.model.base.Sex;
 import l2s.gameserver.tables.SkillTable;
 import l2s.gameserver.templates.player.PlayerTemplate;
 
@@ -15,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import blood.dao.FakeNameDAO;
 import blood.dao.FakePlayerDAO;
-import blood.utils.NameFunctions;
+import blood.data.holder.NamePatternHolder;
 
 public class FPCCreator
 {
@@ -23,179 +29,44 @@ public class FPCCreator
 	
 	private static final Logger 		_log = LoggerFactory.getLogger(FPCCreator.class);
 	
-	public static void isHumanName(String name)
+	public static void createNewChar()
 	{
-		name.toLowerCase().contains("human");
-	}
-   	
-   	public static void createNewChar()
-	{
-		int[] _class_list = {
-				0, // human F
-				10, // human M
-				18, // elf F
-				25, // elf M
-				31, // delf F
-				38, // delf M
-				44, // orc F
-				49, // orc M
-				53, // dwarf
-				123, // kamael Male
-				124 // kamael Female
-				};
-		RndSelector<Integer> _randomFactor = new RndSelector<Integer>(); 
+		RndSelector<Integer> _randomFactor = new RndSelector<Integer>();
+		HashSet<ClassId> validClass = new HashSet<ClassId>();
 		String name = FakeNameDAO.getInstance().getName();
-		if(NameFunctions.isHumanName(name))
-		{
-			if(!NameFunctions.isMysticName(name))
-				_randomFactor.add(0, 1);
-			if(!NameFunctions.isFighterName(name))
-				_randomFactor.add(10, 1);
-			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
+		
+		Race meaningRace = NamePatternHolder.getRaceByName(name);
+		Sex meaningSex = NamePatternHolder.getSexByName(name);
+		
+		if(validClass.size() == 0)
+			for(ClassId classid: ClassId.VALUES)
 			{
-				_randomFactor.add(0, 1);
-				_randomFactor.add(10, 1);
+				if(meaningRace != null && !classid.getRace().equals(meaningRace))
+					continue;
+				
+				if(NamePatternHolder.checkName(name, classid) || NamePatternHolder.checkName(name, classid.getType2()) || NamePatternHolder.checkName(name, classid.getType()))
+					validClass.add(classid.getFirstParent(meaningSex == null ? 0 : meaningSex.ordinal()));
 			}
-		}
-		else if(NameFunctions.isElfName(name))
-		{
-			if(!NameFunctions.isMysticName(name))
-				_randomFactor.add(18, 1);
-			if(!NameFunctions.isFighterName(name))
-				_randomFactor.add(25, 1);
-			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
+		
+		if(validClass.size() == 0)
+			for(ClassId classid: ClassId.VALUES)
 			{
-				_randomFactor.add(18, 1);
-				_randomFactor.add(25, 1);
+				if(meaningRace != null && !classid.getRace().equals(meaningRace))
+					continue;
+				
+				if(!classid.getClassLevel().equals(ClassLevel.NONE))
+					continue;
+				
+				validClass.add(classid.getFirstParent(meaningSex == null ? 0 : meaningSex.ordinal()));
 			}
+		
+		if(validClass.size() == 0){
+			_log.info("cant find any class with that name:"+name);
+			return;
 		}
-		else if(NameFunctions.isDarkElfName(name))
-		{
-			if(!NameFunctions.isMysticName(name))
-				_randomFactor.add(31, 1);
-			if(!NameFunctions.isFighterName(name))
-				_randomFactor.add(38, 1);
-			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
-			{
-				_randomFactor.add(31, 1);
-				_randomFactor.add(38, 1);
-			}
-		}
-		else if(NameFunctions.isOrcName(name))
-		{
-			if(!NameFunctions.isMysticName(name))
-				_randomFactor.add(44, 1);
-			if(!NameFunctions.isFighterName(name))
-				_randomFactor.add(49, 1);
-			if(NameFunctions.isMysticName(name) && NameFunctions.isFighterName(name))
-			{
-				_randomFactor.add(44, 1);
-				_randomFactor.add(49, 1);
-			}
-		}
-		else if(NameFunctions.isDwarfName(name))
-		{
-			_randomFactor.add(53, 1);
-		}
-		else if(NameFunctions.isKamaelName(name))
-		{
-			if(!NameFunctions.isFemaleName(name))
-				_randomFactor.add(123, 1);
-			if(!NameFunctions.isMaleName(name))
-				_randomFactor.add(124, 1);
-		}
-		else if(NameFunctions.isTankerName(name))
-		{
-			_randomFactor.add(0, 1);
-			_randomFactor.add(18, 1);
-			_randomFactor.add(31, 1);
-		}
-		else if(NameFunctions.isWarriorName(name))
-		{
-			_randomFactor.add(0, 1);
-			_randomFactor.add(18, 1);
-			_randomFactor.add(31, 1);
-			_randomFactor.add(44, 1);
-			_randomFactor.add(53, 1);
-			if(!NameFunctions.isFemaleName(name))
-				_randomFactor.add(123, 1);
-			if(!NameFunctions.isMaleName(name))
-				_randomFactor.add(124, 1);
-		}
-		else if(NameFunctions.isDaggerName(name))
-		{
-			_randomFactor.add(0, 1);
-			_randomFactor.add(18, 1);
-			_randomFactor.add(31, 1);
-			_randomFactor.add(53, 1);
-		}
-		else if(NameFunctions.isRangerName(name))
-		{
-			_randomFactor.add(0, 1);
-			_randomFactor.add(18, 1);
-			_randomFactor.add(31, 1);
-			if(!NameFunctions.isMaleName(name))
-				_randomFactor.add(124, 1);
-		}
-		else if(NameFunctions.isFighterName(name))
-		{
-			_randomFactor.add(0, 1);
-			_randomFactor.add(18, 1);
-			_randomFactor.add(31, 1);
-			_randomFactor.add(44, 1);
-			_randomFactor.add(53, 1);
-			if(!NameFunctions.isFemaleName(name))
-				_randomFactor.add(123, 1);
-			if(!NameFunctions.isMaleName(name))
-				_randomFactor.add(124, 1);
-		}
-		else if(NameFunctions.isNukerName(name))
-		{
-			_randomFactor.add(10, 1);
-			_randomFactor.add(25, 1);
-			_randomFactor.add(38, 1);
-			if(!NameFunctions.isFemaleName(name))
-				_randomFactor.add(123, 1);
-			if(!NameFunctions.isMaleName(name))
-				_randomFactor.add(124, 1);
-		}
-		else if(NameFunctions.isSummonerName(name))
-		{
-			_randomFactor.add(10, 1);
-			_randomFactor.add(25, 1);
-			_randomFactor.add(38, 1);
-		}
-		else if(NameFunctions.isHealerName(name))
-		{
-			_randomFactor.add(10, 1);
-			_randomFactor.add(25, 1);
-			_randomFactor.add(38, 1);
-		}
-		else if(NameFunctions.isBufferName(name))
-		{
-			_randomFactor.add(10, 1);
-			_randomFactor.add(25, 1);
-			_randomFactor.add(38, 1);
-			_randomFactor.add(49, 1);
-			_randomFactor.add(18, 1);
-			_randomFactor.add(31, 1);
-		}
-		else if(NameFunctions.isMysticName(name))
-		{
-			_randomFactor.add(10, 1);
-			_randomFactor.add(25, 1);
-			_randomFactor.add(38, 1);
-			_randomFactor.add(49, 1);
-			if(!NameFunctions.isFemaleName(name))
-				_randomFactor.add(123, 1);
-			if(!NameFunctions.isMaleName(name))
-				_randomFactor.add(124, 1);
-		}
-		else // add all
-		{
-			for(int classId: _class_list)
-				_randomFactor.add(classId, 1);
-		}
+		
+		for(ClassId classid: validClass)
+			_randomFactor.add(classid.getId(), 1);
 		
 		try{
 			int selectedClass = _randomFactor.select();
@@ -207,14 +78,16 @@ public class FPCCreator
     
 	public static void createNewChar(int _classId, String _name, String _account)
 	{
-		int _sex = Rnd.get(0,1);
-		if(_classId == 123 || NameFunctions.isMaleName(_name)){
-			_sex = 0;
-		}
+		Sex sex = NamePatternHolder.getSexByName(_name);
 		
-		if(_classId == 124 || NameFunctions.isFemaleName(_name)){
-			_sex = 1;
-		}
+		if(_classId == 123)
+			sex = Sex.MALE;
+		
+		if(_classId == 124)
+			sex = Sex.FEMALE;
+		
+		int _sex = sex != null ? sex.ordinal() : Rnd.get(0,1);
+		
 		int _hairStyle = Rnd.get(0, _sex == 1 ? 6 : 4);
 		int _hairColor = Rnd.get(0,2);
 		int _face = Rnd.get(0,2);
