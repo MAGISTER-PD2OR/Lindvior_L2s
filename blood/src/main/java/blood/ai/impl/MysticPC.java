@@ -2,6 +2,7 @@ package blood.ai.impl;
 
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.base.ClassLevel;
 import blood.ai.EventFPC;
 
 public class MysticPC extends EventFPC
@@ -9,6 +10,11 @@ public class MysticPC extends EventFPC
 	public MysticPC(Player actor)
 	{
 		super(actor);
+	}
+	
+	protected boolean isAllowClass()
+	{
+		return getActor().getClassId().isOfLevel(ClassLevel.NONE);
 	}
 	
 	public void prepareSkillsSetup() {

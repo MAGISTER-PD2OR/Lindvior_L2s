@@ -4,6 +4,7 @@ import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.base.ClassId;
+import l2s.gameserver.model.base.ClassLevel;
 import l2s.gameserver.templates.item.WeaponTemplate;
 import l2s.gameserver.templates.item.WeaponTemplate.WeaponType;
 import blood.ai.impl.FPSkills.Archmage;
@@ -33,6 +34,11 @@ public class WizardPC extends MysticPC
 	{
 		super(actor);
 		System.out.println("init new FPCWizzard");
+	}
+	
+	protected boolean isAllowClass()
+	{
+		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
 	}
 	
 	public void prepareSkillsSetup() {

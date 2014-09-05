@@ -4,6 +4,7 @@ import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Party;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.base.ClassLevel;
 import blood.ai.EventFPC;
 import blood.ai.impl.FPSkills.Cardinal;
 import blood.ai.impl.FPSkills.Elder;
@@ -13,7 +14,11 @@ public class HealerPC extends EventFPC
 	public HealerPC(Player actor)
 	{
 		super(actor);
-		
+	}
+	
+	protected boolean isAllowClass()
+	{
+		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
 	}
 	
 	protected Skill getNpcSuperiorBuff()

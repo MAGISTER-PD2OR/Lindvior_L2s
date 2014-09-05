@@ -23,7 +23,6 @@ import blood.FPCInfo;
 import blood.base.FPCPveStyle;
 import blood.data.holder.FPItemHolder;
 import blood.data.holder.FarmLocationHolder;
-import blood.model.FPRewardList;
 import blood.model.FarmLocation;
 
 public class EventFPC extends FPCDefaultAI

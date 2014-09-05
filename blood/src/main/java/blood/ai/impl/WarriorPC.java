@@ -2,6 +2,7 @@ package blood.ai.impl;
 
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.base.ClassLevel;
 import blood.ai.EventFPC;
 
 public class WarriorPC extends EventFPC
@@ -15,6 +16,11 @@ public class WarriorPC extends EventFPC
 		_allowSelfBuffSkills.add(FPCDreadnought.SKILL_WARCRY);
 		_allowSelfBuffSkills.add(FPCDuelist.SKILL_DEFKECT_ARROW);
 		_allowSelfBuffSkills.add(FPCDuelist.SKILL_MAJESTY);
+	}
+	
+	protected boolean isAllowClass()
+	{
+		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
 	}
 	
 	protected Skill getNpcSuperiorBuff()

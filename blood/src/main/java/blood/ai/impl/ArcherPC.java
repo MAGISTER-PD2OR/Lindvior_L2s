@@ -3,6 +3,7 @@ package blood.ai.impl;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.base.ClassLevel;
 import l2s.gameserver.stats.Stats;
 import blood.ai.EventFPC;
 import blood.ai.impl.FPSkills.GhostSentinel;
@@ -15,6 +16,11 @@ public class ArcherPC extends EventFPC
 	public ArcherPC(Player actor)
 	{
 		super(actor);
+	}
+	
+	protected boolean isAllowClass()
+	{
+		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
 	}
 	
 	protected Skill getNpcSuperiorBuff()

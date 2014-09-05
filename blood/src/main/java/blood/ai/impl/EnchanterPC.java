@@ -3,6 +3,7 @@ package blood.ai.impl;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.base.ClassLevel;
 import blood.ai.EventFPC;
 import blood.ai.impl.FPSkills.Dominator;
 import blood.ai.impl.FPSkills.Doomcryer;
@@ -13,7 +14,11 @@ public class EnchanterPC extends EventFPC
 	public EnchanterPC(Player actor)
 	{
 		super(actor);
-		
+	}
+	
+	protected boolean isAllowClass()
+	{
+		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
 	}
 	
 	protected Skill getNpcSuperiorBuff()

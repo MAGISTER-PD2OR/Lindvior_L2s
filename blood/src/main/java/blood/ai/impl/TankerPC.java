@@ -2,6 +2,7 @@ package blood.ai.impl;
 
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.base.ClassLevel;
 import l2s.gameserver.model.base.ClassType2;
 import blood.ai.EventFPC;
 import blood.ai.impl.FPSkills.EvasTemplar;
@@ -14,6 +15,11 @@ public class TankerPC extends EventFPC
 	public TankerPC(Player actor)
 	{
 		super(actor);
+	}
+	
+	protected boolean isAllowClass()
+	{
+		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
 	}
 
 	public void prepareSkillsSetup() {

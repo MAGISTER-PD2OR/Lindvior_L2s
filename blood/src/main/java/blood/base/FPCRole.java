@@ -11,7 +11,6 @@ import blood.ai.IdleFPC;
 import blood.ai.MarketFPC;
 import blood.ai.impl.ArcherPC;
 import blood.ai.impl.EnchanterPC;
-import blood.ai.impl.RougePC;
 import blood.ai.impl.FPCAeore;
 import blood.ai.impl.FPCFeoh;
 import blood.ai.impl.FPCIss;
@@ -20,7 +19,10 @@ import blood.ai.impl.FPCSigel;
 import blood.ai.impl.FPCTyrr;
 import blood.ai.impl.FPCWynn;
 import blood.ai.impl.FPCYul;
+import blood.ai.impl.FighterPC;
 import blood.ai.impl.HealerPC;
+import blood.ai.impl.MysticPC;
+import blood.ai.impl.RougePC;
 import blood.ai.impl.SummonerPC;
 import blood.ai.impl.TankerPC;
 import blood.ai.impl.WarriorPC;
@@ -161,38 +163,50 @@ public enum FPCRole {
 		FPCDefaultAI ai = null;
 		ClassId playerClassId = player.getClassId();
 		
-		switch (playerClassId.getType2()) {
-		case KNIGHT:
-			ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCSigel(player) : new TankerPC(player);
-			break;
-			
-		case WARRIOR:
-			ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCTyrr(player) : new WarriorPC(player);
-			break;
-			
-		case ROGUE:
-			ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCOthell(player) : new RougePC(player);
-			break;
-			
-		case ARCHER:
-			ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCYul(player) : new ArcherPC(player);
-			break;
-			
-		case WIZARD:
-			ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCFeoh(player) : new WizardPC(player);
-			break;
-			
-		case SUMMONER:
-			ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCWynn(player) : new SummonerPC(player);
-			break;
-			
-		case ENCHANTER:
-			ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCIss(player) : new EnchanterPC(player);
-			break;
-			
-		case HEALER:
-			ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCAeore(player) : new HealerPC(player);
-			break;
+		if(playerClassId.getType2() == null){
+			switch (playerClassId.getType()) {
+			case MYSTIC:
+				ai = new MysticPC(player);
+				break;
+
+			default:
+				ai = new FighterPC(player);
+				break;
+			}
+		}else{
+			switch (playerClassId.getType2()) {
+			case KNIGHT:
+				ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCSigel(player) : new TankerPC(player);
+				break;
+				
+			case WARRIOR:
+				ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCTyrr(player) : new WarriorPC(player);
+				break;
+				
+			case ROGUE:
+				ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCOthell(player) : new RougePC(player);
+				break;
+				
+			case ARCHER:
+				ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCYul(player) : new ArcherPC(player);
+				break;
+				
+			case WIZARD:
+				ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCFeoh(player) : new WizardPC(player);
+				break;
+				
+			case SUMMONER:
+				ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCWynn(player) : new SummonerPC(player);
+				break;
+				
+			case ENCHANTER:
+				ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCIss(player) : new EnchanterPC(player);
+				break;
+				
+			case HEALER:
+				ai = playerClassId.isOfLevel(ClassLevel.AWAKED) ? new FPCAeore(player) : new HealerPC(player);
+				break;
+			}
 		}
 		
 		return ai;

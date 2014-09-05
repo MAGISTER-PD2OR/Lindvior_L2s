@@ -4,6 +4,7 @@ import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.base.ClassLevel;
 import blood.ai.EventFPC;
 import blood.ai.impl.FPSkills.ArcanaLord;
 import blood.ai.impl.FPSkills.ElementalMaster;
@@ -14,6 +15,11 @@ public class SummonerPC extends EventFPC
 	public SummonerPC(Player actor)
 	{
 		super(actor);
+	}
+	
+	protected boolean isAllowClass()
+	{
+		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
 	}
 	
 	@Override
