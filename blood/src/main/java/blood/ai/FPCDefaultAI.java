@@ -2292,15 +2292,17 @@ public class FPCDefaultAI extends PlayerAI
 			addTaskSleep(3*1000, weight--);
 		}
 		
-		NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
-		NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
-		
-		if(myRestartLocation.distance(buffer.getLoc()) < 4000)
+		if(player.getLevel() < 85)
 		{
-			addTaskMove(Location.findAroundPosition(buffer, 150), true, true, weight--);
-			addTaskSleep(5*1000, weight--);
+			NpcInstance buffer = NpcHelper.getClosestBuffer(myRestartLocation);
+			if(myRestartLocation.distance(buffer.getLoc()) < 4000)
+			{
+				addTaskMove(Location.findAroundPosition(buffer, 150), true, true, weight--);
+				addTaskSleep(5*1000, weight--);
+			}
 		}
 		
+		NpcInstance gk = NpcHelper.getClosestGatekeeper(myRestartLocation);
 		addTaskMove(Location.findAroundPosition(gk, 150), true, true, weight--);
 		addTaskSleep(5*1000, weight--);
 		
