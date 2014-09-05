@@ -81,11 +81,11 @@ public class FPCAeore extends HealerPC
 	
 	protected boolean defaultSubFightTask(Creature target)
 	{
-		myFightTask(target);
+		healerFightTask(target);
 		return true;
 	}
 	
-	public boolean myFightTask(Creature target)
+	public boolean healerFightTask(Creature target)
 	{
 		Player player = getActor();
 		

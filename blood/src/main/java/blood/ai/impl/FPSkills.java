@@ -2049,4 +2049,148 @@ public class FPSkills {
 		//======= End Skill list of Maestro ID:118=======
 		SKILL_DUMMY = 1;
 	};
+	
+	public class KamaelFSoldier {
+		public static final int
+		//======= Start Skill list of KamaelFSoldier ID:124=======
+		SKILL_FALLEN_ATTACK						= 468, // Lv.9
+		SKILL_RAPID_ATTACK							= 469, // Lv.1
+		SKILL_DETECT_TRAP							= 470, // Lv.1
+		SKILL_DEFUSE_TRAP							= 471, // Lv.1
+		SKILL_FALLEN_ARROW							= 1431, // Lv.6
+		//======= End Skill list of KamaelFSoldier ID:124=======
+		SKILL_DUMMY = 1;
+	};
+	
+	public class Warder extends KamaelFSoldier {
+		public static final int
+		//======= Start Skill list of Warder ID:126=======
+		SKILL_DETECT_TRAP							= 470, // Lv.3
+		SKILL_DEFUSE_TRAP							= 471, // Lv.3
+		SKILL_DOUBLE_THRUST						= 478, // Lv.15
+		SKILL_HARD_MARCH							= 479, // Lv.1
+		SKILL_DARK_BLADE							= 480, // Lv.1
+		SKILL_DARK_ARMOR							= 481, // Lv.1
+		SKILL_FURIOUS_SOUL							= 482, // Lv.1
+		SKILL_PENETRATING_SHOT						= 487, // Lv.15
+		SKILL_FAST_SHOT							= 490, // Lv.1
+		SKILL_FIRE_TRAP							= 514, // Lv.2
+		SKILL_ULTIMATE_ESCAPE						= 622, // Lv.1
+		SKILL_SOUL_SHOCK							= 627, // Lv.3
+		SKILL_WARP									= 628, // Lv.1
+		SKILL_ABYSSAL_BLAZE						= 1433, // Lv.10
+		SKILL_DARK_EXPLOSION						= 1434, // Lv.4
+		SKILL_DEATH_MARK							= 1435, // Lv.2
+		SKILL_SURRENDER_TO_THE_UNHOLY				= 1445, // Lv.3
+		SKILL_CHANGE_WEAPON						= 1473, // Lv.1
+		SKILL_ERASE_MARK							= 1475, // Lv.1
+		//======= End Skill list of Warder ID:126=======
+		SKILL_DUMMY = 1;
+	};
+	
+	public class Arbalester extends Warder {
+		public static final int
+		//======= Start Skill list of Arbalester ID:130=======
+		SKILL_DEFUSE_TRAP							= 471, // Lv.7
+		SKILL_SHIFT_TARGET							= 489, // Lv.1
+		SKILL_FAST_SHOT							= 490, // Lv.2
+		SKILL_LIFE_TO_SOUL							= 502, // Lv.5
+		SKILL_TWIN_SHOT							= 507, // Lv.37
+		SKILL_RISING_SHOT							= 508, // Lv.31
+		SKILL_BLEEDING_SHOT						= 509, // Lv.34
+		SKILL_DEADLY_ROULETTE						= 510, // Lv.5
+		SKILL_TEMPTATION							= 511, // Lv.1
+		SKILL_CREATE_DARK_SEED						= 513, // Lv.1
+		SKILL_FIRE_TRAP							= 514, // Lv.9
+		SKILL_POISON_TRAP							= 515, // Lv.6
+		SKILL_SLOW_TRAP							= 516, // Lv.6
+		SKILL_FLASH_TRAP							= 517, // Lv.5
+		SKILL_BINDING_TRAP							= 518, // Lv.8
+		SKILL_QUIVER_OF_BOLTS_A_GRADE				= 519, // Lv.1
+		SKILL_QUIVER_OF_BOLTS_S_GRADE				= 520, // Lv.1
+		SKILL_SHARPSHOOTING						= 521, // Lv.8
+		SKILL_REAL_TARGET							= 522, // Lv.4
+		SKILL_IMBUE_DARK_SEED						= 523, // Lv.7
+		SKILL_CURE_DARK_SEED						= 524, // Lv.1
+		SKILL_DECOY								= 525, // Lv.6
+		SKILL_QUIVER_OF_BOLTS_B_GRADE			= 620, // Lv.1
+		SKILL_CREATE_SPECIAL_BOLT					= 621, // Lv.1
+		SKILL_ULTIMATE_ESCAPE						= 622, // Lv.2
+		SKILL_SOUL_GATHERING						= 625, // Lv.1
+		SKILL_SOUL_SHOCK							= 627, // Lv.40
+		SKILL_IMBUE_SEED_OF_DESTRUCTION			= 835, // Lv.4
+		SKILL_OBLIVION_TRAP						= 836, // Lv.3
+		SKILL_SOUL_CLEANSE							= 1510, // Lv.1
+		SKILL_SOUL_BARRIER							= 1514, // Lv.1
+		//======= End Skill list of Arbalester ID:130=======
+		SKILL_DUMMY = 1;
+	};
+	
+	public class Trickster extends Arbalester {
+		public static final int
+		//======= Start Skill list of Trickster ID:134=======
+		SKILL_FOCUS_SKILL_MASTERY					= 334, // Lv.1
+		SKILL_FINAL_FORM							= 538, // Lv.1
+		SKILL_WILD_SHOT							= 790, // Lv.1
+		SKILL_BETRAYAL_MARK						= 792, // Lv.1
+		SKILL_SOUL_RAGE							= 939, // Lv.1
+		SKILL_MULTIPLE_SHOT						= 987, // Lv.1
+		SKILL_DEATH_SHOT							= 990, // Lv.1
+		SKILL_PRAHNAH								= 1470, // Lv.1
+		//======= End Skill list of Trickster ID:134=======
+		SKILL_DUMMY = 1;
+	};
+	
+	public class FSoulBreaker extends Warder {
+		public static final int
+		//======= Start Skill list of FSoulBreaker ID:129=======
+		SKILL_DARK_ARMOR							= 481, // Lv.2
+		SKILL_SPREAD_WING							= 492, // Lv.25
+		SKILL_LIFE_TO_SOUL							= 502, // Lv.5
+		SKILL_TRIPLE_THRUST						= 504, // Lv.37
+		SKILL_SHINING_EDGE							= 505, // Lv.28
+		SKILL_CHECKMATE							= 506, // Lv.4
+		SKILL_SOUL_GATHERING						= 625, // Lv.1
+		SKILL_PAINKILLER							= 837, // Lv.1
+		SKILL_DEATH_MARK							= 1435, // Lv.10
+		SKILL_SOUL_OF_PAIN							= 1436, // Lv.30
+		SKILL_DARK_FLAME							= 1437, // Lv.26
+		SKILL_ANNIHILATION_CIRCLE					= 1438, // Lv.9
+		SKILL_CURSE_OF_DIVINITY					= 1439, // Lv.5
+		SKILL_STEAL_DIVINITY						= 1440, // Lv.5
+		SKILL_SOUL_TO_EMPOWER						= 1441, // Lv.3
+		SKILL_PROTECTION_FROM_DARKNESS				= 1442, // Lv.3
+		SKILL_DARK_WEAPON							= 1443, // Lv.1
+		SKILL_PRIDE_OF_KAMAEL						= 1444, // Lv.1
+		SKILL_SURRENDER_TO_THE_UNHOLY				= 1445, // Lv.18
+		SKILL_SHADOW_BIND							= 1446, // Lv.11
+		SKILL_VOICE_BIND							= 1447, // Lv.9
+		SKILL_BLINK								= 1448, // Lv.1
+		SKILL_ERASE_MARK							= 1475, // Lv.3
+		SKILL_SOUL_CLEANSE							= 1510, // Lv.1
+		SKILL_CURSE_OF_LIFE_FLOW					= 1511, // Lv.8
+		SKILL_SOUL_WEB								= 1529, // Lv.7
+		//======= End Skill list of FSoulBreaker ID:129=======
+		SKILL_DUMMY = 1;
+	};
+	
+	public class FSoulHound extends FSoulBreaker {
+		public static final int
+		//======= Start Skill list of FSoulHound ID:133=======
+		SKILL_FINAL_FORM							= 538, // Lv.1
+		SKILL_LIGHTNING_SHOCK						= 791, // Lv.1
+		SKILL_SOUL_RAGE							= 939, // Lv.1
+		SKILL_LEOPOLD								= 1469, // Lv.1
+		SKILL_SOUL_VORTEX							= 1512, // Lv.1
+		SKILL_SOUL_VORTEX_EXTINCTION				= 1513, // Lv.1
+		SKILL_LIGHTNING_BARRIER					= 1515, // Lv.1
+		SKILL_SOUL_STRIKE							= 1516, // Lv.1
+		SKILL_AURA_BLAST							= 1554, // Lv.1
+		SKILL_AURA_CANNON							= 1555, // Lv.1
+		SKILL_ARCANE_SHIELD						= 1556, // Lv.1
+		//======= End Skill list of FSoulHound ID:133=======
+		SKILL_DUMMY = 1;
+	};
+
+
 }

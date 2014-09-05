@@ -9,7 +9,6 @@ public class MysticPC extends EventFPC
 	public MysticPC(Player actor)
 	{
 		super(actor);
-		
 	}
 	
 	public void prepareSkillsSetup() {

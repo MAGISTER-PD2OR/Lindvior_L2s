@@ -51,11 +51,11 @@ public class FPCSigel extends TankerPC
 	
 	protected boolean defaultSubFightTask(Creature target)
 	{
-		sigelFightTask(target);
+		tankerFightTask(target);
 		return true;
 	}
 
-	protected boolean sigelFightTask(Creature target)
+	protected boolean tankerFightTask(Creature target)
 	{
 		Player actor = getActor();
 		

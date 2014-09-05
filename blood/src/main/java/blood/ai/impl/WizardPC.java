@@ -1,12 +1,19 @@
 package blood.ai.impl;
 
-import blood.ai.impl.FPSkills.*;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.base.ClassId;
 import l2s.gameserver.templates.item.WeaponTemplate;
 import l2s.gameserver.templates.item.WeaponTemplate.WeaponType;
+import blood.ai.impl.FPSkills.Archmage;
+import blood.ai.impl.FPSkills.DarkWizard;
+import blood.ai.impl.FPSkills.ElvenWizard;
+import blood.ai.impl.FPSkills.MysticMuse;
+import blood.ai.impl.FPSkills.OrcShaman;
+import blood.ai.impl.FPSkills.Soultaker;
+import blood.ai.impl.FPSkills.StormScreamer;
+import blood.ai.impl.FPSkills.Wizzard;
 
 /**
  * 
@@ -18,11 +25,11 @@ import l2s.gameserver.templates.item.WeaponTemplate.WeaponType;
  *
  */
 
-public class FPCWizzard extends MysticPC
+public class WizardPC extends MysticPC
 {	
 	// should add auto learn skill
 	
-	public FPCWizzard(Player actor)
+	public WizardPC(Player actor)
 	{
 		super(actor);
 		System.out.println("init new FPCWizzard");
@@ -46,35 +53,6 @@ public class FPCWizzard extends MysticPC
 		
 		_allowSkills.add(Soultaker.SKILL_SUMMON_CURSED_MAN);
 		_allowSkills.add(Soultaker.SKILL_SUMMON_REANIMATED_MAN);
-	}
-	
-	protected boolean isAllowClass()
-	{
-		Player player = getActor();
-		switch(player.getClassId()){
-		case HUMAN_MAGE:
-		case WIZARD:
-		case SORCERER:
-		case ARCHMAGE:
-		case NECROMANCER:
-		case SOULTAKER:
-		case ELVEN_MAGE:
-		case ELVEN_WIZARD:
-		case SPELLSINGER:
-		case MYSTIC_MUSE:
-		case DARK_MAGE:
-		case DARK_WIZARD:
-		case SPELLHOWLER:
-		case STORM_SCREAMER:
-		case ORC_SHAMAN:
-		case WARCRYER:
-		case OVERLORD:
-		case DOOMCRYER:
-		case DOMINATOR:
-			return true;
-		default:
-			return false;
-		}
 	}
 	
 	@Override
@@ -151,9 +129,6 @@ public class FPCWizzard extends MysticPC
 		
 		if(canUseSkill(StormScreamer.SKILL_HURRICANE, target, distance))
 			return tryCastSkill(StormScreamer.SKILL_HURRICANE, target, distance);
-		
-		if(canUseSkill(Dominator.SKILL_STEAL_ESSENCE, target, distance))
-			return tryCastSkill(Dominator.SKILL_STEAL_ESSENCE, target, distance);
 		
 		tryMoveToTarget(target, 600);
 		return false;

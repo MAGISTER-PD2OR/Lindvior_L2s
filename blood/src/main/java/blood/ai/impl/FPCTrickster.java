@@ -5,7 +5,7 @@ import java.util.List;
 
 import l2s.gameserver.model.Player;
 
-public class FPCTrickster extends RangerPC
+public class FPCTrickster extends ArcherPC
 {
 	public FPCTrickster(Player actor)
 	{

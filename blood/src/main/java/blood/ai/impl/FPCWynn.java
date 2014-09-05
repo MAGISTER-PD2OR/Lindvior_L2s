@@ -67,36 +67,6 @@ public class FPCWynn extends SummonerPC
 		_allowServitorBuffSkills.add(SKILL_SERVITOR_GMIGHT);
 	}
 	
-//	@Override
-//	protected boolean thinkBuff()
-//	{
-//		if(thinkBuff(new int[] {
-//			SKILL_ULTIMATE_SHARE,
-//			SKILL_AVENGING_CUBIC,
-//			SKILL_TPAIN
-//		}))
-//			return true;
-//		
-//		Player actor = getActor();
-//		Skill skillUniqueBuff = getUniqueSkill(new int[]{
-//			SKILL_SERVITOR_GHASTE,
-//			SKILL_SERVITOR_GDW,
-//			SKILL_SERVITOR_GMIGHT
-//		});
-//		
-//		for(Servitor servitor: actor.getServitors())
-//		{
-//			if(servitor.getEffectList().getEffectsCount(skillUniqueBuff) == 0 
-//					&& chooseTaskAndTargets(skillUniqueBuff, servitor, 0))
-//			{
-//				return true;
-//			}
-//		}
-//		
-//		return super.thinkBuff();
-//	}
-//	
-	
 	@Override
 	protected int getMaxSummon()
 	{
@@ -105,11 +75,11 @@ public class FPCWynn extends SummonerPC
 	
 	protected boolean defaultSubFightTask(Creature target)
 	{
-		wynnFightTask(target);
+		summonFightTask(target);
 		return true;
 	}
 	
-	protected boolean wynnFightTask(Creature target)
+	protected boolean summonFightTask(Creature target)
 	{
 		Player player = getActor();
 		

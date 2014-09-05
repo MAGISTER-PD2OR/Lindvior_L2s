@@ -1562,7 +1562,6 @@ public class FPCDefaultAI extends PlayerAI
 	}
 	
 	
-	
 	protected boolean canUseSkill(Skill skill, Creature target, double distance, boolean override)
 	{
 

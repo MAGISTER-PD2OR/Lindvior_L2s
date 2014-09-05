@@ -28,7 +28,8 @@ import blood.model.FarmLocation;
 
 public class EventFPC extends FPCDefaultAI
 {
-
+	protected int SKILL_CUBIC_MASTERY = 143;
+	protected int SKILL_SUPERIOR_CUBIC_MASTERY = 10075;
 	protected Skill[] _selfSkills = Skill.EMPTY_ARRAY;
 	
 	protected long 
@@ -94,6 +95,9 @@ public class EventFPC extends FPCDefaultAI
 		
 		Skill skill = _cubicSkills[0];
 		
+		if(player.getCubics().size() >= getMaxCubic())
+			return false;
+		
 		for(EffectTemplate et: skill.getEffectTemplates())
 		{
 			// add cubic
@@ -133,6 +137,24 @@ public class EventFPC extends FPCDefaultAI
 		_nextSummonRound = System.currentTimeMillis() + 12000;
 		
 		return false;
+	}
+	
+	protected int getMaxCubic()
+	{
+		Player player = getActor();
+		if(player.getKnownSkill(SKILL_SUPERIOR_CUBIC_MASTERY) != null)
+			return 3;
+		
+		Skill cubicMastery = player.getKnownSkill(SKILL_CUBIC_MASTERY);
+		
+		if(cubicMastery != null && cubicMastery.getLevel() == 1)
+			return 2;
+		
+		if(cubicMastery != null && cubicMastery.getLevel() == 2)
+			return 3;
+		
+		return 1;
+		
 	}
 	
 	protected int getMaxSummon()
@@ -294,6 +316,16 @@ public class EventFPC extends FPCDefaultAI
 		return result;
 	}
 	
+	protected void protectMember(Creature attacked, Creature attacker, int damage)
+	{
+		
+	}
+	
+	protected void protectSelf(Creature attacker, int damage)
+	{
+		
+	}
+	
 	protected void notifyFriends(Creature attacker, int damage)
 	{
 		Player actor = getActor();
@@ -339,6 +371,8 @@ public class EventFPC extends FPCDefaultAI
 			}
 			setIntention(CtrlIntention.AI_INTENTION_ATTACK, attacker);
 		}
+		
+		protectMember(attacked, attacker, damage);
 	}
 	
 	@Override

@@ -3,7 +3,7 @@ package blood.ai.impl;
 import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 
-public class FPCYul extends RangerPC
+public class FPCYul extends ArcherPC
 {
 	public final int SKILL_SNIPING				= 10810; // Lv.1 	buff 	62 	0 	10000 	0 	- 	For 30 minutes when a bow or crossbow is equipped, P. Atk. + 5%, Atk. Spd. + 5%, and P. Def./M. Def. + 5%.
 
@@ -51,7 +51,7 @@ public class FPCYul extends RangerPC
 	
 	protected boolean defaultSubFightTask(Creature target)
 	{
-		yulFightTask(target);
+		archerFightTask(target);
 		return true;
 	}
 	
@@ -68,7 +68,7 @@ public class FPCYul extends RangerPC
 		return false;
 	}
 	
-	protected boolean yulFightTask(Creature target)
+	protected boolean archerFightTask(Creature target)
 	{
 		Player actor = getActor();
 		
