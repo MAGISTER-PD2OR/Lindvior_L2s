@@ -130,16 +130,16 @@ public class FPRewardList
 		player.setVar(PLAYER_VAR_SAVE, _id);
 		
 		HashMap<Integer, Integer> rewards = getRewards();
-		for(Map.Entry<Integer, Integer> entry: rewards.entrySet())
-		{
-			distributeItem(player, entry.getKey(), entry.getValue());
-		}
 		Set<Integer> allow_items = rewards.keySet();
 		for(ItemInstance remove_item: player.getInventory().getItems())
 		{
 			int item_id = remove_item.getItemId();
 			if(_all_used_items.contains(item_id) && !allow_items.contains(item_id))
 				player.getInventory().removeItem(remove_item);
+		}
+		for(Map.Entry<Integer, Integer> entry: rewards.entrySet())
+		{
+			distributeItem(player, entry.getKey(), entry.getValue());
 		}
 		
 		player.getInventory().store();
