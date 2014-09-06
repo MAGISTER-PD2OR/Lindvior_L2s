@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ScheduledFuture;
 
+import l2mq.L2MQ;
 import l2s.commons.collections.CollectionUtils;
 import l2s.commons.collections.LazyArrayList;
 import l2s.commons.lang.reference.HardReference;
@@ -1411,6 +1412,8 @@ public class FPCDefaultAI extends PlayerAI
 		
 //		debug("I'm on event think.... actor.isActionsDisabled():"+actor.isActionsDisabled());
 		
+		webUpdateStatus();
+		
 		if(thinkDead())
 			return;
 		
@@ -1449,7 +1452,44 @@ public class FPCDefaultAI extends PlayerAI
 		}
 	}
 	
+	private long _webUpdateStatusTimestamp = 0;
+	private long _webUpdateStatusInterval = 3000;
 	
+	
+	private void webUpdateStatus() {
+		
+		if(_webUpdateStatusTimestamp > System.currentTimeMillis())
+			return;
+		
+		_webUpdateStatusTimestamp = System.currentTimeMillis() + _webUpdateStatusInterval;
+		
+		// TODO Auto-generated method stub
+		Player player = getActor();
+		Class<?> enclosingClass = getClass().getEnclosingClass();
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append(player.getAccountName());
+		builder.append(";");
+		builder.append(player.getName());
+		builder.append(";");
+		builder.append(player.getCurrentHp());
+		builder.append(";");
+		builder.append(player.getMaxHp());
+		builder.append(";");
+		builder.append(player.getCurrentMp());
+		builder.append(";");
+		builder.append(player.getMaxMp());
+		builder.append(";");
+		builder.append(player.getCurrentCp());
+		builder.append(";");
+		builder.append(player.getMaxCp());
+		builder.append(";");
+		builder.append(enclosingClass != null ? enclosingClass.getName() : getClass().getName());
+		builder.append(";");
+		builder.append(getFPCIntention().toString());
+		L2MQ.addBackgroundJob("FPStatus", builder.toString());
+	}
+
 	protected boolean thinkDead() {
 		return false;
 	}

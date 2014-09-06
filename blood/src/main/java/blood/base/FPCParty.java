@@ -221,6 +221,11 @@ public class FPCParty {
 			return;
 		
 		setBeginLoc();
+		if(_farmLoc == null)
+		{
+			System.out.println("set loc failed");
+			return;
+		}
 		_centerLoc = getBeginLoc();
 		for(Player player: getParty().getPartyMembers())
 		{
