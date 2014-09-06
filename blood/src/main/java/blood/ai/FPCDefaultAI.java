@@ -1453,7 +1453,7 @@ public class FPCDefaultAI extends PlayerAI
 	}
 	
 	private long _webUpdateStatusTimestamp = 0;
-	private long _webUpdateStatusInterval = 3000;
+	private long _webUpdateStatusInterval = 30000;
 	
 	
 	private void webUpdateStatus() {
