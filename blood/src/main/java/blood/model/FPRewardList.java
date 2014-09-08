@@ -148,7 +148,7 @@ public class FPRewardList
 	
 	public boolean isValidLevel(int level)
 	{
-		return canUse() && getMinLevel() <= level && level <= getMaxLevel();
+		return getMinLevel() <= level && level <= getMaxLevel();
 	}
 	
 	public boolean isValidClassId(ClassId classId){
