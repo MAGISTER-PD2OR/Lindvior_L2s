@@ -52,13 +52,13 @@ public final class FPItemHolder extends AbstractHolder
 		if(count == 0)
 			for(FPRewardList reward_list: _rewards.values())
 			{
-				System.out.println(String.format("List:%s min:%d max:%d id.size:%d type.size:%d type2.size:%d", 
-						reward_list._id, 
-						reward_list.getMinLevel(), 
-						reward_list.getMaxLevel(), 
-						reward_list.getClassIds().size(), 
-						reward_list.getClassTypes().size(), 
-						reward_list.getClassTypes2().size()));
+//				System.out.println(String.format("List:%s min:%d max:%d id.size:%d type.size:%d type2.size:%d", 
+//						reward_list._id, 
+//						reward_list.getMinLevel(), 
+//						reward_list.getMaxLevel(), 
+//						reward_list.getClassIds().size(), 
+//						reward_list.getClassTypes().size(), 
+//						reward_list.getClassTypes2().size()));
 				if(reward_list.isValidClassId(player)){
 					rndFactor.add(reward_list, reward_list.getWeight());
 					count++;

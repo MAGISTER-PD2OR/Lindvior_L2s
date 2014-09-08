@@ -58,6 +58,9 @@ public class FPRewardList
 		if(_parent == null)
 			_parent = FPItemHolder.get(_parent_id);
 		
+		if(_parent == null)
+			System.out.println(String.format("List %s has parent %s not exists", _id, _parent_id));
+		
 		return _parent;
 	}
 	
