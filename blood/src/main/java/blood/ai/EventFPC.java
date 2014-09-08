@@ -15,6 +15,7 @@ import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.skills.EffectType;
 import l2s.gameserver.tables.SkillTable;
+import l2s.gameserver.templates.item.WeaponTemplate.WeaponType;
 import l2s.gameserver.templates.skill.EffectTemplate;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.utils.Location;
@@ -50,6 +51,13 @@ public class EventFPC extends FPCDefaultAI
 	public boolean isAllowSkill(int skill_id)
 	{
 		return _allowSkills != null && _allowSkills.contains(skill_id);
+	}
+	
+	protected boolean lameFightTask(Creature target)
+	{
+		Player player = getActor();
+		double distance = player.getDistance(target);
+		return chooseTaskAndTargets(null, target, distance);
 	}
 	
 	protected boolean createNewTask()
@@ -617,6 +625,12 @@ public class EventFPC extends FPCDefaultAI
 		
 		return false;
 			
+	}
+	
+	protected boolean isUseBow()
+	{
+		Player player = getActor();
+		return player.getActiveWeaponInstance().getItemType() == WeaponType.BOW || player.getActiveWeaponInstance().getItemType() == WeaponType.BOW;
 	}
 	
 	/**

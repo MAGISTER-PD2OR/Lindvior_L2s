@@ -24,21 +24,28 @@ public class HealerPC extends EventFPC
 	protected Skill getNpcSuperiorBuff()
 	{
 //		return getSkill(15648, 1); //tank
-//		return getSkill(15649, 1); //warrior
-		return getSkill(15650, 1); //wizzard
+		if(isUseBow())
+			return getSkill(15649, 1); //warrior
+		else
+			return getSkill(15650, 1); //wizzard
 	}
 
 	protected boolean defaultSubFightTask(Creature target)
 	{
-		healerFightTask(target);
+		Player player = getActor();
+		
+		if(player.isInParty())
+			healerPartyFightTask(target);
+		else
+			healerSoloFightTask(target);
+		
 		return true;
 	}
 	
 	@SuppressWarnings("unused")
-	public boolean healerFightTask(Creature target)
+	private boolean healerPartyFightTask(Creature target) 
 	{
 		Player player = getActor();
-		
 		// heal task
 		Party party = player.getParty();
 		
@@ -102,7 +109,23 @@ public class HealerPC extends EventFPC
 				return tryCastSkill(Elder.SKILL_RECHARGE, lowestMpMember, 0);
 		}
 		
+		return false;
+	}
+
+	
+	public boolean healerSoloFightTask(Creature target)
+	{
+		Player player = getActor();
+		
 		double distance = player.getDistance(target);
+		double playerHp = player.getCurrentHpPercents();
+		boolean useBow = isUseBow();
+		
+		if(playerHp < 80 && canUseSkill(Cardinal.SKILL_MAJOR_HEAL, player))
+			return tryCastSkill(Cardinal.SKILL_MAJOR_HEAL, player);
+		
+		if(useBow)
+			return chooseTaskAndTargets(null, target, distance);
 		
 		if(canUseSkill(Cardinal.SKILL_DIVINE_PUNISHMENT, target, distance))
 			return tryCastSkill(Cardinal.SKILL_DIVINE_PUNISHMENT, target, distance);
