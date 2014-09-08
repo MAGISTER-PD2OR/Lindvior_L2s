@@ -52,6 +52,19 @@ public final class FPItemHolder extends AbstractHolder
 		if(count == 0)
 			for(FPRewardList reward_list: _rewards.values())
 			{
+				if(reward_list.isValidLevel(player.getLevel()))
+					System.out.println(String.format("List:%s min:%d max:%d pass levelcheck", reward_list._id, reward_list.getMinLevel(), reward_list.getMaxLevel()));
+				
+				if(reward_list.isValidClassId(player))
+					System.out.println(String.format("List:%s pass class check"));
+				
+				if(reward_list.isValidType(player))
+					System.out.println(String.format("List:%s pass class type"));
+				
+				if(reward_list.isValidType2(player))
+					System.out.println(String.format("List:%s pass class type2"));
+					
+				
 //				System.out.println(String.format("List:%s min:%d max:%d id.size:%d type.size:%d type2.size:%d", 
 //						reward_list._id, 
 //						reward_list.getMinLevel(), 
