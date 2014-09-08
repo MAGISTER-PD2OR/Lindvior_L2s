@@ -152,7 +152,7 @@ public class FPRewardList
 	}
 	
 	public boolean isValidClassId(ClassId classId){
-		return classId != null && _allow_class_id.contains(classId);
+		return classId != null && getClassIds().contains(classId);
 	}
 	
 	public boolean isValidClassId(Player player){
@@ -160,7 +160,7 @@ public class FPRewardList
 	}
 	
 	public boolean isValidType(ClassType classType){
-		return classType != null && _allow_class_type.contains(classType);
+		return classType != null && getClassTypes().contains(classType);
 	}
 	
 	public boolean isValidType(ClassId classId){
@@ -172,7 +172,7 @@ public class FPRewardList
 	}
 	
 	public boolean isValidType2(ClassType2 classType2){
-		return classType2 != null && _allow_class_type2.contains(classType2);
+		return classType2 != null && getClassTypes2().contains(classType2);
 	}
 	
 	public boolean isValidType2(ClassId classId){
