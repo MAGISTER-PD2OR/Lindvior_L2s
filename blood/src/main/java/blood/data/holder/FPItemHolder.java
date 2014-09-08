@@ -41,7 +41,7 @@ public final class FPItemHolder extends AbstractHolder
 	{
 		if(useOldList)
 		{
-			FPRewardList oldList = _rewards.get(player.getVarInt(FPRewardList.PLAYER_VAR_SAVE));
+			FPRewardList oldList = _rewards.get(player.getVar(FPRewardList.PLAYER_VAR_SAVE));
 			if(oldList != null && oldList.isValidType2(player))
 				return oldList;
 		}
