@@ -16,7 +16,7 @@ public final class FPItemHolder extends AbstractHolder
 	/**
 	 * Field _bonusList.
 	 */
-	private static final HashMap<Integer, FPRewardList> _rewards = new HashMap<Integer, FPRewardList>();
+	private static final HashMap<String, FPRewardList> _rewards = new HashMap<String, FPRewardList>();
 	
 	/**
 	 * Method getInstance.
@@ -27,22 +27,12 @@ public final class FPItemHolder extends AbstractHolder
 		return _instance;
 	}
 	
-	/**
-	 * Method addLevelBonus.
-	 * @param lvl int
-	 * @param bonus double
-	 */
-	public void add(int id, FPRewardList rewardList)
+	public void add(String id, FPRewardList rewardList)
 	{
 		_rewards.put(id, rewardList);
 	}
 	
-	/**
-	 * Method getLevelBonus.
-	 * @param lvl int
-	 * @return List<FPRewardList>
-	 */
-	public static FPRewardList get(int id)
+	public static FPRewardList get(String id)
 	{
 		return _rewards.get(id);
 	}
@@ -52,21 +42,30 @@ public final class FPItemHolder extends AbstractHolder
 		if(useOldList)
 		{
 			FPRewardList oldList = _rewards.get(player.getVarInt(FPRewardList.PLAYER_VAR_SAVE));
-			if(oldList != null && oldList.isValid(player))
+			if(oldList != null && oldList.isValidType2(player))
 				return oldList;
 		}
 		
 		RndSelector<FPRewardList> rndFactor = new RndSelector<FPRewardList>(); 
 		int count = 0;
-		for(FPRewardList reward_list: _rewards.values())
-			if(reward_list.isValidSpec(player)){
-				rndFactor.add(reward_list, reward_list.getWeight());
-				count++;
-			}
-				
+		
 		if(count == 0)
 			for(FPRewardList reward_list: _rewards.values())
-				if(reward_list.isValidCommon(player)){
+				if(reward_list.isValidClassId(player)){
+					rndFactor.add(reward_list, reward_list.getWeight());
+					count++;
+				}
+		
+		if(count == 0)
+			for(FPRewardList reward_list: _rewards.values())
+				if(reward_list.isValidType2(player)){
+					rndFactor.add(reward_list, reward_list.getWeight());
+					count++;
+				}
+		
+		if(count == 0)
+			for(FPRewardList reward_list: _rewards.values())
+				if(reward_list.isValidType(player)){
 					rndFactor.add(reward_list, reward_list.getWeight());
 					count++;
 				}

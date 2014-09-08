@@ -6,6 +6,10 @@ import java.util.Map;
 import java.util.Set;
 
 import l2s.gameserver.model.Player;
+import l2s.gameserver.model.base.ClassId;
+import l2s.gameserver.model.base.ClassLevel;
+import l2s.gameserver.model.base.ClassType;
+import l2s.gameserver.model.base.ClassType2;
 import l2s.gameserver.model.items.ItemInstance;
 import l2s.gameserver.templates.item.EtcItemTemplate.EtcItemType;
 import l2s.gameserver.utils.ItemFunctions;
@@ -16,30 +20,30 @@ public class FPRewardList
 	public final static HashSet<Integer> _all_used_items 		= new HashSet<Integer>();
 	public final static String PLAYER_VAR_SAVE 					= "_last_fpreward_list";
 	
-	public final HashSet<Integer> 			_class_ids 		= new HashSet<Integer>();
-	public final HashSet<Integer> 			_remove_items 	= new HashSet<Integer>();
-	public final HashMap<Integer, Integer> 	_reward_items 	= new HashMap<Integer, Integer>(); 
+	public final HashSet<ClassType2>		_allow_class_type2 	= new HashSet<ClassType2>();
+	public final HashSet<ClassType>			_allow_class_type 	= new HashSet<ClassType>();
+	public final HashSet<ClassId>			_allow_class_id		= new HashSet<ClassId>();
+	public final HashSet<Integer> 			_remove_items 		= new HashSet<Integer>();
+	public final HashMap<Integer, Integer> 	_reward_items 		= new HashMap<Integer, Integer>(); 
 	
-	public final boolean 					_is_mage;
-	public final boolean 					_is_abstract;
-	public final int						_id;
-	public final int						_parent_id;
+	public final String						_id;
+	public final String						_parent_id;
 	public final int						_min_level;
 	public final int						_max_level;
 	public final int						_weight;
+	
+	public FPRewardList						_parent = null;
 		
-	public FPRewardList(int id, int min_level, int max_level, int parent_id, int weight, boolean is_abstract, boolean is_mage)
+	public FPRewardList(String id, int min_level, int max_level, String parent_id, int weight)
 	{
 		_id = id;
 		_min_level = min_level;
 		_max_level = max_level;
 		_parent_id = parent_id;
 		_weight = weight;
-		_is_abstract = is_abstract;
-		_is_mage = is_mage;
 	}
 	
-	public int getId() {
+	public String getId() {
 		return _id;
 	}
 	
@@ -47,20 +51,91 @@ public class FPRewardList
 		return _weight;
 	}
 	
-	public void addClass(int class_id){
-		_class_ids.add(class_id);
+	public FPRewardList getParent(){
+		if(_parent_id == null)
+			return null;
+		
+		if(_parent == null)
+			_parent = FPItemHolder.get(_parent_id);
+		
+		return _parent;
 	}
 	
-	public HashSet<Integer> getClasses()
+	public int getMinLevel()
 	{
-		FPRewardList parent = FPItemHolder.get(_parent_id);
-		if(parent != null)
-			_class_ids.addAll(parent.getClasses());
-		return _class_ids;
+		if (_min_level > 0)
+			return _min_level;
+		
+		if(getParent() != null)
+			return getParent().getMinLevel();
+		
+		return 1;
 	}
 	
-	public boolean hasClass(int class_id){
-		return _class_ids.contains(class_id);
+	public int getMaxLevel()
+	{
+		if (_max_level > 0)
+			return _max_level;
+		
+		if(getParent() != null)
+			return getParent().getMaxLevel();
+		
+		return 1;
+	}
+	
+	public HashSet<ClassId> getClassIds()
+	{
+		if(_allow_class_id.size() > 0)
+			return _allow_class_id;
+		
+		if(getParent() != null)
+			return getParent().getClassIds();
+		
+		return _allow_class_id;
+	}
+	
+	public HashSet<ClassType> getClassTypes()
+	{
+		if(_allow_class_type.size() > 0)
+			return _allow_class_type;
+		
+		if(getParent() != null)
+			return getParent().getClassTypes();
+		
+		return _allow_class_type;
+	}
+	
+	public HashSet<ClassType2> getClassTypes2()
+	{
+		if(_allow_class_type2.size() > 0)
+			return _allow_class_type2;
+		
+		if(getParent() != null)
+			return getParent().getClassTypes2();
+		
+		return _allow_class_type2;
+	}
+	
+	public boolean canUse(){
+		return getClassTypes2().size() > 0 || getClassIds().size() > 0 || getClassTypes2().size() > 0;
+	}
+	
+	public void addClassId(ClassId classId){
+		if(classId == null)
+			return;
+		_allow_class_id.add(classId);
+	}
+	
+	public void addClassType(ClassType classType){
+		if(classType == null)
+			return;
+		_allow_class_type.add(classType);
+	}
+	
+	public void addClassType2(ClassType2 classType2){
+		if(classType2 == null)
+			return;
+		_allow_class_type2.add(classType2);
 	}
 	
 	public void addItem(int item_id, int amount){
@@ -70,39 +145,50 @@ public class FPRewardList
 	
 	public boolean isValidLevel(int level)
 	{
-		return !_is_abstract && _min_level <= level && level <= _max_level;
+		return canUse() && getMinLevel() <= level && level <= getMaxLevel();
 	}
 	
-	public boolean isValidClass(int class_id)
-	{
-		return getClasses().contains(class_id);
+	public boolean isValidClassId(ClassId classId){
+		return classId != null && _allow_class_id.contains(classId);
 	}
 	
-	public boolean isValidType(boolean is_mage)
-	{
-		return _is_mage == is_mage;
+	public boolean isValidClassId(Player player){
+		return isValidLevel(player.getLevel()) && isValidClassId(player.getClassId());
 	}
 	
-	public boolean isValid(Player player)
-	{
-		return isValidSpec(player) || isValidCommon(player);
+	public boolean isValidType(ClassType classType){
+		return classType != null && _allow_class_type.contains(classType);
 	}
 	
-	public boolean isValidSpec(Player player)
-	{
-		return isValidLevel(player.getLevel()) && isValidClass(player.getClassId().getId());
+	public boolean isValidType(ClassId classId){
+		return isValidType(classId.getType());
 	}
 	
-	public boolean isValidCommon(Player player)
-	{
-		return isValidLevel(player.getLevel()) && isValidType(player.isMageClass());
+	public boolean isValidType(Player player){
+		return isValidLevel(player.getLevel()) && isValidType(player.getClassId());
+	}
+	
+	public boolean isValidType2(ClassType2 classType2){
+		return classType2 != null && _allow_class_type2.contains(classType2);
+	}
+	
+	public boolean isValidType2(ClassId classId){
+		return isValidType2(classId.getType2());
+	}
+	
+	public boolean isValidType2(Player player){
+		return isValidLevel(player.getLevel()) && isValidType2(player.getClassId());
+	}
+	
+	public boolean isValid(Player player) {
+		return isValidType2(player) || isValidClassId(player) || isValidType(player);
 	}
 	
 	public HashMap<Integer, Integer> getRewards()
 	{
 		HashMap<Integer, Integer> rewards = new HashMap<Integer, Integer>();
 		
-		FPRewardList parent = FPItemHolder.get(_parent_id);
+		FPRewardList parent = getParent();
 		
 		if(parent != null)
 		{
@@ -130,6 +216,13 @@ public class FPRewardList
 		player.setVar(PLAYER_VAR_SAVE, _id);
 		
 		HashMap<Integer, Integer> rewards = getRewards();
+		
+		// add cloak
+		if(player.getClassId().isOfLevel(ClassLevel.AWAKED))
+		{
+			rewards.put(player.getClassId().getCloakId(), 1);
+		}
+		
 		Set<Integer> allow_items = rewards.keySet();
 		for(ItemInstance remove_item: player.getInventory().getItems())
 		{
@@ -187,6 +280,8 @@ public class FPRewardList
 				|| item.getItemId() == 20333
 				|| item.getItemId() == 20334;
 	}
+
+	
 
 	
 }
