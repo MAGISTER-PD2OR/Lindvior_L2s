@@ -1,5 +1,6 @@
 package blood.ai.impl;
 
+import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.base.ClassLevel;
@@ -20,7 +21,7 @@ public class WarriorPC extends EventFPC
 	
 	protected boolean isAllowClass()
 	{
-		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
+		return getActor().getClassId().isOfLevel(ClassLevel.SECOND) || getActor().getClassId().isOfLevel(ClassLevel.THIRD);
 	}
 	
 	protected Skill getNpcSuperiorBuff()
@@ -30,52 +31,10 @@ public class WarriorPC extends EventFPC
 //		return getSkill(15650, 1); //wizzard
 	}
 
-	@Override
-	protected boolean createFightTask()
+	protected boolean defaultSubFightTask(Creature target)
 	{
-		return defaultFightTask();
-	}
-
-	@Override
-	public int getRatePHYS()
-	{
-		return 50;
-	}
-
-	@Override
-	public int getRateDOT()
-	{
-		return 0;
-	}
-
-	@Override
-	public int getRateDEBUFF()
-	{
-		return 20;
-	}
-
-	@Override
-	public int getRateDAM()
-	{
-		return 90;
-	}
-
-	@Override
-	public int getRateSTUN()
-	{
-		return 50;
-	}
-
-	@Override
-	public int getRateBUFF()
-	{
-		return 80;
-	}
-
-	@Override
-	public int getRateHEAL()
-	{
-		return 0;
+		lameFightTask(target);
+		return true;
 	}
 	
 }

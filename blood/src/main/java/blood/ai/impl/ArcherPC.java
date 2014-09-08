@@ -20,7 +20,7 @@ public class ArcherPC extends EventFPC
 	
 	protected boolean isAllowClass()
 	{
-		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
+		return getActor().getClassId().isOfLevel(ClassLevel.SECOND) || getActor().getClassId().isOfLevel(ClassLevel.THIRD);
 	}
 	
 	protected Skill getNpcSuperiorBuff()

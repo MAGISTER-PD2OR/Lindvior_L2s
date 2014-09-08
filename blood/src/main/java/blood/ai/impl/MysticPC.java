@@ -1,9 +1,15 @@
 package blood.ai.impl;
 
+import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
-import l2s.gameserver.model.Skill;
+import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.base.ClassLevel;
 import blood.ai.EventFPC;
+import blood.ai.impl.FPSkills.DarkWizard;
+import blood.ai.impl.FPSkills.ElvenWizard;
+import blood.ai.impl.FPSkills.OrcShaman;
+import blood.ai.impl.FPSkills.StormScreamer;
+import blood.ai.impl.FPSkills.Wizzard;
 
 public class MysticPC extends EventFPC
 {
@@ -14,66 +20,63 @@ public class MysticPC extends EventFPC
 	
 	protected boolean isAllowClass()
 	{
-		return getActor().getClassId().isOfLevel(ClassLevel.NONE);
+		return getActor().getClassId().isOfLevel(ClassLevel.NONE) || getActor().getClassId().isOfLevel(ClassLevel.FIRST);
 	}
 	
 	public void prepareSkillsSetup() {
 		
 	}
 	
-	protected Skill getNpcSuperiorBuff()
+	protected boolean mysticFightTask(Creature target)
 	{
-//		return getSkill(15648, 1); //tank
-//		return getSkill(15649, 1); //warrior
-		return getSkill(15650, 1); //wizzard
+		Player player = getActor();
+		double distance = player.getDistance(target);
+		double playerHP = player.getCurrentHpPercents();
+		double playerMP = player.getCurrentMpPercents();
+		
+		for(Servitor summon: player.getServitors())
+		{
+			summon.getAI().Attack(target, true, false);
+		}
+		
+		if(isUseBow())
+			return chooseTaskAndTargets(null, target, distance);
+		
+		if(playerHP < 70)
+		{
+			if(canUseSkill(DarkWizard.SKILL_VAMPIRIC_TOUCH, target, distance))
+				return tryCastSkill(DarkWizard.SKILL_VAMPIRIC_TOUCH, target, distance);
+		}
+		
+		if(playerHP > 50 && playerMP < 80 && canUseSkill(StormScreamer.SKILL_BODY_TO_MIND, player))
+			return tryCastSkill(StormScreamer.SKILL_BODY_TO_MIND, player);
+		
+		if(canUseSkill(Wizzard.SKILL_BLAZE, target, distance))
+			return tryCastSkill(Wizzard.SKILL_BLAZE, target, distance);
+		
+		if(canUseSkill(ElvenWizard.SKILL_AQUA_SWIRL, target, distance))
+			return tryCastSkill(ElvenWizard.SKILL_AQUA_SWIRL, target, distance);
+		
+		if(canUseSkill(ElvenWizard.SKILL_SOLAR_SPARK, target, distance))
+			return tryCastSkill(ElvenWizard.SKILL_SOLAR_SPARK, target, distance);
+		
+		if(canUseSkill(DarkWizard.SKILL_TWISTER, target, distance))
+			return tryCastSkill(DarkWizard.SKILL_TWISTER, target, distance);
+		
+		if(canUseSkill(DarkWizard.SKILL_SHADOW_SPARK, target, distance))
+			return tryCastSkill(DarkWizard.SKILL_SHADOW_SPARK, target, distance);
+		
+		if(canUseSkill(OrcShaman.SKILL_LIFE_DRAIN, target, distance))
+			return tryCastSkill(OrcShaman.SKILL_LIFE_DRAIN, target, distance);
+		
+		tryMoveToTarget(target, 600);
+		return false;
 	}
-
-	@Override
-	protected boolean createFightTask()
+	
+	protected boolean defaultSubFightTask(Creature target)
 	{
-		return defaultFightTask();
-	}
-
-	@Override
-	public int getRatePHYS()
-	{
-		return _damSkills.length == 0 ? 25 : 0;
-	}
-
-	@Override
-	public int getRateDOT()
-	{
-		return 25;
-	}
-
-	@Override
-	public int getRateDEBUFF()
-	{
-		return 20;
-	}
-
-	@Override
-	public int getRateDAM()
-	{
-		return 100;
-	}
-
-	@Override
-	public int getRateSTUN()
-	{
-		return 10;
-	}
-
-	@Override
-	public int getRateBUFF()
-	{
-		return 10;
-	}
-
-	@Override
-	public int getRateHEAL()
-	{
-		return 0;
+		mysticFightTask(target);
+		return true;
 	}
 	
 }

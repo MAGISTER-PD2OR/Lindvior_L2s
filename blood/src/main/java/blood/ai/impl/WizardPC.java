@@ -5,16 +5,10 @@ import l2s.gameserver.model.Player;
 import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.base.ClassId;
 import l2s.gameserver.model.base.ClassLevel;
-import l2s.gameserver.templates.item.WeaponTemplate;
-import l2s.gameserver.templates.item.WeaponTemplate.WeaponType;
 import blood.ai.impl.FPSkills.Archmage;
-import blood.ai.impl.FPSkills.DarkWizard;
-import blood.ai.impl.FPSkills.ElvenWizard;
 import blood.ai.impl.FPSkills.MysticMuse;
-import blood.ai.impl.FPSkills.OrcShaman;
 import blood.ai.impl.FPSkills.Soultaker;
 import blood.ai.impl.FPSkills.StormScreamer;
-import blood.ai.impl.FPSkills.Wizzard;
 
 /**
  * 
@@ -38,7 +32,7 @@ public class WizardPC extends MysticPC
 	
 	protected boolean isAllowClass()
 	{
-		return !getActor().getClassId().isOfLevel(ClassLevel.AWAKED);
+		return getActor().getClassId().isOfLevel(ClassLevel.SECOND) || getActor().getClassId().isOfLevel(ClassLevel.THIRD);
 	}
 	
 	public void prepareSkillsSetup() {
@@ -61,13 +55,7 @@ public class WizardPC extends MysticPC
 		_allowSkills.add(Soultaker.SKILL_SUMMON_REANIMATED_MAN);
 	}
 	
-	@Override
-	protected void onEvtAttacked(Creature attacker, int damage)
-	{
-		super.onEvtAttacked(attacker, damage);
-	}
-	
-	protected boolean wizzardFightTask(Creature target)
+	protected boolean wizardFightTask(Creature target)
 	{
 		Player player = getActor();
 		double distance = player.getDistance(target);
@@ -78,6 +66,9 @@ public class WizardPC extends MysticPC
 		{
 			summon.getAI().Attack(target, true, false);
 		}
+		
+		if(isUseBow())
+			return chooseTaskAndTargets(null, target, distance);
 		
 		if(playerHP < 80)
 		{
@@ -103,27 +94,6 @@ public class WizardPC extends MysticPC
 		if(canUseSkill(StormScreamer.SKILL_SURRENDER_TO_WIND, target, distance) && !player.getClassId().equalsOrChildOf(ClassId.NECROMANCER))
 			return tryCastSkill(StormScreamer.SKILL_SURRENDER_TO_WIND, target, distance);
 		
-		if(player.getLevel() < 40)
-		{
-			if(canUseSkill(Wizzard.SKILL_BLAZE, target, distance))
-				return tryCastSkill(Wizzard.SKILL_BLAZE, target, distance);
-			
-			if(canUseSkill(ElvenWizard.SKILL_AQUA_SWIRL, target, distance))
-				return tryCastSkill(ElvenWizard.SKILL_AQUA_SWIRL, target, distance);
-			
-			if(canUseSkill(ElvenWizard.SKILL_SOLAR_SPARK, target, distance))
-				return tryCastSkill(ElvenWizard.SKILL_SOLAR_SPARK, target, distance);
-			
-			if(canUseSkill(DarkWizard.SKILL_TWISTER, target, distance))
-				return tryCastSkill(DarkWizard.SKILL_TWISTER, target, distance);
-			
-			if(canUseSkill(DarkWizard.SKILL_SHADOW_SPARK, target, distance))
-				return tryCastSkill(DarkWizard.SKILL_SHADOW_SPARK, target, distance);
-			
-			if(canUseSkill(OrcShaman.SKILL_LIFE_DRAIN, target, distance))
-				return tryCastSkill(OrcShaman.SKILL_LIFE_DRAIN, target, distance);
-		}
-		
 		if(canUseSkill(StormScreamer.SKILL_DEATH_SPIKE, target, distance))
 			return tryCastSkill(StormScreamer.SKILL_DEATH_SPIKE, target, distance);
 		
@@ -142,12 +112,7 @@ public class WizardPC extends MysticPC
 	
 	protected boolean defaultSubFightTask(Creature target)
 	{
-		Player player = getActor();
-		WeaponTemplate weaponItem = player.getActiveWeaponTemplate();
-		if(weaponItem != null && (weaponItem.getItemType() == WeaponType.BOW || weaponItem.getItemType() == WeaponType.CROSSBOW))
-			chooseTaskAndTargets(null, target, player.getDistance(target));
-		else
-			wizzardFightTask(target);
+		wizardFightTask(target);
 		return true;
 	}
 	

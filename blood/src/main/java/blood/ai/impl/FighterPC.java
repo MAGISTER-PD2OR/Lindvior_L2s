@@ -1,5 +1,6 @@
 package blood.ai.impl;
 
+import l2s.gameserver.model.Creature;
 import l2s.gameserver.model.Player;
 import l2s.gameserver.model.base.ClassLevel;
 import blood.ai.EventFPC;
@@ -13,49 +14,13 @@ public class FighterPC extends EventFPC
 	
 	protected boolean isAllowClass()
 	{
-		return getActor().getClassId().isOfLevel(ClassLevel.NONE);
+		return getActor().getClassId().isOfLevel(ClassLevel.NONE) || getActor().getClassId().isOfLevel(ClassLevel.FIRST);
 	}
-
-	@Override
-	public int getRatePHYS()
+	
+	protected boolean defaultSubFightTask(Creature target)
 	{
-		return 30;
-	}
-
-	@Override
-	public int getRateDOT()
-	{
-		return 20;
-	}
-
-	@Override
-	public int getRateDEBUFF()
-	{
-		return 20;
-	}
-
-	@Override
-	public int getRateDAM()
-	{
-		return 15;
-	}
-
-	@Override
-	public int getRateSTUN()
-	{
-		return 30;
-	}
-
-	@Override
-	public int getRateBUFF()
-	{
-		return 10;
-	}
-
-	@Override
-	public int getRateHEAL()
-	{
-		return 20;
+		lameFightTask(target);
+		return true;
 	}
 	
 }
