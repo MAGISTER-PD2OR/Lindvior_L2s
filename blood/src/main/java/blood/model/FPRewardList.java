@@ -120,7 +120,7 @@ public class FPRewardList
 	}
 	
 	public boolean canUse(){
-		return getClassTypes2().size() > 0 || getClassIds().size() > 0 || getClassTypes2().size() > 0;
+		return getClassTypes2().size() > 0 || getClassIds().size() > 0 || getClassTypes().size() > 0;
 	}
 	
 	public void addClassId(ClassId classId){
@@ -148,7 +148,7 @@ public class FPRewardList
 	
 	public boolean isValidLevel(int level)
 	{
-		return getMinLevel() <= level && level <= getMaxLevel();
+		return canUse() && getMinLevel() <= level && level <= getMaxLevel();
 	}
 	
 	public boolean isValidClassId(ClassId classId){
