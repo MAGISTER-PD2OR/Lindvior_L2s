@@ -766,9 +766,9 @@ public class FPCDefaultAI extends PlayerAI
 		_checkAggroTimestamp = now + Rnd.get(2000, 5000);
 		
 		List<Creature> chars = World.getAroundCharacters(player, MAX_PURSUE_RANGE, 500);
-//		CollectionUtils.eqSort(chars, _nearestTargetComparator);
-		long seed = System.nanoTime();
-		Collections.shuffle(chars, new Random(seed));
+		CollectionUtils.eqSort(chars, _nearestTargetComparator);
+//		long seed = System.nanoTime();
+//		Collections.shuffle(chars, new Random(seed));
 		for (Creature cha : chars)
 		{	
 			// preventing ks
