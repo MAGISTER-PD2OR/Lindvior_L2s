@@ -30,17 +30,6 @@ public class ArcherPC extends EventFPC
 //		return getSkill(15650, 1); //wizzard
 	}
 	
-	protected int getReuseDelay(Creature target)
-	{
-		Player actor = getActor();
-		try{
-			return (int) (actor.getActiveWeaponTemplate().getAttackReuseDelay() * actor.getReuseModifier(target) * 666 * actor.calcStat(Stats.POWER_ATTACK_SPEED, 0, target, null) / 293. / actor.getPAtkSpd());
-		}catch(Exception e){
-			return 0;
-		}
-		//return 0;
-	}
-	
 	public void prepareSkillsSetup() {
 		_allowSelfBuffSkills.add(Sagittarius.SKILL_RAPID_SHOT);
 		_allowSelfBuffSkills.add(Sagittarius.SKILL_SPIRIT_OF_SAGITTARIUS);
@@ -50,7 +39,6 @@ public class ArcherPC extends EventFPC
 		_allowSelfBuffSkills.add(Trickster.SKILL_FURIOUS_SOUL);
 		_allowSelfBuffSkills.add(Trickster.SKILL_FAST_SHOT);
 	}
-
 
 	protected boolean defaultSubFightTask(Creature target)
 	{

@@ -20,6 +20,7 @@ import l2s.commons.threading.RunnableImpl;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.Config;
 import l2s.gameserver.ThreadPoolManager;
+import l2s.gameserver.ai.CtrlEvent;
 import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.ai.PlayerAI;
 import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
@@ -31,16 +32,19 @@ import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.World;
+import l2s.gameserver.model.GameObjectTasks.NotifyAITask;
 import l2s.gameserver.model.base.AcquireType;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.ChestInstance;
 import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.network.l2.s2c.MagicSkillUse;
+import l2s.gameserver.network.l2.s2c.SetupGauge;
 import l2s.gameserver.skills.EffectType;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.stats.Stats;
 import l2s.gameserver.tables.SkillTable;
 import l2s.gameserver.taskmanager.AiTaskManager;
+import l2s.gameserver.templates.item.WeaponTemplate;
 import l2s.gameserver.templates.skill.EffectTemplate;
 import l2s.gameserver.utils.ItemFunctions;
 import l2s.gameserver.utils.Location;
@@ -1126,7 +1130,24 @@ public class FPCDefaultAI extends PlayerAI
 	
 	protected int getReuseDelay(Creature target)
 	{
-		//Player actor = getActor();
+		Player actor = getActor();
+		WeaponTemplate weaponItem = actor.getActiveWeaponTemplate();
+		if(weaponItem != null)
+		{
+			if(weaponItem.getAttackReuseDelay() > 0)
+			{
+				int reuse = (int) (weaponItem.getAttackReuseDelay() * actor.getReuseModifier(target) * 666 * actor.calcStat(Stats.BASE_P_ATK_SPD, 0, target, null) / 293. / actor.getPAtkSpd());
+				if(reuse > 0)
+				{
+					return reuse;
+//					sendPacket(new SetupGauge(this, SetupGauge.Colors.RED_MINI, reuse));
+//					_attackReuseEndTime = reuse + System.currentTimeMillis() - 75;
+//					if(reuse > sAtk)
+//						ThreadPoolManager.getInstance().schedule(new NotifyAITask(this, CtrlEvent.EVT_READY_TO_ACT, null, null), reuse);
+				}
+			}
+		}
+		//
 		//(int) (actor.getActiveWeaponItem().getAttackReuseDelay() * actor.getReuseModifier(target) * 666 * actor.calcStat(Stats.ATK_BASE, 0, target, null) / 293. / actor.getPAtkSpd());
 		return 0;
 	}
@@ -1239,12 +1260,13 @@ public class FPCDefaultAI extends PlayerAI
 					_pathfindFails = 0;
 					setAttackTimeout(getMaxAttackTimeout() + System.currentTimeMillis());
 					
-					if(attackTime > now) return true;
+					if(attackTime > now) 
+						return true;
 					
 					int reuse = getReuseDelay(target);
 					debug("Now: " + now + " Attack Reuse: " + reuse);
 					
-					attackTime = now + reuse;
+					attackTime = now + reuse - 75;
 					
 					actor.doAttack(target);
 					//set the summon attack also
