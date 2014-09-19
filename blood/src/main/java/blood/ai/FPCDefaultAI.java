@@ -3,6 +3,7 @@ package blood.ai;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -739,6 +740,9 @@ public class FPCDefaultAI extends PlayerAI
 		CollectionUtils.eqSort(chars, _nearestTargetComparator);
 		for (Creature cha : chars)
 		{
+			if(cha.isPlayer() && !cha.getPlayer().isFakePlayer())
+				alertPeople(cha.getPlayer());
+			
 			if (_aggroList.get(cha) == null)
 				continue;
 			
@@ -1477,6 +1481,27 @@ public class FPCDefaultAI extends PlayerAI
 	private long _webUpdateStatusTimestamp = 0;
 	private long _webUpdateStatusInterval = 30000;
 	
+	private HashMap<Integer, Long> _alertTarget = new HashMap<Integer, Long>();
+	private long _alertInterval = 10000;
+	
+	private void alertPeople(Player anotherPlayer){
+		long alert_last_time = _alertTarget.get(anotherPlayer.getObjectId());
+		if(alert_last_time > System.currentTimeMillis())
+			return;
+		
+		_alertTarget.put(anotherPlayer.getObjectId(), System.currentTimeMillis() + _alertInterval);
+		
+		Player player = getActor();
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append(player.getAccountName());
+		builder.append(";");
+		builder.append(player.getName());
+		builder.append(";");
+		builder.append(anotherPlayer.getName());
+		L2MQ.addBackgroundJob("FPCPeopleInRange", builder.toString());
+		
+	}
 	
 	private void webUpdateStatus() {
 		
@@ -1485,7 +1510,6 @@ public class FPCDefaultAI extends PlayerAI
 		
 		_webUpdateStatusTimestamp = System.currentTimeMillis() + _webUpdateStatusInterval;
 		
-		// TODO Auto-generated method stub
 		Player player = getActor();
 		Class<?> enclosingClass = getClass().getEnclosingClass();
 		
