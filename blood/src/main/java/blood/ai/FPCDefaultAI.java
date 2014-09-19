@@ -740,7 +740,7 @@ public class FPCDefaultAI extends PlayerAI
 		CollectionUtils.eqSort(chars, _nearestTargetComparator);
 		for (Creature cha : chars)
 		{
-			if(cha.isPlayer() && !cha.getPlayer().isFakePlayer())
+			if(cha.isPlayer() && cha.getPlayer() != null && !cha.getPlayer().isFakePlayer())
 				alertPeople(cha.getPlayer());
 			
 			if (_aggroList.get(cha) == null)
@@ -1485,6 +1485,10 @@ public class FPCDefaultAI extends PlayerAI
 	private long _alertInterval = 10000;
 	
 	private void alertPeople(Player anotherPlayer){
+		
+		if(anotherPlayer == null)
+			return;
+		
 		long alert_last_time = _alertTarget.get(anotherPlayer.getObjectId());
 		if(alert_last_time > System.currentTimeMillis())
 			return;
