@@ -1489,11 +1489,14 @@ public class FPCDefaultAI extends PlayerAI
 		if(anotherPlayer == null)
 			return;
 		
-		long alert_last_time = _alertTarget.get(anotherPlayer.getObjectId());
+		int obj_id = anotherPlayer.getObjectId();
+		
+		long alert_last_time = _alertTarget.get(obj_id);
+		
 		if(alert_last_time > System.currentTimeMillis())
 			return;
 		
-		_alertTarget.put(anotherPlayer.getObjectId(), System.currentTimeMillis() + _alertInterval);
+		_alertTarget.put(obj_id, System.currentTimeMillis() + _alertInterval);
 		
 		Player player = getActor();
 		
