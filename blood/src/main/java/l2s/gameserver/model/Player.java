@@ -244,6 +244,7 @@ import l2s.gameserver.network.l2.s2c.ExOlympiadSpelledInfo;
 import l2s.gameserver.network.l2.s2c.ExPCCafePointInfo;
 import l2s.gameserver.network.l2.s2c.ExQuestItemList;
 import l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode;
+import l2s.gameserver.network.l2.s2c.ExShowScreenMessage;
 import l2s.gameserver.network.l2.s2c.ExStartScenePlayer;
 import l2s.gameserver.network.l2.s2c.ExSubjobInfo;
 import l2s.gameserver.network.l2.s2c.ExTeleportToLocationActivate;
@@ -9970,6 +9971,24 @@ public final class Player extends Playable implements PlayerGroup
 		{
 			getNetConnection().setPoints((int) (getPremiumPoints() - val));
 			AuthServerCommunication.getInstance().sendPacket(new ReduceAccountPoints(getAccountName(), val));
+			return true;
+		}
+		return false;
+	}
+
+	public boolean increasePremiumPoints(int val)
+	{
+		if(Config.IM_PAYMENT_ITEM_ID > 0)
+		{
+			ItemFunctions.addItem(this, Config.IM_PAYMENT_ITEM_ID, val, true);
+			return true;
+			
+		}
+
+		if(getNetConnection() != null)
+		{
+			getNetConnection().setPoints((int) (getPremiumPoints() + val));
+			sendPacket(new ExShowScreenMessage("Hãy đăng nhập lại để cập nhật điểm credit", 5000, ExShowScreenMessage.ScreenMessageAlign.TOP_CENTER, true));
 			return true;
 		}
 		return false;
