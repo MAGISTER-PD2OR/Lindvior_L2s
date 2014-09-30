@@ -12,16 +12,6 @@ public class FPCGrandKhauatari extends WarriorPC
 	{
 		super(actor);
 	}
-
-	@Override
-	protected boolean thinkBuff()
-	{
-		if(thinkUseWarriorForce(50, 4))
-			return true;
-		
-		return super.thinkBuff();
-	}
-	
 	
 	@Override
 	protected void onEvtAttacked(Creature attacker, int damage)
@@ -40,37 +30,37 @@ public class FPCGrandKhauatari extends WarriorPC
 		{
 
 			//cast Zealot
-			selfBuff(420);
+			tryCastSkill(420, actor);
 		}
 		
 	}
 	
-	@Override public List<Integer> getAllowSkill()
+	public List<Integer> getAllowSkill()
 	{
 		List<Integer> SkillList = new ArrayList<Integer>();
 		
 		//skill 2nd
-		SkillList.add(280);	//Burning Fist
-		//SkillList.add(50);	//Focused Force
-		SkillList.add(54);	//Force Blaster
-		SkillList.add(284);	//Hurricane Assault
-		SkillList.add(95);	//Cripple
-		SkillList.add(282);	//Puma Spirit Totem
-		SkillList.add(281);	//Soul Breaker
-		//SkillList.add(17);	//Force Burst
-		//SkillList.add(35);	//Force Storm
-		//SkillList.add(420);	//Zealot
-		SkillList.add(81);	//Punch of Doom
-		SkillList.add(425);	//Hawk Spirit Totem
+		_allowSkills.add(280);	//Burning Fist
+		//_allowSkills.add(50);	//Focused Force
+		_allowSkills.add(54);	//Force Blaster
+		_allowSkills.add(284);	//Hurricane Assault
+		_allowSkills.add(95);	//Cripple
+		_allowSkills.add(282);	//Puma Spirit Totem
+		_allowSkills.add(281);	//Soul Breaker
+		//_allowSkills.add(17);	//Force Burst
+		//_allowSkills.add(35);	//Force Storm
+		//_allowSkills.add(420);	//Zealot
+		_allowSkills.add(81);	//Punch of Doom
+		_allowSkills.add(425);	//Hawk Spirit Totem
 		
 		//skill 3rd
-		SkillList.add(346);	//Ranging Force
-		SkillList.add(443);	//Force Barrier
-		SkillList.add(458);	//Symbol of Energy
-		SkillList.add(917);	//Final Secret
-		SkillList.add(758);	//Fighter Will
-		SkillList.add(776);	//Force Of Destruction
-		SkillList.add(918);	//Maximum Force Focus
+		_allowSkills.add(346);	//Ranging Force
+		_allowSkills.add(443);	//Force Barrier
+		_allowSkills.add(458);	//Symbol of Energy
+		_allowSkills.add(917);	//Final Secret
+		_allowSkills.add(758);	//Fighter Will
+		_allowSkills.add(776);	//Force Of Destruction
+		_allowSkills.add(918);	//Maximum Force Focus
 		
 		return SkillList;
 	}

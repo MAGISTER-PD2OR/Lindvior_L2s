@@ -12,6 +12,7 @@ import l2s.gameserver.utils.ItemFunctions;
 import blood.FPCInfo;
 import blood.table.FPCMerchantTable;
 import blood.table.MerchantItem;
+import blood.utils.LocationFunctions;
 
 
 public class MarketFPC extends FPCDefaultAI
@@ -164,7 +165,7 @@ public class MarketFPC extends FPCDefaultAI
 		}
 		
 		//teleport to random town
-		player.randomTown(actor);
+		LocationFunctions.randomTown(actor);
 		
 		String itemStatus = item.getStatus();
 		

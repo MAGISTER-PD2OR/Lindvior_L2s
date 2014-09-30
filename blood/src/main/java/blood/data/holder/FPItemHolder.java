@@ -1,9 +1,10 @@
 package blood.data.holder;
 
 import java.util.HashMap;
-import java.util.List;
 
 import l2s.commons.data.xml.AbstractHolder;
+import l2s.commons.math.random.RndSelector;
+import l2s.gameserver.model.Player;
 import blood.model.FPRewardList;
 
 public final class FPItemHolder extends AbstractHolder
@@ -15,7 +16,7 @@ public final class FPItemHolder extends AbstractHolder
 	/**
 	 * Field _bonusList.
 	 */
-	private final HashMap<Integer, List<FPRewardList>> _bonusList = new HashMap<Integer, List<FPRewardList>>();
+	private static final HashMap<String, FPRewardList> _rewards = new HashMap<String, FPRewardList>();
 	
 	/**
 	 * Method getInstance.
@@ -26,24 +27,81 @@ public final class FPItemHolder extends AbstractHolder
 		return _instance;
 	}
 	
-	/**
-	 * Method addLevelBonus.
-	 * @param lvl int
-	 * @param bonus double
-	 */
-	public void addLevelBonus(int lvl, List<FPRewardList> bonus)
+	public void add(String id, FPRewardList rewardList)
 	{
-		_bonusList.put(lvl, bonus);
+		_rewards.put(id, rewardList);
 	}
 	
-	/**
-	 * Method getLevelBonus.
-	 * @param lvl int
-	 * @return List<FPRewardList>
-	 */
-	public List<FPRewardList> getLevelBonus(int lvl)
+	public static FPRewardList get(String id)
 	{
-		return _bonusList.get(lvl);
+		return _rewards.get(id);
+	}
+	
+	public static FPRewardList getRewardList(Player player, boolean useOldList)
+	{
+		if(useOldList)
+		{
+			FPRewardList oldList = _rewards.get(player.getVar(FPRewardList.PLAYER_VAR_SAVE));
+			if(oldList != null && oldList.isValid(player))
+				return oldList;
+		}
+		
+		RndSelector<FPRewardList> rndFactor = new RndSelector<FPRewardList>(); 
+		int count = 0;
+		
+		if(count == 0)
+			for(FPRewardList reward_list: _rewards.values())
+			{
+//				if(reward_list.isValidLevel(player.getLevel()))
+//				{
+//					System.out.println(String.format("List:%s min:%d max:%d pass levelcheck", reward_list._id, reward_list.getMinLevel(), reward_list.getMaxLevel()));
+//					
+//					if(reward_list.isValidClassId(player))
+//						System.out.println(String.format("List:%s pass class check", reward_list._id));
+//					
+//					if(reward_list.isValidType(player))
+//						System.out.println(String.format("List:%s pass class type", reward_list._id));
+//					
+//					if(reward_list.isValidType2(player))
+//						System.out.println(String.format("List:%s pass class type2", reward_list._id));
+//				}	
+//				
+//				System.out.println(String.format("List:%s min:%d max:%d id.size:%d type.size:%d type2.size:%d", 
+//						reward_list._id, 
+//						reward_list.getMinLevel(), 
+//						reward_list.getMaxLevel(), 
+//						reward_list.getClassIds().size(), 
+//						reward_list.getClassTypes().size(), 
+//						reward_list.getClassTypes2().size()));
+				if(reward_list.isValidClassId(player)){
+					rndFactor.add(reward_list, reward_list.getWeight());
+					count++;
+				}
+			}
+		
+		if(count == 0)
+			for(FPRewardList reward_list: _rewards.values())
+				if(reward_list.isValidType2(player)){
+					rndFactor.add(reward_list, reward_list.getWeight());
+					count++;
+				}
+		
+		if(count == 0)
+			for(FPRewardList reward_list: _rewards.values())
+				if(reward_list.isValidType(player)){
+					rndFactor.add(reward_list, reward_list.getWeight());
+					count++;
+				}
+		
+		return rndFactor.select();
+	}
+	
+	public static void equip(Player player, boolean useOldList)
+	{
+		FPRewardList rewardList = getRewardList(player, useOldList);
+		
+		if(rewardList != null)
+			rewardList.distributeAll(player);
 	}
 	
 	/**
@@ -53,7 +111,7 @@ public final class FPItemHolder extends AbstractHolder
 	@Override
 	public int size()
 	{
-		return _bonusList.size();
+		return _rewards.size();
 	}
 	
 	/**
@@ -62,6 +120,6 @@ public final class FPItemHolder extends AbstractHolder
 	@Override
 	public void clear()
 	{
-		_bonusList.clear();
+		_rewards.clear();
 	}
 }

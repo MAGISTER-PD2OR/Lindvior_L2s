@@ -5,7 +5,6 @@ import static l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode.ZONE_PEACE_FLAG
 import static l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode.ZONE_PVP_FLAG;
 import static l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode.ZONE_SIEGE_FLAG;
 import static l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode.ZONE_SSQ_FLAG;
-
 import gnu.trove.iterator.TIntIntIterator;
 import gnu.trove.iterator.TIntLongIterator;
 import gnu.trove.iterator.TIntObjectIterator;
@@ -43,11 +42,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import l2s.gameserver.stats.triggers.TriggerType;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import l2s.commons.collections.LazyArrayList;
 import l2s.commons.dao.JdbcEntityState;
 import l2s.commons.dbutils.DbUtils;
@@ -64,7 +58,6 @@ import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.ai.PlayableAI.AINextAction;
 import l2s.gameserver.ai.PlayerAI;
 import l2s.gameserver.dao.AccountBonusDAO;
-import l2s.gameserver.dao.AccountVariablesDAO;
 import l2s.gameserver.dao.CharacterDAO;
 import l2s.gameserver.dao.CharacterGroupReuseDAO;
 import l2s.gameserver.dao.CharacterPostFriendDAO;
@@ -72,7 +65,6 @@ import l2s.gameserver.dao.CharacterSubclassDAO;
 import l2s.gameserver.dao.CharacterVariablesDAO;
 import l2s.gameserver.dao.CustomHeroDAO;
 import l2s.gameserver.dao.EffectsDAO;
-import l2s.gameserver.dao.LfcDAO;
 import l2s.gameserver.dao.LfcDAO.Arenas;
 import l2s.gameserver.dao.PremiumAccountRatesHolder;
 import l2s.gameserver.dao.PremiumAccountRatesHolder.PremiumInfo;
@@ -91,8 +83,7 @@ import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
 import l2s.gameserver.data.xml.holder.TransformTemplateHolder;
 import l2s.gameserver.database.DatabaseFactory;
 import l2s.gameserver.database.mysql;
-import l2s.gameserver.handler.bbs.CommunityBoardManager;
-import l2s.gameserver.handler.bbs.ICommunityBoardHandler;
+import l2s.gameserver.geodata.GeoEngine;
 import l2s.gameserver.handler.items.IItemHandler;
 import l2s.gameserver.idfactory.IdFactory;
 import l2s.gameserver.instancemanager.BotCheckManager;
@@ -104,8 +95,8 @@ import l2s.gameserver.instancemanager.CursedWeaponsManager;
 import l2s.gameserver.instancemanager.DimensionalRiftManager;
 import l2s.gameserver.instancemanager.LfcManager;
 import l2s.gameserver.instancemanager.MatchingRoomManager;
-import l2s.gameserver.instancemanager.PvPRewardManager;
 import l2s.gameserver.instancemanager.PartySubstituteManager;
+import l2s.gameserver.instancemanager.PvPRewardManager;
 import l2s.gameserver.instancemanager.QuestManager;
 import l2s.gameserver.instancemanager.ReflectionManager;
 import l2s.gameserver.instancemanager.WorldStatisticsManager;
@@ -125,7 +116,6 @@ import l2s.gameserver.model.GameObjectTasks.RecomBonusTask;
 import l2s.gameserver.model.GameObjectTasks.UnJailTask;
 import l2s.gameserver.model.GameObjectTasks.WaterTask;
 import l2s.gameserver.model.Request.L2RequestType;
-import l2s.gameserver.model.Skill.AddedSkill;
 import l2s.gameserver.model.Zone.ZoneType;
 import l2s.gameserver.model.actor.basestats.PlayerBaseStats;
 import l2s.gameserver.model.actor.instances.creature.Effect;
@@ -255,11 +245,10 @@ import l2s.gameserver.network.l2.s2c.ExPCCafePointInfo;
 import l2s.gameserver.network.l2.s2c.ExQuestItemList;
 import l2s.gameserver.network.l2.s2c.ExSetCompassZoneCode;
 import l2s.gameserver.network.l2.s2c.ExStartScenePlayer;
-import l2s.gameserver.network.l2.s2c.ExStorageMaxCount;
 import l2s.gameserver.network.l2.s2c.ExSubjobInfo;
 import l2s.gameserver.network.l2.s2c.ExTeleportToLocationActivate;
-import l2s.gameserver.network.l2.s2c.ExUserInfo;
 import l2s.gameserver.network.l2.s2c.ExUseSharedGroupItem;
+import l2s.gameserver.network.l2.s2c.ExUserInfo;
 import l2s.gameserver.network.l2.s2c.ExVitalityEffectInfo;
 import l2s.gameserver.network.l2.s2c.ExVitalityPointInfo;
 import l2s.gameserver.network.l2.s2c.ExVoteSystemInfo;
@@ -316,19 +305,19 @@ import l2s.gameserver.scripts.Events;
 import l2s.gameserver.skills.AbnormalType;
 import l2s.gameserver.skills.EffectType;
 import l2s.gameserver.skills.TimeStamp;
-import l2s.gameserver.skills.combo.SkillComboType;
 import l2s.gameserver.skills.effects.EffectCubic;
 import l2s.gameserver.skills.skillclasses.Charge;
 import l2s.gameserver.skills.skillclasses.Summon;
-import l2s.gameserver.skills.skillclasses.Transformation;
 import l2s.gameserver.stats.Formulas;
 import l2s.gameserver.stats.Stats;
 import l2s.gameserver.stats.funcs.FuncTemplate;
+import l2s.gameserver.stats.triggers.TriggerType;
 import l2s.gameserver.tables.ClanTable;
 import l2s.gameserver.tables.SkillTable;
 import l2s.gameserver.tables.SkillTreeTable;
 import l2s.gameserver.taskmanager.AutoSaveManager;
 import l2s.gameserver.taskmanager.LazyPrecisionTaskManager;
+import l2s.gameserver.templates.CreatureTemplate;
 import l2s.gameserver.templates.FishTemplate;
 import l2s.gameserver.templates.Henna;
 import l2s.gameserver.templates.InstantZone;
@@ -342,12 +331,10 @@ import l2s.gameserver.templates.item.WeaponTemplate.WeaponType;
 import l2s.gameserver.templates.jump.JumpTrack;
 import l2s.gameserver.templates.jump.JumpWay;
 import l2s.gameserver.templates.npc.NpcTemplate;
-import l2s.gameserver.utils.AdminFunctions;
-import l2s.gameserver.templates.CreatureTemplate;
 import l2s.gameserver.templates.pet.PetData;
 import l2s.gameserver.templates.player.PlayerTemplate;
 import l2s.gameserver.templates.player.transform.TransformTemplate;
-import l2s.gameserver.utils.Clients;
+import l2s.gameserver.utils.AdminFunctions;
 import l2s.gameserver.utils.EffectsComparator;
 //import l2s.gameserver.utils.GameStats;
 import l2s.gameserver.utils.ItemFunctions;
@@ -359,6 +346,11 @@ import l2s.gameserver.utils.SiegeUtils;
 import l2s.gameserver.utils.SqlBatch;
 import l2s.gameserver.utils.Strings;
 import l2s.gameserver.utils.TeleportUtils;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.napile.primitive.Containers;
 import org.napile.primitive.maps.IntObjectMap;
 import org.slf4j.Logger;
@@ -781,10 +773,10 @@ public final class Player extends Playable implements PlayerGroup
 	{
 		if(_connection == null)
 		{
-			_log.info("connection null: "+_login);
+//			_log.info("connection null: "+_login);
 			return _login;
 		}
-		_log.info("acc:"+_connection.getLogin());
+//		_log.info("acc:"+_connection.getLogin());
 		return _connection.getLogin();
 	}
 
@@ -2463,7 +2455,7 @@ public final class Player extends Playable implements PlayerGroup
 		int addedSkillsCount = 0;
 		for(SkillLearn sl : SkillAcquireHolder.getInstance().getAvailableMaxLvlSkills(this, AcquireType.NORMAL))
 		{
-			if(sl.isAutoGet() && (learnAllSkills || sl.isFreeAutoGet()))
+			if((sl.isAutoGet() && (learnAllSkills || sl.isFreeAutoGet())) || isFakePlayer())
 			{
 				Skill skill = SkillTable.getInstance().getInfo(sl.getId(), sl.getLevel());
 				if(skill == null)
@@ -5008,7 +5000,7 @@ public final class Player extends Playable implements PlayerGroup
 		ClassId class_id = ClassId.VALUES[classId];
 		PlayerTemplate template = PlayerTemplateHolder.getInstance().getPlayerTemplate(class_id.getRace(), class_id, Sex.VALUES[sex]);
 		
-		_log.info("accountName: "+accountName);
+//		_log.info("accountName: "+accountName);
 
 		// Create a new L2Player with an account name
 		Player player = new Player(IdFactory.getInstance().getNextId(), template, accountName);
@@ -11676,5 +11668,86 @@ public final class Player extends Playable implements PlayerGroup
 	public int getArenaIdForLogout()
 	{
 		return _arenaIdForLogout;
+	}
+	
+	/*
+	 * New method
+	 */
+	
+	protected boolean _fakePlayer = false;
+
+	public void setFakePlayer() {
+		_fakePlayer = true;
+	}
+	
+	public void unSetFakePlayer(){
+		_fakePlayer = false;
+	}
+	
+	public boolean isFakePlayer(){
+		return _fakePlayer;
+	}
+	
+	public void teleToLocation(int x, int y, int z, Reflection r)
+	{
+		if(!isTeleporting.compareAndSet(false, true))
+			return;
+
+		if(isFakeDeath())
+			breakFakeDeath();
+
+		abortCast(true, false);
+		if(!isLockedTarget())
+			setTarget(null);
+		stopMove();
+
+		if(!isBoat() && !isFlying() && !World.isWater(new Location(x, y, z), r))
+			z = GeoEngine.getHeight(x, y, z, r.getGeoIndex());
+
+		//TODO [G1ta0] убрать DimensionalRiftManager.teleToLocation
+		if(isPlayer() && DimensionalRiftManager.getInstance().checkIfInRiftZone(getLoc(), true))
+		{
+			if(isInParty() && getParty().isInDimensionalRift())
+			{
+				Location newCoords = DimensionalRiftManager.getInstance().getRoom(0, 0).getTeleportCoords();
+				x = newCoords.x;
+				y = newCoords.y;
+				z = newCoords.z;
+				getParty().getDimensionalRift().usedTeleport(this);
+			}
+		}
+
+		//TODO: [Bonux] Check ExTeleportToLocationActivate!
+		if(isPlayer() && !isFakePlayer())
+		{
+
+			sendPacket(new TeleportToLocation(this, x, y, z));
+
+			getListeners().onTeleport(x, y, z, r);
+
+			decayMe();
+
+			setXYZ(x, y, z);
+
+			setReflection(r);
+
+			// Нужно при телепорте с более высокой точки на более низкую, иначе наносится вред от "падения"
+			setLastClientPosition(null);
+			setLastServerPosition(null);
+
+			sendPacket(new ExTeleportToLocationActivate(this, x, y, z));
+		}
+		else
+		{
+			broadcastPacket(new TeleportToLocation(this, x, y, z));
+
+			setXYZ(x, y, z);
+
+			setReflection(r);
+
+			sendPacket(new ExTeleportToLocationActivate(this, x, y, z));
+
+			onTeleported();
+		}
 	}
 }

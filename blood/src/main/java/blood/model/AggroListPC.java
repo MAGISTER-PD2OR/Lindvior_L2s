@@ -111,15 +111,15 @@ public class AggroListPC
 		writeLock.lock();
 		try
 		{
-			AggroInfoPC ai;
+			AggroInfoPC agroinfo;
 			
-			if ((ai = hateList.get(attacker.getObjectId())) == null)
-				hateList.put(attacker.getObjectId(), ai = new AggroInfoPC(attacker));
+			if ((agroinfo = hateList.get(attacker.getObjectId())) == null)
+				hateList.put(attacker.getObjectId(), agroinfo = new AggroInfoPC(attacker));
 				
-			ai.damage += damage;
-			ai.hate += aggro;
-			ai.damage = Math.max(ai.damage, 0);
-			ai.hate = Math.max(ai.hate, 0);
+			agroinfo.damage += damage;
+			agroinfo.hate += aggro;
+			agroinfo.damage = Math.max(agroinfo.damage, 0);
+			agroinfo.hate = Math.max(agroinfo.hate, 0);
 		}
 		finally
 		{

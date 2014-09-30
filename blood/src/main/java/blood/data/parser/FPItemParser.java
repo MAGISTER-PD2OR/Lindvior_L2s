@@ -1,17 +1,18 @@
 package blood.data.parser;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import l2s.commons.data.xml.AbstractFileParser;
 import l2s.gameserver.Config;
+import l2s.gameserver.model.base.ClassId;
+import l2s.gameserver.model.base.ClassType;
+import l2s.gameserver.model.base.ClassType2;
 
 import org.dom4j.Element;
 
 import blood.data.holder.FPItemHolder;
-import blood.model.FPRewardData;
 import blood.model.FPRewardList;
 
 public final class FPItemParser extends AbstractFileParser<FPItemHolder> 
@@ -66,33 +67,59 @@ public final class FPItemParser extends AbstractFileParser<FPItemHolder>
 	@Override
 	protected void readData(Element rootElement) throws Exception
 	{
+		HashMap<String, ClassId> classIdMap = new HashMap<String, ClassId>();
+		HashMap<String, ClassType> classTypeMap = new HashMap<String, ClassType>();
+		HashMap<String, ClassType2> classType2Map = new HashMap<String, ClassType2>();
+		
+		for(ClassId classId: ClassId.VALUES)
+			classIdMap.put(classId.toString(), classId);
+		
+		for(ClassType classType: ClassType.VALUES)
+			classTypeMap.put(classType.toString(), classType);
+		
+		for(ClassType2 classType2: ClassType2.VALUES)
+			classType2Map.put(classType2.toString(), classType2);
+		
 		for (Iterator<Element> iterator = rootElement.elementIterator(); iterator.hasNext();)
 		{
 			Element rewardElement = iterator.next();
-			int lvl = Integer.parseInt(rewardElement.attributeValue("level"));
-			List<FPRewardList> levelList = new ArrayList<FPRewardList>(); 
-			for (Element classElement : rewardElement.elements())
+			
+			String reward_name = rewardElement.attributeValue("name");
+			String parent_name = rewardElement.attributeValue("parent");
+			int min_level = rewardElement.attributeValue("min_level") != null ? Integer.parseInt(rewardElement.attributeValue("min_level")): 0;
+			int max_level = rewardElement.attributeValue("max_level") != null ? Integer.parseInt(rewardElement.attributeValue("max_level")): 0;
+			int weight = rewardElement.attributeValue("weight") != null ? Integer.parseInt(rewardElement.attributeValue("weight")) : 1;
+			
+			
+			FPRewardList rewardList = new FPRewardList(reward_name, min_level, max_level, parent_name, weight);
+			
+			for (Element subElement: rewardElement.elements())
 			{
-				boolean is_mage = Boolean.parseBoolean(classElement.attributeValue("is_mage"));
-				
-				FPRewardList rewardList = new FPRewardList(is_mage);
-				String[] class_ids_str = classElement.attributeValue("ids").split(",");
-				
-				for(int i = 0;i < class_ids_str.length;i++)
-				{
-					rewardList.addClass(Integer.parseInt(class_ids_str[i]));
+				if(subElement.getName().equalsIgnoreCase("item")){
+					int item_id = Integer.parseInt(subElement.attributeValue("id"));
+					int item_count = Integer.parseInt(subElement.attributeValue("count"));
+					rewardList.addItem(item_id, item_count);
 				}
 				
-				for (Element itemElement: classElement.elements())
-				{
-					int item_id = Integer.parseInt(itemElement.attributeValue("id"));
-					int item_count = Integer.parseInt(itemElement.attributeValue("count"));
-					rewardList.addItem(new FPRewardData(item_id, item_count));
+				if(subElement.getName().equalsIgnoreCase("remove_item")){
+					int remove_item_id = Integer.parseInt(subElement.attributeValue("id"));
+					rewardList.addRemoveItem(remove_item_id);
 				}
 				
-				levelList.add(rewardList);
+				if(subElement.getName().equalsIgnoreCase("classid")){
+					rewardList.addClassId(classIdMap.get(subElement.attributeValue("value")));
+				}
+				
+				if(subElement.getName().equalsIgnoreCase("classtype")){
+					rewardList.addClassType(classTypeMap.get(subElement.attributeValue("value")));
+				}
+				
+				if(subElement.getName().equalsIgnoreCase("classtype2")){
+					rewardList.addClassType2(classType2Map.get(subElement.attributeValue("value")));
+				}	
 			}
-			getHolder().addLevelBonus(lvl, levelList);
+			
+			getHolder().add(reward_name, rewardList);
 		}
 	}
 }
