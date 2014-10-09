@@ -1500,6 +1500,9 @@ public class FPCDefaultAI extends PlayerAI
 		
 		Player player = getActor();
 		
+		if(player == null)
+			return;
+		
 		StringBuilder builder = new StringBuilder();
 		builder.append(player.getAccountName());
 		builder.append(";");
