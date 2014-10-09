@@ -1,14 +1,12 @@
 package blood.ai;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
-import java.util.Random;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ScheduledFuture;
 
@@ -21,7 +19,6 @@ import l2s.commons.threading.RunnableImpl;
 import l2s.commons.util.Rnd;
 import l2s.gameserver.Config;
 import l2s.gameserver.ThreadPoolManager;
-import l2s.gameserver.ai.CtrlEvent;
 import l2s.gameserver.ai.CtrlIntention;
 import l2s.gameserver.ai.PlayerAI;
 import l2s.gameserver.data.xml.holder.SkillAcquireHolder;
@@ -33,13 +30,11 @@ import l2s.gameserver.model.Servitor;
 import l2s.gameserver.model.Skill;
 import l2s.gameserver.model.SkillLearn;
 import l2s.gameserver.model.World;
-import l2s.gameserver.model.GameObjectTasks.NotifyAITask;
 import l2s.gameserver.model.base.AcquireType;
 import l2s.gameserver.model.base.RestartType;
 import l2s.gameserver.model.instances.ChestInstance;
 import l2s.gameserver.model.instances.NpcInstance;
 import l2s.gameserver.network.l2.s2c.MagicSkillUse;
-import l2s.gameserver.network.l2.s2c.SetupGauge;
 import l2s.gameserver.skills.EffectType;
 //import l2s.gameserver.skills.effects.EffectTemplate;
 import l2s.gameserver.stats.Stats;
@@ -61,8 +56,8 @@ import blood.base.FPCPveStyle;
 import blood.data.holder.FPItemHolder;
 import blood.data.holder.NpcHelper;
 import blood.model.AggroListPC;
-import blood.model.FPRewardList;
 import blood.model.AggroListPC.AggroInfoPC;
+import blood.model.FPRewardList;
 import blood.model.FarmLocation;
 import blood.utils.ClassFunctions;
 
@@ -728,6 +723,16 @@ public class FPCDefaultAI extends PlayerAI
 		return !actor.isMoving;
 	}
 	
+	protected void thinkAlertPeopleAround() {
+		Player player = getActor();
+		
+		List<Player> chars = World.getAroundPlayers(player, 1500, 500);
+		for (Player cha : chars){
+			if(!cha.getPlayer().isFakePlayer())
+				alertPeople(cha);
+		}
+	}
+	
 	protected boolean thinkAggro()
 	{
 		Player player = getActor();
@@ -740,9 +745,6 @@ public class FPCDefaultAI extends PlayerAI
 		CollectionUtils.eqSort(chars, _nearestTargetComparator);
 		for (Creature cha : chars)
 		{
-			if(cha.isPlayer() && cha.getPlayer() != null && !cha.getPlayer().isFakePlayer())
-				alertPeople(cha.getPlayer());
-			
 			if (_aggroList.get(cha) == null)
 				continue;
 			
@@ -825,6 +827,8 @@ public class FPCDefaultAI extends PlayerAI
 		if(thinkFPCIdle() || thinkFPCWaitingParty() || thinkFarming())
 			return;
 		
+		thinkAlertPeopleAround();
+		
 		if(thinkAggro() || thinkMadness())
 		{
 			_pathfindFails = 0;
@@ -852,6 +856,8 @@ public class FPCDefaultAI extends PlayerAI
 		
 	}
 	
+	
+
 	private long _upClassLTS = 0L;
 	private final int _upClassInteval = 1*60*1000;
 	
